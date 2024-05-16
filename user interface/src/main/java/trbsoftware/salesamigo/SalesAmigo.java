@@ -4,6 +4,8 @@
 
 package trbsoftware.salesamigo;
 
+import Authentication.LoginFrame;
+
 /**
  *
  * @author britt
@@ -11,6 +13,7 @@ package trbsoftware.salesamigo;
 public class SalesAmigo {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        LoginFrame loginFrame = new LoginFrame();
+        loginFrame.setVisible(true);
     }
 }

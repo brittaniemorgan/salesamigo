@@ -10,9 +10,14 @@ package Authentication;
  * @author britt
  */
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import javax.net.ssl.HttpsURLConnection;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class APIManager {
@@ -57,32 +62,121 @@ public class APIManager {
         }
         return response.toString();
     }
-
-    public JSONObject getUsers(){
-        JSONObject jsonResponse = null;
+    
+    public JSONArray getUsers(){
+        JSONArray jsonResponse = null;
         try{    
-        String responseData = fetchDataFromAPI("/users");
-        jsonResponse = new JSONObject(responseData);
-        System.out.println(responseData);
-        return jsonResponse;
+            String responseData = fetchDataFromAPI("/users");
+            jsonResponse = new JSONObject(responseData).getJSONArray("users");
+            //System.out.println(responseData);
+            return jsonResponse;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return jsonResponse;
     }
     
-    public static void main(String[] args) {
-        try {
-            APIManager apiManager = APIManager.getAPIManager();
-            String apiUrl = "/users"; // Example API endpoint
-            JSONObject responseData = apiManager.getUsers();
-            //JSONObject responseData = apiManager.getUsers();
-            /*;
-            
-            String message = jsonResponse.getString("message");
-            System.out.println("Message: " + message);*/
+
+    public JSONArray login(String username, String password){
+        JSONArray jsonResponse = null;
+        try{    
+            String responseData = fetchDataFromAPI("/login"); //send data
+            jsonResponse = new JSONObject(responseData).getJSONArray("users");
+            //System.out.println(responseData);
+            return jsonResponse;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return jsonResponse;
+    }
+    
+    
+    public String getCSRFToken() {
+        String csrfToken = null;
+        try {
+            String responseData = fetchDataFromAPI("csrf-token");
+            JSONObject jsonResponse = new JSONObject(responseData);
+            csrfToken = jsonResponse.getString("csrf_token");
+            System.out.println(csrfToken);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return csrfToken;
+    }
+    
+    public String sendDataToAPI(String apiUrl, JSONObject obj) throws IOException {
+        String messageContent = obj.toString();
+
+        System.out.println("Sending POST request with message:\n" + messageContent);
+
+        URL url = new URL(baseURL, apiUrl);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        String errorMessage = null;
+
+        try {
+            String csrfToken = getCSRFToken();
+            if (csrfToken == null) {
+                System.out.println("CSRF token retrieval failed. Aborting request.");
+                System.exit(0);
+            }
+
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("X-CSRFToken", csrfToken);
+            connection.setDoOutput(true);
+
+            try (OutputStream os = connection.getOutputStream()) {
+                byte[] input = messageContent.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+
+            int responseCode = connection.getResponseCode();
+            System.out.println("Response from the server:");
+            System.out.println("Response Code: " + responseCode);
+            System.out.println("Response Message: " + connection.getResponseMessage());
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    System.out.println("Response: " + response.toString());
+                    return response.toString();
+                }
+            } else {
+                try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(connection.getErrorStream()))) {
+                    StringBuilder errorResponse = new StringBuilder();
+                    String line;
+                    while ((line = errorReader.readLine()) != null) {
+                        errorResponse.append(line);
+                    }
+                    System.out.println("Error Response: " + errorResponse.toString());
+                    errorMessage = errorResponse.toString(); 
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+
+        return errorMessage; 
+    }
+
+    public static void main(String[] args) throws IOException {
+        try {
+            APIManager example = APIManager.getAPIManager();
+            JSONObject dataToSend = new JSONObject();
+            dataToSend.put("username", "johnB");
+            dataToSend.put("password", "password123");
+            example.sendDataToAPI("login", dataToSend);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } 
     }
 }
