@@ -71,22 +71,18 @@ def login():
         return jsonify({"error": str(e)})
     
 
-@app.route('/users', methods=['GET'])
+@app.route('/employees', methods=['GET'])
 def get_users():
     try:
         connection = get_db_connection()
-        cursor = connection.cursor()
-        query = f"SELECT * FROM User"
+        cursor = connection.cursor(dictionary=True)
+        query = f"SELECT * FROM employees"
         cursor.execute(query)
         result = cursor.fetchall()
 
         users = []
-        for username, password, role in result:
-            users.append({
-                'username': username,
-                'password': password,
-                'role': role
-            })
+        for user in result:
+            users.append(user)
         cursor.close()
         connection.close()
         return jsonify(users=users) 
