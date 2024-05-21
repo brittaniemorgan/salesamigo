@@ -4,7 +4,8 @@
  */
 package Authentication;
 
-import org.json.JSONArray;
+import Database.APIManager;
+import java.io.IOException;
 import org.json.JSONObject;
 
 /**
@@ -13,50 +14,47 @@ import org.json.JSONObject;
  */
 public class Authenticator {
     APIManager api;
-    JSONArray users;
     
     public Authenticator(){
         try{
             api = APIManager.getAPIManager();
-            users = api.getUsers();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     
-    public JSONObject getUser(String username) {
-        JSONObject user = null;
-        try{
-            for (int i = 0; i < users.length(); i++) {
-                user = users.getJSONObject(i);
-                if (user.getString("username").equals(username)) {
-                    break;
-                }
-                user = null;
-            }
+    /*
+    public JSONArray getUsers(){
+        JSONArray jsonResponse = null;
+        try{    
+            String responseData = api.fetchDataFromAPI("/users");
+            jsonResponse = new JSONObject(responseData).getJSONArray("users");
+            //System.out.println(responseData);
+            return jsonResponse;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return user;
-    }
+        return jsonResponse;
+    }   */
     
-    public JSONObject validateUser(String username, String password){
-        JSONObject user = getUser(username);
-        try{
-            if (user.getString("password").equals(password)){
-                return user;
-            }
-            user = null;
+    public JSONObject validateUser(String username, String password) throws IOException {
+        JSONObject response = null;
+        try {
+            JSONObject userInfo = new JSONObject();
+            userInfo.put("employee_id", username);
+            userInfo.put("password", password);
+            response = new JSONObject(api.sendDataToAPI("login", userInfo));
+            return response;
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        return user;
+            return response;
+        } 
     }
     
     
-    public static void main(String[] args) {
+    
+    public static void main(String[] args) throws IOException {
         Authenticator auth = new Authenticator();
-        System.out.println(auth.getUser("JohnB"));
-        auth.validateUser("johnB", "password123");
+        System.out.println(auth.validateUser("1", "password123"));
     }
 }

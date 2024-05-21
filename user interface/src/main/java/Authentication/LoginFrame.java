@@ -4,6 +4,7 @@
  */
 package Authentication;
 
+import Inventory.InventoryFrame;
 import org.json.JSONObject;
 
 /**
@@ -176,22 +177,34 @@ public class LoginFrame extends javax.swing.JFrame {
         String password = passwordField.getText();
         if (username.isEmpty()) {
             errorText.setText("Username required");
+            return;
         }
-
+            
         if (password.isEmpty()) {
             errorText.setText("Password required");
+            return;
         }
-        
-        JSONObject user = auth.getUser(username);
-        if (user == null){
-            errorText.setText("Username invalid");
-        }
-        else if (auth.validateUser(username, password) == null){
-            errorText.setText("Incorrect password");
-        }
-        else{
-            errorText.setText("Login Successfull");
-            handleSuccessfulLogin(user);
+        try {
+            JSONObject response = auth.validateUser(username, password);
+            if (response.has("error")) {
+            errorText.setText(response.getString("error"));
+            } else {
+                JSONObject userDets = response.getJSONObject("user");
+                errorText.setText("Login Successful");
+                String fname = userDets.getString("firstname");
+                String lname = userDets.getString("lastame");
+                String role = userDets.getString("role");
+                String address = userDets.getString("address");
+                String number = userDets.getString("contact_number");
+                String email = userDets.getString("email");
+                String dept = userDets.getString("department");
+                float salary = Float.parseFloat(userDets.getString("salary"));
+                String join_date = userDets.getString("join_date");
+                User user = new User(Integer.parseInt(username), fname, lname, email, number, address, join_date, role, dept, salary, password);
+                handleSuccessfulLogin(user);
+                }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }//GEN-LAST:event_loginBtnActionPerformed
 
@@ -213,19 +226,19 @@ public class LoginFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jCheckBox1StateChanged
 
-    private void handleSuccessfulLogin(JSONObject user) {
+    private void handleSuccessfulLogin(User user) {
         try{
-        String role = user.getString("role"); 
+        String role = user.getRole(); 
             switch (role) {
-                case "admin":
+                case "Manager":
                     AdminFrame adminFrame = new AdminFrame();
                     adminFrame.setVisible(true);
                     break;
-                case "cashier":
+                case "Cashier":
                     POSFrame posFrame = new POSFrame();
                     posFrame.setVisible(true);
                     break;
-                case "inventory clerk":
+                case "Inventory Clerk":
                     InventoryFrame inventoryFrame = new InventoryFrame();
                     inventoryFrame.setVisible(true);
                     break;
