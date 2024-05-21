@@ -1,10 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `sales_amigo` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `sales_amigo`;
--- MySQL dump 10.13  Distrib 8.0.36, for macos14 (arm64)
+-- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
 -- Host: localhost    Database: sales_amigo
 -- ------------------------------------------------------
--- Server version	8.3.0
+-- Server version	8.0.36
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -18,30 +16,32 @@ USE `sales_amigo`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `loyalty_programs`
+-- Table structure for table `customers`
 --
 
-DROP TABLE IF EXISTS `loyalty_programs`;
+DROP TABLE IF EXISTS `customers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `loyalty_programs` (
-  `loyalty_tier` varchar(50) NOT NULL,
-  `points` int DEFAULT NULL,
-  `reward` varchar(255) DEFAULT NULL,
-  `customer_id` int DEFAULT NULL,
-  PRIMARY KEY (`loyalty_tier`),
-  KEY `customer_id` (`customer_id`),
-  CONSTRAINT `loyalty_programs_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`)
+CREATE TABLE `customers` (
+  `customer_id` int NOT NULL AUTO_INCREMENT,
+  `firstname` varchar(50) DEFAULT NULL,
+  `lastname` varchar(50) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `contact_number` varchar(20) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `points_balance` int DEFAULT NULL,
+  `date_joined` date DEFAULT NULL,
+  PRIMARY KEY (`customer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `loyalty_programs`
+-- Dumping data for table `customers`
 --
 
-LOCK TABLES `loyalty_programs` WRITE;
-/*!40000 ALTER TABLE `loyalty_programs` DISABLE KEYS */;
-/*!40000 ALTER TABLE `loyalty_programs` ENABLE KEYS */;
+LOCK TABLES `customers` WRITE;
+/*!40000 ALTER TABLE `customers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `customers` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -53,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-15 13:31:35
+-- Dump completed on 2024-05-21 14:23:58
