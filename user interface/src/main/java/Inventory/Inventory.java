@@ -321,6 +321,7 @@ public class Inventory {
                 if (productVariant.getVariantID() == id) {
                     return productVariant;
                 }
+            }    
         }
         return null;
     }
