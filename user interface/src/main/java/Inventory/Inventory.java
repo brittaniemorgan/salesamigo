@@ -132,11 +132,11 @@ public class Inventory {
             int category_id = findCategoryByName(category).getId();
             int brand_id = findBrandByName(brand).getId();
             JSONObject response = api.addProduct(name, description, price, category_id, brand_id, gender);
-            int id = response.getInt("id");
             
             if (response.has("error")) {
                 feedback = "Error adding product: " + response.getString("error");                
             } else {
+                int id = response.getInt("id");
                 products.add(new Product(id, name, description, price, category, brand, gender));
                 feedback = "Product added successfully!";
             }            
@@ -207,11 +207,12 @@ public class Inventory {
         try {            
             int size_id = findSizeByName(size).getId();
             JSONObject response = api.addVariant(product.getID(), size_id, colour, quantity, price, minQuantity);
-            int variantId = response.getInt("id");
+            
             
             if (response.has("error")) {
                 feedback = "Error adding variant: " + response.getString("error");                
             } else {
+                int variantId = response.getInt("id");
                 product.addVariant(new ProductVariant(variantId, product, size, colour, quantity, price, minQuantity));
                 feedback = "Variant added successfully!";
             }            
@@ -279,12 +280,206 @@ public class Inventory {
         return categories;
     }
     
+    public String createCategory(String name) {
+        String feedback = "";
+        try {            
+            JSONObject response = api.addCategory(name);
+            
+            if (response.has("error")) {
+                feedback = "Error adding category: " + response.getString("error");                
+            } else {
+                int catID = response.getInt("id");
+                categories.add(new Category(catID, name));
+                feedback = "Category added successfully!";
+            }            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return feedback;
+    }
+    
+    public String updateCategory(int id, String name) {
+        String feedback = "";
+        try {
+            JSONObject response = api.updateCategory(id, name);
+            
+            if (response.has("error")) {
+                feedback = "Error updating category: " + response.getString("error");                
+            } else {
+                for (Category category : categories){
+                    if (category.getId() == id){
+                        category.setName(name);
+                        break;
+                    }
+                }
+                feedback = "Category updated successfully!";
+            } 
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return feedback;
+    }
+
+    public String deleteCategory(int id) {
+        String feedback = "";
+        try {
+            
+            JSONObject response = api.deleteCategory(id);
+            if (response.has("error")) {
+                feedback = "Error deleting category: " + response.getString("error");                
+            } else {
+                for (Category category : categories){
+                    if (category.getId() == id){
+                        categories.remove(category);
+                        feedback = "Category deleted successfully!";
+                        break;
+                    }
+                }
+            } 
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return feedback;
+    }
+    
     public ArrayList<Brand> getBrands() {
         return brands;
     }
     
+    public String createBrand(String name) {
+        String feedback = "";
+        try {            
+            JSONObject response = api.addBrand(name);
+            
+            if (response.has("error")) {
+                feedback = "Error adding brand: " + response.getString("error");                
+            } else {
+                int id = response.getInt("id");
+                brands.add(new Brand(id, name));
+                feedback = "Brand added successfully!";
+            }            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return feedback;
+    }
+    
+    public String updateBrand(int id, String name) {
+        String feedback = "";
+        try {
+            JSONObject response = api.updateBrand(id, name);
+            
+            if (response.has("error")) {
+                feedback = "Error updating brand: " + response.getString("error");                
+            } else {
+                for (Brand brand : brands){
+                    if (brand.getId() == id){
+                        brand.setName(name);
+                        feedback = "Brand updated successfully!";
+                        break;
+                    }
+                }
+                
+            } 
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return feedback;
+    }
+
+    public String deleteBrand(int id) {
+        String feedback = "";
+        try {
+            
+            JSONObject response = api.deleteBrand(id);
+            if (response.has("error")) {
+                feedback = "Error deleting brand: " + response.getString("error");                
+            } else {
+                for (Brand brand : brands){
+                    if (brand.getId() == id){
+                        brands.remove(brand);
+                        feedback = "Brand deleted successfully!";
+                        break;
+                    }
+                }
+            } 
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return feedback;
+    }
+    
     public ArrayList<Size> getSizes() {
         return sizes;
+    }
+    
+    public String createSize(String name) {
+        String feedback = "";
+        try {            
+            JSONObject response = api.addSize(name);
+                        
+            if (response.has("error")) {                
+                feedback = "Error adding size: " + response.getString("error");      
+                System.out.println(feedback);
+            } else {
+                int id = response.getInt("id");
+                sizes.add(new Size(id, name));
+                feedback = "Size added successfully!";
+            }            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return feedback;
+    }
+    
+    public String updateSize(int id, String name) {
+        String feedback = "";
+        try {
+            JSONObject response = api.updateSize(id, name);
+            
+            if (response.has("error")) {
+                feedback = "Error updating size: " + response.getString("error");                
+            } else {
+                for (Size size : sizes){
+                    if (size.getId() == id){
+                        size.setName(name);
+                        break;
+                    }
+                }
+                feedback = "Size updated successfully!";
+            } 
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return feedback;
+    }
+
+    public String deleteSize(int id) {
+        String feedback = "";
+        try {
+            
+            JSONObject response = api.deleteSize(id);
+            if (response.has("error")) {
+                feedback = "Error deleting size: " + response.getString("error");                
+            } else {
+                for (Size size : sizes){
+                    if (size.getId() == id){
+                        sizes.remove(size);
+                        feedback = "Size deleted successfully!";
+                        break;
+                    }
+                }
+            } 
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return feedback;
     }
     
     public ArrayList<ProductVariant> getVariants() {
@@ -324,9 +519,7 @@ public class Inventory {
             }    
         }
         return null;
-    }
-        
-    
+    }   
 
     public Brand findBrandByName(String name) {
         for (Brand brand : brands) {
@@ -358,6 +551,16 @@ public class Inventory {
         return filteredProducts;
     }
     
+    public ArrayList<Product> getProductsByNameOrBrand(String query) {
+        ArrayList<Product> filteredProducts = new ArrayList<Product>();
+        for (Product product : products) {
+            if (product.getBrand().toLowerCase().contains(query) || product.getName().toLowerCase().contains(query)) {
+                filteredProducts.add(product);
+            }
+        }
+        return filteredProducts;
+    }
+    
     public static void main(String[] args) throws IOException {
         try {
             Inventory inv = new Inventory();
@@ -366,4 +569,5 @@ public class Inventory {
         } 
         
     }
+    
 }

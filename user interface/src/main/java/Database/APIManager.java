@@ -352,14 +352,13 @@ public class APIManager {
         return response;
     }
     
-    public JSONObject updateCategory(int categoryID, String name) {
+    public JSONObject updateCategory(int catID, String name) {
         JSONObject response = null;
         try {
             JSONObject categoryInfo = new JSONObject();
-            categoryInfo.put("category_id", categoryID);
             categoryInfo.put("name", name);
             
-            response = new JSONObject(sendPutRequestToAPI("categories", categoryInfo));
+            response = new JSONObject(sendPutRequestToAPI("categories/"+ catID, categoryInfo));
             System.out.println("Response from server: " + response.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -370,10 +369,9 @@ public class APIManager {
     public JSONObject deleteCategory(int catID) {
         JSONObject response = null;
         try {
-            JSONObject categoryInfo = new JSONObject();
-            categoryInfo.put("category_id", catID);            
+            JSONObject categoryInfo = new JSONObject();       
            
-            response = new JSONObject(sendDeleteRequestToAPI("categories", categoryInfo));
+            response = new JSONObject(sendDeleteRequestToAPI("categories/" + catID, categoryInfo));
             System.out.println("Response from server: " + response.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -392,6 +390,47 @@ public class APIManager {
         return brands;
     }
     
+    public JSONObject addBrand(String name) {
+        JSONObject response = null;
+        try {
+            JSONObject brandInfo = new JSONObject();
+            brandInfo.put("name", name);
+
+            response = new JSONObject(sendDataToAPI("brands", brandInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+    
+    public JSONObject updateBrand(int brandID, String name) {
+        JSONObject response = null;
+        try {
+            JSONObject brandInfo = new JSONObject();
+            brandInfo.put("name", name);
+            
+            response = new JSONObject(sendPutRequestToAPI("brands/" + brandID, brandInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+    
+    public JSONObject deleteBrand(int brandID) {
+        JSONObject response = null;
+        try {
+            JSONObject brandInfo = new JSONObject();        
+           
+            response = new JSONObject(sendDeleteRequestToAPI("brands/" + brandID, brandInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+    
     public JSONObject getSizes(){
         JSONObject sizes = null;
         try {
@@ -401,6 +440,47 @@ public class APIManager {
             e.printStackTrace();
         }
         return sizes;
+    }
+    
+    public JSONObject addSize(String name) {
+        JSONObject response = null;
+        try {
+            JSONObject sizeInfo = new JSONObject();
+            sizeInfo.put("name", name);
+
+            response = new JSONObject(sendDataToAPI("sizes", sizeInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+    
+    public JSONObject updateSize(int sizeID, String name) {
+        JSONObject response = null;
+        try {
+            JSONObject sizeInfo = new JSONObject();
+            sizeInfo.put("name", name);
+            
+            response = new JSONObject(sendPutRequestToAPI("sizes/" + sizeID, sizeInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+    
+    public JSONObject deleteSize(int sizeID) {
+        JSONObject response = null;
+        try {
+            JSONObject sizeInfo = new JSONObject();        
+           
+            response = new JSONObject(sendDeleteRequestToAPI("sizes/" + sizeID, sizeInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
     }
     
     public JSONObject getVariants(){

@@ -205,30 +205,31 @@ def add_category():
 
         content = request.json
         name = content['name']
+        query = "SELECT * FROM category WHERE category = %s"
+        cursor.execute(query, (name,))
         category = cursor.fetchone()
 
         if category:
             return jsonify({"error": f"Size with Category {name} already exists"}), 404
 
-
-        query = "INSERT INTO category (name) VALUES (%s)"
+        query = "INSERT INTO category (category) VALUES (%s)"
         cursor.execute(query, (name,))
         connection.commit()
+        id = cursor.lastrowid
         cursor.close()
         connection.close()
-        return jsonify({"success": "Category added"})
+        return jsonify({"success": "Category added", "id":id})
     
     except Exception as e:
         return jsonify({'error': str(e)})
 
-@app.route('/categories', methods=['PUT'])
-def update_category():
+@app.route('/categories/<int:id>', methods=['PUT'])
+def update_category(id):
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
 
         content = request.json
-        id = content['id']
         name = content['name']
         query = "SELECT * FROM category WHERE category_id = %s"
         cursor.execute(query, (id,))
@@ -238,7 +239,7 @@ def update_category():
             return jsonify({"error": f"Category with ID {id} not found"}), 404
 
         query = """UPDATE category SET 
-                          name = %s
+                          category = %s
                           WHERE category_id = %s"""
 
         cursor.execute(query, (name, id))
@@ -248,14 +249,13 @@ def update_category():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-@app.route('/categories', methods=['DELETE'])
-def delete_category():
+@app.route('/categories/<int:id>', methods=['DELETE'])
+def delete_category(id):
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
 
         content = request.json
-        id = content['id']
         query = "SELECT * FROM category WHERE category_id = %s"
         cursor.execute(query, (id,))
         category = cursor.fetchone()
@@ -295,30 +295,32 @@ def add_brand():
 
         content = request.json
         name = content['name']
+        query = "SELECT * FROM brand WHERE brand = %s"
+        cursor.execute(query, (name,))
         brand = cursor.fetchone()
 
         if brand:
             return jsonify({"error": f"Brand with name {name} already exists"}), 404
 
 
-        query = "INSERT INTO brand (name) VALUES (%s)"
+        query = "INSERT INTO brand (brand) VALUES (%s)"
         cursor.execute(query, (name,))
         connection.commit()
+        id = cursor.lastrowid
         cursor.close()
         connection.close()
-        return jsonify({"success": "Brand added"})
+        return jsonify({"success": "Brand added", "id":id})
     
     except Exception as e:
         return jsonify({'error': str(e)})
 
-@app.route('/brands', methods=['PUT'])
-def update_brand():
+@app.route('/brands/<int:id>', methods=['PUT'])
+def update_brand(id):
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
 
         content = request.json
-        id = content['id']
         name = content['name']
         query = "SELECT * FROM brand WHERE brand_id = %s"
         cursor.execute(query, (id,))
@@ -328,7 +330,7 @@ def update_brand():
             return jsonify({"error": f"Brand with ID {id} not found"}), 404
 
         query = """UPDATE brand SET 
-                          name = %s
+                          brand = %s
                           WHERE brand_id = %s"""
 
         cursor.execute(query, (name, id))
@@ -338,14 +340,13 @@ def update_brand():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-@app.route('/brands', methods=['DELETE'])
-def delete_brand():
+@app.route('/brands/<int:id>', methods=['DELETE'])
+def delete_brand(id):
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
 
         content = request.json
-        id = content['id']
         query = "SELECT * FROM brand WHERE brand_id = %s"
         cursor.execute(query, (id,))
         brand = cursor.fetchone()
@@ -384,31 +385,31 @@ def add_size():
 
         content = request.json
         name = content['name']
-        query = "SELECT * FROM size WHERE name = %s"
+        query = "SELECT * FROM size WHERE size = %s"
         cursor.execute(query, (name,))
         size = cursor.fetchone()
 
         if size:
             return jsonify({"error": f"Size with name {name} already exists"}), 404
 
-        query = "INSERT INTO size (name) VALUES (%s)"
+        query = "INSERT INTO size (size) VALUES (%s)"
         cursor.execute(query, (name,))
         connection.commit()
+        id = cursor.lastrowid
         cursor.close()
         connection.close()
-        return jsonify({"success": "Size added"})
+        return jsonify({"success": "Size added", "id":id})
     
     except Exception as e:
         return jsonify({'error': str(e)})
 
-@app.route('/sizes', methods=['PUT'])
-def update_size():
+@app.route('/sizes/<int:id>', methods=['PUT'])
+def update_size(id):
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
 
         content = request.json
-        id = content['id']
         name = content['name']
         query = "SELECT * FROM size WHERE size_id = %s"
         cursor.execute(query, (id,))
@@ -418,7 +419,7 @@ def update_size():
             return jsonify({"error": f"Size with ID {id} not found"}), 404
 
         query = """UPDATE size SET 
-                          name = %s
+                          size = %s
                           WHERE size_id = %s"""
 
         cursor.execute(query, (name, id))
@@ -428,14 +429,13 @@ def update_size():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-@app.route('/sizes', methods=['DELETE'])
-def delete_size():
+@app.route('/sizes/<int:id>', methods=['DELETE'])
+def delete_size(id):
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
 
         content = request.json
-        id = content['id']
         query = "SELECT * FROM size WHERE size_id = %s"
         cursor.execute(query, (id,))
         size = cursor.fetchone()

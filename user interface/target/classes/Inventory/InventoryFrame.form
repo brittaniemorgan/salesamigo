@@ -110,7 +110,7 @@
                       <Component id="jPanel1" min="-2" pref="297" max="-2" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Component id="jPanel9" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="325" max="32767" attributes="0"/>
+                      <EmptySpace pref="376" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -220,13 +220,10 @@
                                               <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
                                               <Component id="brandField" alignment="3" min="-2" max="-2" attributes="0"/>
                                           </Group>
-                                          <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
                                       </Group>
-                                      <Group type="102" attributes="0">
-                                          <Component id="jScrollPane6" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                                      </Group>
+                                      <Component id="jScrollPane6" min="-2" max="-2" attributes="0"/>
                                   </Group>
+                                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="jLabel16" min="-2" max="-2" attributes="0"/>
                                       <Component id="priceField" min="-2" max="-2" attributes="0"/>
@@ -272,6 +269,9 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Search"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="productSearchBtn1ActionPerformed"/>
+                  </Events>
                 </Component>
                 <Container class="javax.swing.JScrollPane" name="jScrollPane4">
                   <AuxValues>
@@ -866,7 +866,7 @@
                               <Component id="jScrollPane2" min="-2" pref="131" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="885" max="32767" attributes="0"/>
+                      <EmptySpace pref="936" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1007,7 +1007,7 @@
                               <Component id="jScrollPane3" min="-2" pref="131" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="885" max="32767" attributes="0"/>
+                      <EmptySpace pref="936" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1148,7 +1148,7 @@
                               <Component id="jScrollPane5" min="-2" pref="131" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="885" max="32767" attributes="0"/>
+                      <EmptySpace pref="936" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
