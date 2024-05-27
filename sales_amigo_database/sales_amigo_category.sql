@@ -16,31 +16,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `transaction_items`
+-- Table structure for table `category`
 --
 
-DROP TABLE IF EXISTS `transaction_items`;
+DROP TABLE IF EXISTS `category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `transaction_items` (
-  `transaction_id` int DEFAULT NULL,
-  `product_id` int DEFAULT NULL,
-  `quantity` int DEFAULT NULL,
-  `price` decimal(10,2) DEFAULT NULL,
-  KEY `transaction_id` (`transaction_id`),
-  KEY `product_id` (`product_id`),
-  CONSTRAINT `transaction_items_ibfk_1` FOREIGN KEY (`transaction_id`) REFERENCES `sales_transactions` (`transaction_id`),
-  CONSTRAINT `transaction_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `product_inventory` (`product_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `category` (
+  `category_id` int NOT NULL AUTO_INCREMENT,
+  `category` varchar(50) NOT NULL,
+  PRIMARY KEY (`category_id`),
+  UNIQUE KEY `category` (`category`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `transaction_items`
+-- Dumping data for table `category`
 --
 
-LOCK TABLES `transaction_items` WRITE;
-/*!40000 ALTER TABLE `transaction_items` DISABLE KEYS */;
-/*!40000 ALTER TABLE `transaction_items` ENABLE KEYS */;
+LOCK TABLES `category` WRITE;
+/*!40000 ALTER TABLE `category` DISABLE KEYS */;
+INSERT INTO `category` VALUES (3,'Dress'),(6,'Handbag'),(5,'Jacket'),(2,'Jeans'),(4,'Shoes'),(8,'Skirt'),(7,'Sweater'),(1,'T-Shirt');
+/*!40000 ALTER TABLE `category` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -52,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-27  2:19:48
+-- Dump completed on 2024-05-27  2:19:46

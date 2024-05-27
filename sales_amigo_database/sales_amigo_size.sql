@@ -16,31 +16,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `transaction_items`
+-- Table structure for table `size`
 --
 
-DROP TABLE IF EXISTS `transaction_items`;
+DROP TABLE IF EXISTS `size`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `transaction_items` (
-  `transaction_id` int DEFAULT NULL,
-  `product_id` int DEFAULT NULL,
-  `quantity` int DEFAULT NULL,
-  `price` decimal(10,2) DEFAULT NULL,
-  KEY `transaction_id` (`transaction_id`),
-  KEY `product_id` (`product_id`),
-  CONSTRAINT `transaction_items_ibfk_1` FOREIGN KEY (`transaction_id`) REFERENCES `sales_transactions` (`transaction_id`),
-  CONSTRAINT `transaction_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `product_inventory` (`product_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `size` (
+  `size_id` int NOT NULL AUTO_INCREMENT,
+  `size` varchar(20) NOT NULL,
+  PRIMARY KEY (`size_id`),
+  UNIQUE KEY `size` (`size`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `transaction_items`
+-- Dumping data for table `size`
 --
 
-LOCK TABLES `transaction_items` WRITE;
-/*!40000 ALTER TABLE `transaction_items` DISABLE KEYS */;
-/*!40000 ALTER TABLE `transaction_items` ENABLE KEYS */;
+LOCK TABLES `size` WRITE;
+/*!40000 ALTER TABLE `size` DISABLE KEYS */;
+INSERT INTO `size` VALUES (3,'L'),(2,'M'),(1,'S');
+/*!40000 ALTER TABLE `size` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

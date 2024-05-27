@@ -34,7 +34,7 @@ CREATE TABLE `product_inventory` (
   `last_date_updated` timestamp NULL DEFAULT NULL,
   `category` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,7 @@ CREATE TABLE `product_inventory` (
 
 LOCK TABLES `product_inventory` WRITE;
 /*!40000 ALTER TABLE `product_inventory` DISABLE KEYS */;
-INSERT INTO `product_inventory` VALUES (1,'jTextField2','Updated product description.',12.99,50,NULL,10,'2024-05-21','2024-05-21 08:35:55','Item 1'),(2,'Sample Product','A sample product description.',299.99,50,NULL,10,'2024-05-21','2024-05-21 08:59:44','Electronics'),(3,'Sample Product','A sample product description.',299.99,50,NULL,10,'2024-05-21','2024-05-21 08:59:55','Electronics'),(4,'Sample Product','A sample product description.',299.99,50,NULL,10,'2024-05-21','2024-05-21 09:01:51','Electronics'),(5,'jTextField2','A sample product description.',299.99,50,NULL,10,'2024-05-21','2024-05-21 09:08:56','Item 1'),(6,'jTextField2','description',82.00,10,NULL,5,'2024-05-21','2024-05-21 09:31:57','Item 1'),(7,'ghjk','ghjk vbhjk',10.00,2,NULL,2,'2024-05-21','2024-05-21 17:31:48','Item 1'),(8,'jTextField2','jTextField2',1.00,6,NULL,9,'2024-05-21','2024-05-21 17:32:22','cat'),(9,'jTextField2','jTextField2',1.00,1,NULL,1,'2024-05-21','2024-05-21 17:39:31','Item 2'),(10,'jTextField2','new desc',1.00,2,NULL,1,'2024-05-21','2024-05-21 17:44:21','Item 3'),(11,'jTextField2','jTextField2',1.00,1,NULL,1,'2024-05-21','2024-05-21 17:46:16','Item 1');
+INSERT INTO `product_inventory` VALUES (2,'Sample Product','A sample product description.',299.99,50,NULL,10,'2024-05-21','2024-05-21 08:59:44','T-Shirt'),(3,'Sample Product','A sample product description.',299.99,50,NULL,10,'2024-05-21','2024-05-21 08:59:55','Blouse'),(4,'Sample Product','A sample product description.',299.99,50,NULL,10,'2024-05-21','2024-05-21 09:01:51','Skirt'),(5,'jTextField2','A sample product description.',299.99,50,NULL,10,'2024-05-21','2024-05-21 09:08:56','Blouse'),(6,'jTextField2','description',82.00,10,NULL,5,'2024-05-21','2024-05-21 09:31:57','Blouse'),(8,'jTextField2','jTextField2',1.00,6,NULL,9,'2024-05-21','2024-05-21 17:32:22','Blouse'),(9,'jTextField2','jTextField2',1.00,1,NULL,1,'2024-05-21','2024-05-21 17:39:31','Pants'),(10,'Sample Blouse','Pink',500.00,20,NULL,10,'2024-05-21','2024-05-21 17:44:21','Blouse'),(11,'jTextField2','jTextField2',1.00,1,NULL,1,'2024-05-21','2024-05-21 17:46:16','Pants'),(12,'Sample Pretty Blouse','Pink',500.00,20,NULL,15,'2024-05-22','2024-05-22 17:32:52','Blouse'),(13,'jTextField2','jTextField2',500.00,8,NULL,10,'2024-05-25','2024-05-25 23:27:43','Dress');
 /*!40000 ALTER TABLE `product_inventory` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -56,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-21 14:23:59
+-- Dump completed on 2024-05-27  2:19:46
