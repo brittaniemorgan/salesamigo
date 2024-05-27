@@ -105,18 +105,17 @@ def add_item():
         category = content['category']
         price = content['price']
         description = content['description']
-        min_quantity = content['min_quantity']
-        quantity = content['quantity']
+        brand = content['brand']
+        gender = content['gender']
 
-        current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-        query = """INSERT INTO product_inventory (name, category, price, description, quantity, minimum_quantity, date_added, last_date_updated) 
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
-        cursor.execute(query, (name, category, price, description, quantity, min_quantity, current_date, current_date))
+        query = """INSERT INTO product (name, category_id, price, description, brand_id, gender) 
+                VALUES (%s, %s, %s, %s, %s, %s)"""
+        cursor.execute(query, (name, category, price, description, brand, gender))
         connection.commit()
+        id = cursor.lastrowid
         cursor.close()
         connection.close()
-        return jsonify({"success": "Product added"})
+        return jsonify({"success": "Product added", "id": id})
     
     except Exception as e:
         return jsonify({'error': str(e)})
@@ -130,31 +129,55 @@ def update_product():
         content = request.json
         product_id = content['product_id']
         name = content['name']
-        category = content['category']
+        category = content['category_id']
         price = content['price']
         description = content['description']
-        min_quantity = content['min_quantity']
-        quantity = content['quantity']
-        query = "SELECT * FROM product_inventory WHERE product_id = %s"
+        brand = content['brand_id']
+        gender = content['gender']
+        query = "SELECT * FROM product WHERE product_id = %s"
         cursor.execute(query, (product_id,))
         product = cursor.fetchone()
 
         if not product:
             return jsonify({"error": f"Product with ID {product_id} not found"}), 404
 
-        query = """UPDATE product_inventory SET 
+        query = """UPDATE product SET 
                           name = %s,
-                          category = %s,
+                          category_id = %s,
                           price = %s,
                           description = %s,
-                          minimum_quantity = %s,
-                          quantity = %s
+                          brand_id = %s,
+                          gender = %s
                           WHERE product_id = %s"""
 
-        cursor.execute(query, (name, category, price, description, min_quantity, quantity, product_id))
+        cursor.execute(query, (name, category, price, description, brand, gender, product_id))
         connection.commit()
 
         return jsonify({"success": "Product updated successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route('/products', methods=['DELETE'])
+def delete_product():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        content = request.json
+        product_id = content['product_id']
+        query = "SELECT * FROM product WHERE product_id = %s"
+        cursor.execute(query, (product_id,))
+        product = cursor.fetchone()
+
+        if not product:
+            return jsonify({"error": f"Product with ID {product_id} not found"}), 404
+
+        query = """DELETE FROM product WHERE product_id = %s"""
+
+        cursor.execute(query, (product_id,))
+        connection.commit()
+
+        return jsonify({"success": "Product deleted successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
@@ -164,11 +187,385 @@ def view_products():
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
 
-        query = "SELECT * FROM product_inventory"
+        query = """SELECT * FROM product p
+                    JOIN brand b ON p.brand_id = b.brand_id
+                    JOIN category c ON c.category_id = p.category_id"""
         cursor.execute(query)
         products = cursor.fetchall()
 
         return jsonify({"products": products}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route('/categories', methods=['POST'])
+def add_category():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        content = request.json
+        name = content['name']
+        category = cursor.fetchone()
+
+        if category:
+            return jsonify({"error": f"Size with Category {name} already exists"}), 404
+
+
+        query = "INSERT INTO category (name) VALUES (%s)"
+        cursor.execute(query, (name,))
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return jsonify({"success": "Category added"})
+    
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+@app.route('/categories', methods=['PUT'])
+def update_category():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        content = request.json
+        id = content['id']
+        name = content['name']
+        query = "SELECT * FROM category WHERE category_id = %s"
+        cursor.execute(query, (id,))
+        category = cursor.fetchone()
+
+        if not category:
+            return jsonify({"error": f"Category with ID {id} not found"}), 404
+
+        query = """UPDATE category SET 
+                          name = %s
+                          WHERE category_id = %s"""
+
+        cursor.execute(query, (name, id))
+        connection.commit()
+
+        return jsonify({"success": "Category updated successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route('/categories', methods=['DELETE'])
+def delete_category():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        content = request.json
+        id = content['id']
+        query = "SELECT * FROM category WHERE category_id = %s"
+        cursor.execute(query, (id,))
+        category = cursor.fetchone()
+
+        if not category:
+            return jsonify({"error": f"Category with ID {id} not found"}), 404
+
+        query = "DELETE FROM category WHERE category_id = %s"
+
+        cursor.execute(query, (id, ))
+        connection.commit()
+
+        return jsonify({"success": "Category deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route('/categories', methods=['GET'])
+def view_categories():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        query = "SELECT * FROM category"
+        cursor.execute(query)
+        categories = cursor.fetchall()
+
+        return jsonify({"categories": categories}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route('/brands', methods=['POST'])
+def add_brand():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        content = request.json
+        name = content['name']
+        brand = cursor.fetchone()
+
+        if brand:
+            return jsonify({"error": f"Brand with name {name} already exists"}), 404
+
+
+        query = "INSERT INTO brand (name) VALUES (%s)"
+        cursor.execute(query, (name,))
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return jsonify({"success": "Brand added"})
+    
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+@app.route('/brands', methods=['PUT'])
+def update_brand():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        content = request.json
+        id = content['id']
+        name = content['name']
+        query = "SELECT * FROM brand WHERE brand_id = %s"
+        cursor.execute(query, (id,))
+        brand = cursor.fetchone()
+
+        if not brand:
+            return jsonify({"error": f"Brand with ID {id} not found"}), 404
+
+        query = """UPDATE brand SET 
+                          name = %s
+                          WHERE brand_id = %s"""
+
+        cursor.execute(query, (name, id))
+        connection.commit()
+
+        return jsonify({"success": "Brand updated successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route('/brands', methods=['DELETE'])
+def delete_brand():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        content = request.json
+        id = content['id']
+        query = "SELECT * FROM brand WHERE brand_id = %s"
+        cursor.execute(query, (id,))
+        brand = cursor.fetchone()
+
+        if not brand:
+            return jsonify({"error": f"Brand with ID {id} not found"}), 404
+
+        query = "DELETE FROM brand WHERE brand_id = %s"
+
+        cursor.execute(query, (id, ))
+        connection.commit()
+
+        return jsonify({"success": "Brand deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route('/brands', methods=['GET'])
+def view_brands():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        query = "SELECT * FROM brand"
+        cursor.execute(query)
+        brands = cursor.fetchall()
+
+        return jsonify({"brands": brands}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route('/sizes', methods=['POST'])
+def add_size():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        content = request.json
+        name = content['name']
+        query = "SELECT * FROM size WHERE name = %s"
+        cursor.execute(query, (name,))
+        size = cursor.fetchone()
+
+        if size:
+            return jsonify({"error": f"Size with name {name} already exists"}), 404
+
+        query = "INSERT INTO size (name) VALUES (%s)"
+        cursor.execute(query, (name,))
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return jsonify({"success": "Size added"})
+    
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+@app.route('/sizes', methods=['PUT'])
+def update_size():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        content = request.json
+        id = content['id']
+        name = content['name']
+        query = "SELECT * FROM size WHERE size_id = %s"
+        cursor.execute(query, (id,))
+        size = cursor.fetchone()
+
+        if not size:
+            return jsonify({"error": f"Size with ID {id} not found"}), 404
+
+        query = """UPDATE size SET 
+                          name = %s
+                          WHERE size_id = %s"""
+
+        cursor.execute(query, (name, id))
+        connection.commit()
+
+        return jsonify({"success": "size updated successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route('/sizes', methods=['DELETE'])
+def delete_size():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        content = request.json
+        id = content['id']
+        query = "SELECT * FROM size WHERE size_id = %s"
+        cursor.execute(query, (id,))
+        size = cursor.fetchone()
+
+        if not size:
+            return jsonify({"error": f"Size with ID {id} not found"}), 404
+
+        query = "DELETE FROM size WHERE size_id = %s"
+
+        cursor.execute(query, (id, ))
+        connection.commit()
+
+        return jsonify({"success": "Size deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route('/sizes', methods=['GET'])
+def view_sizes():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        query = "SELECT * FROM size"
+        cursor.execute(query)
+        sizes = cursor.fetchall()
+
+        return jsonify({"sizes": sizes}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route('/product_variants', methods=['POST'])
+def add_product_variants():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        content = request.json
+        product_id = content['product_id']
+        size = content['size']
+        color = content['color']
+        quantity = content['quantity']
+        price = content['price']
+        min_quantity = content['min_quantity']
+
+        insert_query = """
+            INSERT INTO ProductVariant (product_id, size_id, color, quantity, price, min_quantity)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(insert_query, (product_id, size, color, quantity, price, min_quantity))
+        connection.commit()
+        id = cursor.lastrowid
+        cursor.close()
+
+        return jsonify({"success": "Product variation added successfully", "id" : id}), 200
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route('/product_variants/<int:variant_id>', methods=['PUT'])
+def update_product_variants(variant_id):
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        content = request.json
+        size = content['size']
+        color = content['color']
+        quantity = content['quantity']
+        price = content['price']
+        min_quantity = content['min_quantity']
+
+        query = "SELECT * FROM ProductVariant WHERE variant_id = %s"
+        cursor.execute(query, (variant_id,))
+        variant = cursor.fetchone()
+
+        if not variant:
+            return jsonify({"error": f"Variant with ID {variant_id} not found"}), 404
+        
+        update_query = """
+            UPDATE ProductVariant
+            SET size_id = %s, color = %s, quantity = %s, price = %s, min_quantity = %s
+            WHERE variant_id = %s
+        """
+        cursor.execute(update_query, (size, color, quantity, price, min_quantity, variant_id))
+        connection.commit()
+        cursor.close()
+
+        return jsonify({"success": "Product variation updated successfully"}), 200
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route('/product_variants/<int:variant_id>', methods=['DELETE'])
+def delete_product_variants(variant_id):
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        query = "SELECT * FROM ProductVariant WHERE variant_id = %s"
+        cursor.execute(query, (variant_id,))
+        variant = cursor.fetchone()
+
+        if not variant:
+            return jsonify({"error": f"Variant with ID {variant_id} not found"}), 404
+
+        delete_query = "DELETE FROM ProductVariant WHERE variant_id = %s"
+        cursor.execute(delete_query, (variant_id,))
+        connection.commit()
+        cursor.close()
+
+        return jsonify({"success": "Product variation deleted successfully"}), 200
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route('/product_variants', methods=['GET'])
+def get_product_variants():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        query = "SELECT * FROM ProductVariant pv JOIN Size s ON s.size_id = pv.size_id"
+        cursor.execute(query)
+        product_variations = cursor.fetchall()
+
+        return jsonify({"product_variations": product_variations}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 

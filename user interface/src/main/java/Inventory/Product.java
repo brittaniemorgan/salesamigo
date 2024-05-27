@@ -4,32 +4,41 @@
  */
 package Inventory;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author britt
  */
-
 public class Product {
     private int id;
     private String name;
-    private String category;
-    private double price;
     private String description;
-    private int minQuantity;
-    private int quantity;
+    private double price;
+    private String category;
+    private String brand;
+    private String gender;
+    private ArrayList<ProductVariant> variants;
 
-    public Product(int id, String name, String category, double price, String description, int minQuantity, int quantity) {
+    // Constructor
+    public Product(int id, String name, String description, double price, String category, String brand, String gender) {
         this.id = id;
         this.name = name;
-        this.category = category;
-        this.price = price;
         this.description = description;
-        this.minQuantity = minQuantity;
-        this.quantity = quantity;
+        this.price = price;
+        this.category = category;
+        this.brand = brand;
+        this.gender = gender;
+        this.variants = new ArrayList<ProductVariant>();
     }
-    
+
+    // Getters and Setters
     public int getID() {
         return id;
+    }
+
+    public void setID(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -40,12 +49,12 @@ public class Product {
         this.name = name;
     }
 
-    public String getCategory() {
-        return category;
+    public String getDescription() {
+        return description;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public double getPrice() {
@@ -56,32 +65,50 @@ public class Product {
         this.price = price;
     }
 
-    public String getDescription() {
-        return description;
+    public String getCategory() {
+        return category;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public int getMinQuantity() {
-        return minQuantity;
+    public String getBrand() {
+        return brand;
     }
 
-    public void setMinQuantity(int minQuantity) {
-        this.minQuantity = minQuantity;
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public String getGender() {
+        return gender;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
     
-    public boolean isLowStock() {
-        return quantity < minQuantity;
+    public void addVariant(ProductVariant variant){
+        this.variants.add(variant);
+    }
+    
+    public ArrayList<ProductVariant> getVariants(){
+        return this.variants;
+    }
+
+    // Override toString method for debugging
+    @Override
+    public String toString() {
+        return "Product{" +
+                "productId=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", category='" + category + '\'' +
+                ", brand='" + brand + '\'' +
+                ", gender=" + gender +
+                '}';
     }
 }
 
