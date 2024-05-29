@@ -9,13 +9,15 @@ package Database;
  *
  * @author britt
  */
-import Inventory.Product;
+import PointOfSale.TransactionItem;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class APIManager {
@@ -546,6 +548,105 @@ public class APIManager {
         }
         return response;
     }
+    //To be tested
+    
+    public JSONObject getTransactions(){
+        JSONObject transactions = null;
+        try {
+            transactions = new JSONObject(fetchDataFromAPI("sales_transactions"));
+            System.out.println(transactions);
+            return variants;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return transactions;
+    }
+    
+     public JSONObject addTransaction(int employeeId, int customerId, double total, String paymentMethod, ArrayList<TransactionItem> items) {
+        JSONObject response = null;
+        try {
+            JSONObject transactionInfo = new JSONObject();
+            transactionInfo.put("employee_id", employeeId);
+            transactionInfo.put("customer_id", customerId);
+            transactionInfo.put("total", total);
+            transactionInfo.put("payment_method", paymentMethod);
+
+            JSONArray itemsArray = new JSONArray();
+            for (TransactionItem item : items) {
+                JSONObject itemObj = new JSONObject();
+                itemObj.put("product_id", item.getProductId());
+                itemObj.put("quantity", item.getQuantity());
+                itemObj.put("price", item.getPrice());
+                itemsArray.put(itemObj);
+            }
+            transactionInfo.put("items", itemsArray);
+
+            response = new JSONObject(sendDataToAPI("/sales_transactions", transactionInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    // Method to update a transaction
+    public JSONObject updateTransaction(int transactionId, double total, String paymentMethod, ArrayList<TransactionItem> items) {
+        JSONObject response = null;
+        try {
+            JSONObject transactionInfo = new JSONObject();
+            transactionInfo.put("transaction_id", transactionId);
+            transactionInfo.put("total", total);
+            transactionInfo.put("payment_method", paymentMethod);
+
+            JSONArray itemsArray = new JSONArray();
+            for (TransactionItem item : items) {
+                JSONObject itemObj = new JSONObject();
+                itemObj.put("product_id", item.getProductId());
+                itemObj.put("quantity", item.getQuantity());
+                itemObj.put("price", item.getPrice());
+                itemsArray.put(itemObj);
+            }
+            transactionInfo.put("items", itemsArray);
+
+            response = new JSONObject(sendPutRequestToAPI("/sales_transactions/" + transactionId, transactionInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    // Method to delete a transaction
+    public JSONObject deleteTransaction(int transactionId) {
+        JSONObject response = null;
+        try {
+            JSONObject transactionInfo = new JSONObject();
+            transactionInfo.put("transaction_id", transactionId);
+
+            response = new JSONObject(sendDeleteRequestToAPI("/sales_transactions/" + transactionId, transactionInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    // Method to refund an item from a transaction
+    public JSONObject refundTransactionItem(int transactionId, int itemId) {
+        JSONObject response = null;
+        try {
+            JSONObject refundInfo = new JSONObject();
+            refundInfo.put("transaction_id", transactionId);
+            refundInfo.put("item_id", itemId);
+
+            response = new JSONObject(sendDataToAPI("/refund", refundInfo)); // Adjust the endpoint as per your API
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
 
     public static void main(String[] args) throws IOException {
         try {

@@ -4,6 +4,7 @@
  */
 package Authentication;
 
+import PointOfSale.POSFrame;
 import Inventory.InventoryFrame;
 import org.json.JSONObject;
 

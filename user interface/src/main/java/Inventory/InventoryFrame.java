@@ -8,8 +8,6 @@ import Authentication.LoginFrame;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  *
@@ -70,8 +68,6 @@ public class InventoryFrame extends javax.swing.JFrame {
         viewAllProducts = new javax.swing.JButton();
         jPanel9 = new javax.swing.JPanel();
         sizeField = new javax.swing.JComboBox<>();
-        variantSearchField = new javax.swing.JTextField();
-        productSearchBtn2 = new javax.swing.JButton();
         jScrollPane7 = new javax.swing.JScrollPane();
         variantTable = new javax.swing.JTable();
         editVariantBtn = new javax.swing.JButton();
@@ -345,10 +341,6 @@ public class InventoryFrame extends javax.swing.JFrame {
             }
         });
 
-        variantSearchField.setText("Enter product name");
-
-        productSearchBtn2.setText("Search");
-
         variantTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null},
@@ -455,10 +447,7 @@ public class InventoryFrame extends javax.swing.JFrame {
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 874, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addComponent(variantSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(productSearchBtn2)
-                        .addGap(36, 36, 36)
+                        .addGap(246, 246, 246)
                         .addComponent(viewAllVariants)
                         .addGap(18, 18, 18)
                         .addComponent(viewLowStock, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -531,9 +520,6 @@ public class InventoryFrame extends javax.swing.JFrame {
                             .addComponent(quantityField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(variantSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(productSearchBtn2))
                     .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(addVariantBtn)
                         .addComponent(editVariantBtn)
@@ -1760,14 +1746,12 @@ public class InventoryFrame extends javax.swing.JFrame {
     private javax.swing.JTextField priceField1;
     private javax.swing.JTextField productIDField;
     private javax.swing.JButton productSearchBtn1;
-    private javax.swing.JButton productSearchBtn2;
     private javax.swing.JTextField productSearchField;
     private javax.swing.JTable productTable;
     private javax.swing.JTextField quantityField;
     private javax.swing.JComboBox<String> sizeField;
     private javax.swing.JTextField sizeNameField;
     private javax.swing.JTable sizeTable;
-    private javax.swing.JTextField variantSearchField;
     private javax.swing.JTable variantTable;
     private javax.swing.JButton viewAllProducts;
     private javax.swing.JButton viewAllVariants;

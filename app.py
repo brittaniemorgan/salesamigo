@@ -569,5 +569,264 @@ def get_product_variants():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+@app.route('/sales_transactions', methods=['POST'])
+def create_sales_transaction():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        
+        content = request.json
+        transaction_date = datetime.now()
+        employee_id = content['employee_id']
+        customer_id = content.get('customer_id', 1)
+        total = content['total']
+        payment_method = content['payment_method']
+        items = content['items']
+
+        # Check inventory before proceeding
+        for item in items:
+            product_id = item['product_id']
+            quantity = item['quantity']
+
+            # Fetch current quantity from inventory
+            fetch_inventory_query = "SELECT quantity FROM productvariant WHERE variant_id = %s"
+            cursor.execute(fetch_inventory_query, (product_id,))
+            current_quantity = cursor.fetchone()
+
+            if not current_quantity or current_quantity['quantity'] < quantity:
+                return jsonify({"error": f"Insufficient inventory for product ID {product_id}"}), 400
+
+        # Insert into sales_transactions table
+        insert_transaction_query = """
+            INSERT INTO sales_transactions (transaction_date, employee_id, customer_id, total, payment_method)
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        cursor.execute(insert_transaction_query, (transaction_date, employee_id, customer_id, total, payment_method))
+        transaction_id = cursor.lastrowid
+        
+        # Insert into transaction_items table
+        for item in items:
+            product_id = item['product_id']
+            quantity = item['quantity']
+            price = item['price']
+            
+            insert_item_query = """
+                INSERT INTO transaction_items (transaction_id, product_id, quantity, price)
+                VALUES (%s, %s, %s, %s)
+            """
+            cursor.execute(insert_item_query, (transaction_id, product_id, quantity, price))
+
+            # Reduce inventory quantity
+            update_inventory_query = """
+                UPDATE productvariant
+                SET quantity = quantity - %s
+                WHERE variant_id = %s
+            """
+            cursor.execute(update_inventory_query, (quantity, product_id))
+        
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        return jsonify({"success": "Transaction created successfully", "transaction_id": transaction_id}), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route('/sales_transactions', methods=['GET'])
+def get_sales_transactions():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("SELECT * FROM sales_transactions")
+        transactions = cursor.fetchall()
+
+        for transaction in transactions:
+            transaction_id = transaction['transaction_id']
+            cursor.execute("SELECT * FROM transaction_items WHERE transaction_id = %s", (transaction_id,))
+            items = cursor.fetchall()
+            transaction['items'] = items
+
+        cursor.close()
+        connection.close()
+
+        return jsonify({"sales_transactions": transactions}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route('/sales_transactions/<int:transaction_id>', methods=['GET'])
+def get_sales_transaction(transaction_id):
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("SELECT * FROM sales_transactions WHERE transaction_id = %s", (transaction_id,))
+        transaction = cursor.fetchone()
+
+        if not transaction:
+            return jsonify({"error": "Transaction not found"}), 404
+
+        cursor.execute("SELECT * FROM transaction_items WHERE transaction_id = %s", (transaction_id,))
+        items = cursor.fetchall()
+        transaction['items'] = items
+
+        cursor.close()
+        connection.close()
+
+        return jsonify(transaction), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+################################## MAY NOT NEED #########################################
+@app.route('/sales_transactions/<int:transaction_id>/refund', methods=['POST'])
+def process_refund(transaction_id):
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        # Fetch original transaction details
+        fetch_transaction_query = "SELECT * FROM sales_transactions WHERE transaction_id = %s"
+        cursor.execute(fetch_transaction_query, (transaction_id,))
+        transaction = cursor.fetchone()
+
+        if not transaction:
+            return jsonify({"error": f"Transaction with ID {transaction_id} not found"}), 404
+
+        # Check if the transaction is eligible for refund (add your own conditions here)
+        # For example, you might check if it's within a certain timeframe, etc.
+        if not transaction['is_refundable']:
+            return jsonify({"error": "This transaction is not eligible for a refund"}), 400
+
+        # Calculate refund amount based on items in the transaction
+        fetch_items_query = "SELECT * FROM transaction_items WHERE transaction_id = %s"
+        cursor.execute(fetch_items_query, (transaction_id,))
+        items = cursor.fetchall()
+
+        total_refund = 0.0
+        for item in items:
+            # Adjust inventory if returning items to stock
+            # Update your inventory records accordingly
+            # Assuming your item table has price and quantity
+            total_refund += item['price'] * item['quantity']
+
+        # Update sales_transactions to mark as refunded
+        update_transaction_query = """
+            UPDATE sales_transactions 
+            SET is_refunded = 1
+            WHERE transaction_id = %s
+        """
+        cursor.execute(update_transaction_query, (transaction_id,))
+
+        # Insert a new transaction for the refund
+        insert_refund_query = """
+            INSERT INTO sales_transactions (transaction_date, employee_id, customer_id, total, payment_method, is_refund, original_transaction_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(insert_refund_query, (datetime.now(), transaction['employee_id'], transaction['customer_id'], -total_refund, 'Refund', 1, transaction_id))
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        return jsonify({"success": "Refund processed successfully", "amount_refunded": total_refund}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+##########################MAY NOT BE NECESSARY######################################
+@app.route('/sales_transactions/<int:transaction_id>', methods=['PUT'])
+def update_sales_transaction(transaction_id):
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        content = request.json
+        total = content['total']
+        payment_method = content['payment_method']
+        
+        # Update the transaction details
+        update_transaction_query = """
+            UPDATE sales_transactions
+            SET total = %s, payment_method = %s
+            WHERE transaction_id = %s
+        """
+        cursor.execute(update_transaction_query, (total, payment_method, transaction_id))
+
+        # Delete all existing items for the transaction
+        delete_items_query = "DELETE FROM transaction_items WHERE transaction_id = %s"
+        cursor.execute(delete_items_query, (transaction_id,))
+
+        # Insert new items for the transaction
+        items = content['items']
+        for item in items:
+            product_id = item['product_id']
+            quantity = item['quantity']
+            price = item['price']
+            
+            insert_item_query = """
+                INSERT INTO transaction_items (transaction_id, product_id, quantity, price)
+                VALUES (%s, %s, %s, %s)
+            """
+            cursor.execute(insert_item_query, (transaction_id, product_id, quantity, price))
+        
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        return jsonify({"success": "Transaction updated successfully"}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route('/sales_transactions/<int:transaction_id>', methods=['DELETE'])
+def delete_sales_transaction(transaction_id):
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        # Delete items associated with the transaction
+        delete_items_query = "DELETE FROM transaction_items WHERE transaction_id = %s"
+        cursor.execute(delete_items_query, (transaction_id,))
+
+        # Delete the transaction itself
+        delete_transaction_query = "DELETE FROM sales_transactions WHERE transaction_id = %s"
+        cursor.execute(delete_transaction_query, (transaction_id,))
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        return jsonify({"success": "Transaction deleted successfully"}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+#############################################################################
+
+@app.route('/sales_transactions/refunds', methods=['GET'])
+def get_refunds():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        query = """
+            SELECT * FROM sales_transactions
+            WHERE is_refund = 1
+        """
+        cursor.execute(query)
+        refunds = cursor.fetchall()
+
+        cursor.close()
+        connection.close()
+
+        return jsonify({"refunds": refunds}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+############################################################################################################
+
 if __name__ == '__main__':
     app.run(debug=True)
