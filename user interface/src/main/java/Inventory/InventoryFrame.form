@@ -1124,21 +1124,6 @@
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-<<<<<<< HEAD
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="jScrollPane7" alignment="0" min="-2" pref="874" max="-2" attributes="0"/>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="246" max="-2" attributes="0"/>
-                                  <Component id="viewAllVariants" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="viewLowStock" min="-2" pref="185" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
-                                  <Component id="productIDField" min="-2" pref="71" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="134" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-=======
->>>>>>> 7202e8f077fc51b90f7af28944d38ee85908f3fe
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
@@ -1185,26 +1170,7 @@
                               </Group>
                               <Component id="jScrollPane2" min="-2" pref="131" max="-2" attributes="0"/>
                           </Group>
-<<<<<<< HEAD
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                                  <Component id="addVariantBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="editVariantBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="deleteVariantBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
-                                  <Component id="productIDField" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                                  <Component id="viewAllVariants" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="viewLowStock" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <EmptySpace pref="122" max="32767" attributes="0"/>
-=======
                           <EmptySpace pref="762" max="32767" attributes="0"/>
->>>>>>> 7202e8f077fc51b90f7af28944d38ee85908f3fe
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1228,11 +1194,7 @@
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="catNameFieldActionPerformed"/>
                   </Events>
                 </Component>
-<<<<<<< HEAD
-                <Container class="javax.swing.JScrollPane" name="jScrollPane7">
-=======
                 <Container class="javax.swing.JScrollPane" name="jScrollPane2">
->>>>>>> 7202e8f077fc51b90f7af28944d38ee85908f3fe
                   <AuxValues>
                     <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
                   </AuxValues>

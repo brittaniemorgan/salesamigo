@@ -9,6 +9,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -2366,12 +2368,14 @@ public class InventoryFrame extends javax.swing.JFrame {
     private javax.swing.JTextField priceField1;
     private javax.swing.JTextField productIDField;
     private javax.swing.JButton productSearchBtn1;
+    private javax.swing.JButton productSearchBtn2;
     private javax.swing.JTextField productSearchField;
     private javax.swing.JTable productTable;
     private javax.swing.JTextField quantityField;
     private javax.swing.JComboBox<String> sizeField;
     private javax.swing.JTextField sizeNameField;
     private javax.swing.JTable sizeTable;
+    private javax.swing.JTextField variantSearchField;
     private javax.swing.JTable variantTable;
     private javax.swing.JButton viewAllProducts;
     private javax.swing.JButton viewAllVariants;

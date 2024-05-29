@@ -555,7 +555,7 @@ public class APIManager {
         try {
             transactions = new JSONObject(fetchDataFromAPI("sales_transactions"));
             System.out.println(transactions);
-            return variants;
+            return transactions;
         } catch (Exception e) {
             e.printStackTrace();
         }
