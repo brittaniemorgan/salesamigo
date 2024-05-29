@@ -19,6 +19,14 @@ public class Transaction {
     private double total;
     private ArrayList<TransactionItem> items;
     private String paymentMethod;
+    
+    public Transaction(int transactionId, Date transactionDate, int customerId, int employeeId) {
+        this.transactionId = transactionId;
+        this.transactionDate = transactionDate;
+        this.customerId = customerId;
+        this.employeeId = employeeId;
+        this.items = new ArrayList<TransactionItem>();
+    }
 
     public Transaction(int transactionId, Date transactionDate, int customerId, int employeeId, double total, ArrayList<TransactionItem> items, String paymentMethod) {
         this.transactionId = transactionId;
@@ -86,6 +94,15 @@ public class Transaction {
 
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+    
+    public TransactionItem getItemByID(int id){
+        for (TransactionItem item : items){
+            if (item.getProductId() == id){
+                return item;
+            }
+        }
+        return null;
     }
 
     // Method to add an transaction item

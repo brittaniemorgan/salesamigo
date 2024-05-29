@@ -5,6 +5,7 @@
 package PointOfSale;
 
 import Database.APIManager;
+import Inventory.Inventory;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,12 +18,16 @@ import org.json.JSONObject;
  * @author britt
  */
 
-public class POS {
+public class POS { 
     private APIManager api;
+    private Inventory inventory;
+    private ArrayList<Transaction> pendingTransactions;
 
-    public POS() {
+    public POS() {//maybe use employee id?
         try{
             api = APIManager.getAPIManager();
+            inventory = new Inventory();
+            pendingTransactions = new ArrayList<Transaction>();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -30,16 +35,50 @@ public class POS {
 
     // to be tested
     
-    public String performSaleTransaction(int employeeId, int customerId, double total, String paymentMethod, ArrayList<TransactionItem> items) {
+    public Inventory getInventory(){
+        return inventory;
+    }
+    public ArrayList<Transaction> getPendingTransactions(){
+        return pendingTransactions;
+    }
+    
+    public void addPendingTransaction(Transaction transaction){
+        pendingTransactions.add(transaction);
+    }
+    
+    public void deletePendingTransaction(Transaction transaction){
+        pendingTransactions.remove(transaction);
+    }
+    
+    public void createSaleTransaction(int employeeId, int customerId) {
+        int tempID = pendingTransactions.size() + 1;
+        pendingTransactions.add(new Transaction(tempID, new Date(),employeeId, customerId));
+    }
+    
+    public Transaction getPendingTransactionByID(int id){
+        for (Transaction transaction : pendingTransactions){
+            if (transaction.getTransactionId() == id){
+                return transaction;
+            }
+        }
+        return null;
+    }
+    
+    public String performSaleTransaction(int orderId, String paymentMethod) {
         String feedback = "";
         try {
+            Transaction transaction = getPendingTransactionByID(orderId);
+            int employeeId = transaction.getEmployeeId();
+            int customerId = transaction.getCustomerId();
+            double total = transaction.getTotal();
+            ArrayList<TransactionItem> items = transaction.getItems();
             JSONObject response = api.addTransaction(employeeId, customerId, total, paymentMethod, items);
 
             if (response != null && response.has("error")) {                
                 feedback = "Error performing transaction.";
             } else {
                 int transactionId = response.getInt("transaction_id");
-                feedback = "Transaction successful! Transaction ID: " + transactionId;
+                feedback = "Transaction successful!";
             }
         } catch (Exception e) {
             e.printStackTrace();

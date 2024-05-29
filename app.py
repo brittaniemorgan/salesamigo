@@ -628,7 +628,7 @@ def create_sales_transaction():
         cursor.close()
         connection.close()
 
-        return jsonify({"success": "Transaction created successfully", "transaction_id": transaction_id}), 201
+        return jsonify({"success": "Transaction created successfully", "transaction_id": transaction_id}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 400

@@ -10,13 +10,17 @@ package PointOfSale;
  */
 public class TransactionItem {
     private int productId;
+    private Transaction transaction;
     private int quantity;
     private double price;
+    private double total;
 
     public TransactionItem(int productId, int quantity, double price) {
         this.productId = productId;
+        //this.transaction = transaction;
         this.quantity = quantity;
         this.price = price;
+        this.total = quantity * price;
     }
 
     // Getters and Setters
@@ -39,6 +43,14 @@ public class TransactionItem {
 
     public double getPrice() {
         return price;
+    }
+    
+    public double getTotal() {
+        return total;
+    }
+    
+    public Transaction getTransaction() {
+        return transaction;
     }
 
     public void setPrice(double price) {
