@@ -4,6 +4,7 @@
  */
 package Inventory;
 
+import PointOfSale.Discount;
 import java.util.ArrayList;
 
 /**
@@ -19,6 +20,7 @@ public class Product {
     private String brand;
     private String gender;
     private ArrayList<ProductVariant> variants;
+    private ArrayList<Discount> discounts;
 
     // Constructor
     public Product(int id, String name, String description, double price, String category, String brand, String gender) {
@@ -87,6 +89,14 @@ public class Product {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+    
+    public void addDiscount(Discount discount){
+        this.discounts.add(discount);
+    }
+    
+    public ArrayList<Discount> getDiscounts(){
+        return this.discounts;
     }
     
     public void addVariant(ProductVariant variant){

@@ -8,16 +8,17 @@ package PointOfSale;
  *
  * @author britt
  */
+
 public class TransactionItem {
     private int productId;
     private Transaction transaction;
     private int quantity;
     private double price;
     private double total;
+    private Discount discount;
 
     public TransactionItem(int productId, int quantity, double price) {
         this.productId = productId;
-        //this.transaction = transaction;
         this.quantity = quantity;
         this.price = price;
         this.total = quantity * price;
@@ -32,38 +33,65 @@ public class TransactionItem {
     public void setProductId(int productId) {
         this.productId = productId;
     }
-    
+
     public int getQuantity() {
         return quantity;
     }
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+        updateTotal();
     }
 
     public double getPrice() {
         return price;
     }
-    
+
+    public void setPrice(double price) {
+        this.price = price;
+        updateTotal();
+    }
+
     public double getTotal() {
         return total;
     }
-    
+
     public Transaction getTransaction() {
         return transaction;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
+    }
+
+    public Discount getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Discount discount) {
+        this.discount = discount;
+        updateTotal();
+    }
+
+    // Method to update total based on quantity, price, and discount
+    private void updateTotal() {
+        double discountedPrice = price;
+
+        if (discount != null) {
+            discountedPrice = price * (1 - (discount.getAmount()/100)); 
+        }
+
+        this.total = quantity * discountedPrice;
     }
 
     @Override
     public String toString() {
-        return "OrderItem{" +
+        return "TransactionItem{" +
                 "productId=" + productId +
                 ", quantity=" + quantity +
                 ", price=" + price +
+                ", total=" + total +
+                ", discount=" + (discount != null ? discount.getName() : "No Discount") +
                 '}';
     }
 }
-

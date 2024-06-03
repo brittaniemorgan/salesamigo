@@ -45,6 +45,7 @@ public class APIManager {
             connection.setRequestProperty("Content-Type", "application/json");
 
             int responseCode = connection.getResponseCode();
+            
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String inputLine;
@@ -264,6 +265,29 @@ public class APIManager {
         }
 
         return errorMessage; 
+    }
+    
+    public JSONObject getCustomers(){
+        JSONObject customers = null;
+        try {
+            customers = new JSONObject(fetchDataFromAPI("customers"));
+            return customers;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return customers;
+    }
+    
+    public JSONObject getCustomerByID(int id){
+        JSONObject customer = null;
+        try {
+            customer = new JSONObject(fetchDataFromAPI("customers/" + id));
+            
+            return customer;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return customer;
     }
     
     public JSONObject getProducts(){
@@ -548,7 +572,17 @@ public class APIManager {
         }
         return response;
     }
-    //To be tested
+    
+     public JSONObject getDiscounts(){
+        JSONObject discounts = null;
+        try {
+            discounts = new JSONObject(fetchDataFromAPI("discounts"));
+            return discounts;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return discounts;
+    }
     
     public JSONObject getTransactions(){
         JSONObject transactions = null;
@@ -562,7 +596,7 @@ public class APIManager {
         return transactions;
     }
     
-     public JSONObject addTransaction(int employeeId, int customerId, double total, String paymentMethod, ArrayList<TransactionItem> items) {
+     public JSONObject addTransaction(int employeeId, int customerId, double total, String paymentMethod, JSONArray items, int pointsApplied) {
         JSONObject response = null;
         try {
             JSONObject transactionInfo = new JSONObject();
@@ -570,16 +604,7 @@ public class APIManager {
             transactionInfo.put("customer_id", customerId);
             transactionInfo.put("total", total);
             transactionInfo.put("payment_method", paymentMethod);
-
-            JSONArray itemsArray = new JSONArray();
-            for (TransactionItem item : items) {
-                JSONObject itemObj = new JSONObject();
-                itemObj.put("product_id", item.getProductId());
-                itemObj.put("quantity", item.getQuantity());
-                itemObj.put("price", item.getPrice());
-                itemsArray.put(itemObj);
-            }
-            transactionInfo.put("items", itemsArray);
+            transactionInfo.put("items", items);
 
             response = new JSONObject(sendDataToAPI("/sales_transactions", transactionInfo));
             System.out.println("Response from server: " + response.toString());
@@ -651,7 +676,10 @@ public class APIManager {
     public static void main(String[] args) throws IOException {
         try {
             APIManager example = APIManager.getAPIManager();
-        } catch (Exception e) {
+
+            JSONObject response = example.getCustomerByID(1);
+            System.out.println("Response from server: " + response.toString());
+        }catch (Exception e) {
             e.printStackTrace();
         } 
     }

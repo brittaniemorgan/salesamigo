@@ -4,66 +4,234 @@
  */
 package PointOfSale;
 
-import Database.APIManager;
-import Inventory.Inventory;
+import Authentication.Customer;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  *
  * @author britt
  */
+import Database.APIManager;
+import Inventory.Inventory;
+import Inventory.Product;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.util.ArrayList;
 
-public class POS { 
+public class POS {
+
     private APIManager api;
     private Inventory inventory;
     private ArrayList<Transaction> pendingTransactions;
+    private ArrayList<Discount> discounts;
+    private Customer currentCustomer;
 
-    public POS() {//maybe use employee id?
-        try{
+    public POS() {
+        try {
             api = APIManager.getAPIManager();
             inventory = new Inventory();
-            pendingTransactions = new ArrayList<Transaction>();
+            pendingTransactions = new ArrayList<>();
+            discounts = new ArrayList<>();
+            setCustomer(2);
+
+            // Load discounts from API
+            loadDiscounts();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
+    // Method to set the current customer
+    public void setCustomer(int customerId) {
+        try {
+            JSONObject response = api.getCustomerByID(customerId);
+            JSONArray customerArray = response.getJSONArray("customers");
+            for (int i = 0; i < customerArray.length(); i++) {
+                JSONObject customer = customerArray.getJSONObject(i);
+                currentCustomer = new Customer(
+                    customer.getInt("customer_id"),
+                    customer.getString("firstname"),
+                    customer.getString("lastname"),  
+                    customer.getString("email"),
+                    customer.getString("contact_number"),
+                    customer.getString("address"),
+                    customer.getInt("points_balance"));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // to be tested
-    
-    public Inventory getInventory(){
+    // Getters for customer and other attributes
+    public Customer getCurrentCustomer() {
+        return currentCustomer;
+    }
+
+    private void loadDiscounts() {
+        try {
+            // Get all discounts from the API
+            JSONObject response = api.getDiscounts();
+            JSONArray generalArray = response.getJSONArray("general discounts");
+            JSONArray productArray = response.getJSONArray("product discounts");
+            JSONArray categoryArray = response.getJSONArray("category discounts");
+            JSONArray brandArray = response.getJSONArray("brand discounts");
+
+            // Load general discounts (if any)
+            for (int i = 0; i < generalArray.length(); i++) {
+                JSONObject discountJson = generalArray.getJSONObject(i);
+                discounts.add(new Discount(
+                        discountJson.getInt("discount_id"),
+                        discountJson.getString("discount_name"),
+                        discountJson.getString("discount_code"),
+                        discountJson.getDouble("discount_percent")
+                ));
+            }
+
+            // Load product discounts
+            for (int i = 0; i < productArray.length(); i++) {
+                JSONObject discountJson = productArray.getJSONObject(i);
+                discounts.add(new ProductDiscount(
+                        discountJson.getInt("discount_id"),
+                        discountJson.getString("discount_name"),
+                        discountJson.getString("discount_code"),
+                        discountJson.getDouble("discount_percent"),
+                        discountJson.getInt("product_id")
+                ));
+            }
+
+            // Load category discounts
+            for (int i = 0; i < categoryArray.length(); i++) {
+                JSONObject discountJson = categoryArray.getJSONObject(i);
+                discounts.add(new CategoryDiscount(
+                        discountJson.getInt("discount_id"),
+                        discountJson.getString("discount_name"),
+                        discountJson.getString("discount_code"),
+                        discountJson.getDouble("discount_percent"),
+                        discountJson.getInt("category_id")
+                ));
+            }
+
+            // Load brand discounts
+            for (int i = 0; i < brandArray.length(); i++) {
+                JSONObject discountJson = brandArray.getJSONObject(i);
+                discounts.add(new BrandDiscount(
+                        discountJson.getInt("discount_id"),
+                        discountJson.getString("discount_name"),
+                        discountJson.getString("discount_code"),
+                        discountJson.getDouble("discount_percent"),
+                        discountJson.getInt("brand_id")
+                ));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Inventory getInventory() {
         return inventory;
     }
-    public ArrayList<Transaction> getPendingTransactions(){
+
+    public ArrayList<Transaction> getPendingTransactions() {
         return pendingTransactions;
     }
-    
-    public void addPendingTransaction(Transaction transaction){
+
+    public void addPendingTransaction(Transaction transaction) {
         pendingTransactions.add(transaction);
     }
-    
-    public void deletePendingTransaction(Transaction transaction){
+
+    public void deletePendingTransaction(Transaction transaction) {
         pendingTransactions.remove(transaction);
     }
-    
+
     public void createSaleTransaction(int employeeId, int customerId) {
         int tempID = pendingTransactions.size() + 1;
-        pendingTransactions.add(new Transaction(tempID, new Date(),employeeId, customerId));
+        pendingTransactions.add(new Transaction(tempID, new Date(), employeeId, customerId));
     }
-    
-    public Transaction getPendingTransactionByID(int id){
-        for (Transaction transaction : pendingTransactions){
-            if (transaction.getTransactionId() == id){
+
+    public Transaction getPendingTransactionByID(int id) {
+        for (Transaction transaction : pendingTransactions) {
+            if (transaction.getTransactionId() == id) {
                 return transaction;
             }
         }
         return null;
     }
+
+    public ArrayList<Discount> getDiscountsForProduct(int productId) {
+        ArrayList<Discount> productDiscounts = new ArrayList<>();
+
+        for (Discount discount : discounts) {
+            if (discount instanceof ProductDiscount) {
+                ProductDiscount productDiscount = (ProductDiscount) discount;
+                if (productDiscount.getProductId() == productId) {
+                    productDiscounts.add(productDiscount);
+                }
+            } else if (discount instanceof CategoryDiscount) {
+                // Assuming you have a method to get category ID for a product
+                Product product = inventory.findProductByID(productId);
+                int categoryId = inventory.findCategoryByName(product.getCategory()).getId();
+                CategoryDiscount categoryDiscount = (CategoryDiscount) discount;
+                if (categoryDiscount.getCategoryId() == categoryId) {
+                    productDiscounts.add(categoryDiscount);
+                }
+            } else if (discount instanceof BrandDiscount) {
+                // Assuming you have a method to get brand ID for a product
+                Product product = inventory.findProductByID(productId);
+                int brandId = inventory.findBrandByName(product.getBrand()).getId();
+                BrandDiscount brandDiscount = (BrandDiscount) discount;
+                if (brandDiscount.getBrandId() == brandId) {
+                    productDiscounts.add(brandDiscount);
+                }
+            } else {
+                productDiscounts.add(discount);
+            }
+        }
+
+        return productDiscounts;
+    }
+
+    private double calculateDiscountedPrice(double originalPrice, double discountAmount) {
+        return originalPrice * (1 - (discountAmount / 100));
+    }
+
+    public String applyDiscount(Transaction order, String discountCode) {
+        String feedback = "Invalid Code";
+        for(TransactionItem item : order.getItems()){
+            ArrayList<Discount> applicableDiscounts = getDiscountsForProduct(item.getProductId());
+            double highestDiscount = 0.0;
+            if (item.getDiscount() != null){
+                highestDiscount = item.getDiscount().getAmount();
+            }
+            for (Discount discount : applicableDiscounts) {
+                if (discount.getCode().equals(discountCode)) {
+                    if (discount.getAmount() > highestDiscount){
+                        highestDiscount = discount.getAmount();
+                        item.setDiscount(discount);
+                        order.calculateTotal();
+                        feedback = "Code applied successfully";
+                    }                    
+                }              
+            }
+        }
+  
+        return feedback;
+    }
     
+    /* Apply sale when item is added
+    if (discount.getCode().equals("") && discount.getAmount() > highestDiscount) {
+                    highestDiscount = discount.getAmount();
+                    discountedPrice = calculateDiscountedPrice(inventory.findVarantByID(item.getProductId()).getPrice(), discount.getAmount());
+                    // Update the item's price with the discounted price
+                    item.setDiscount(discount);
+                    order.calculateTotal(); 
+                    feedback += "Sale Discounts Applied";
+                }
+    */
+
     public String performSaleTransaction(int orderId, String paymentMethod) {
         String feedback = "";
         try {
@@ -72,9 +240,20 @@ public class POS {
             int customerId = transaction.getCustomerId();
             double total = transaction.getTotal();
             ArrayList<TransactionItem> items = transaction.getItems();
-            JSONObject response = api.addTransaction(employeeId, customerId, total, paymentMethod, items);
 
-            if (response != null && response.has("error")) {                
+            JSONArray itemsArray = new JSONArray();
+            for (TransactionItem item : items) {
+                JSONObject itemObj = new JSONObject();
+                itemObj.put("product_id", item.getProductId());
+                itemObj.put("quantity", item.getQuantity());
+                itemObj.put("price", item.getTotal());
+                itemObj.put("discount_id", item.getDiscount().getId());
+                itemsArray.put(itemObj);
+            }
+
+            JSONObject response = api.addTransaction(employeeId, customerId, total, paymentMethod, itemsArray);
+
+            if (response != null && response.has("error")) {
                 feedback = "Error performing transaction.";
             } else {
                 int transactionId = response.getInt("transaction_id");
@@ -95,7 +274,7 @@ public class POS {
 
             if (response != null && response.has("error")) {
                 feedback = "Error processing refund.";
-            } else {                
+            } else {
                 feedback = "Refund processed successfully!";
             }
         } catch (Exception e) {
@@ -104,7 +283,7 @@ public class POS {
         }
         return feedback;
     }
-    
+
     public ArrayList<Transaction> viewTransactionHistory() {
         ArrayList<Transaction> transactions = new ArrayList<>();
         try {
@@ -139,7 +318,7 @@ public class POS {
         }
         return transactions;
     }
-    
+
     public void printReceipt(Transaction transaction) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -165,13 +344,41 @@ public class POS {
             e.printStackTrace();
         }
     }
-    
-    //not sure how to implement
-    //need to account for discounts
-    public void addDiscount(){}
-    
-    public void applyPoints(){}
-    
-    public void addPoint(){}
+
+
+    public String redeemPoints(int orderId, int pointsToRedeem) {
+        try {
+            // Check if current customer is set
+            if (currentCustomer == null) {
+                return "No customer selected.";
+            }
+
+            // Check if customer has enough points to redeem
+            if (currentCustomer.getPointsBalance() >= pointsToRedeem) {
+                // Calculate new points balance after redemption
+                int newPointsBalance = currentCustomer.getPointsBalance() - pointsToRedeem;
+                currentCustomer.setPointsBalance(newPointsBalance);
+                Transaction transaction = getPendingTransactionByID(orderId);
+                transaction.setPointsApplied(pointsToRedeem);
+                return "Points redeemed successfully. New points balance: " + newPointsBalance;
+                
+
+                // Update the customer's points balance
+                //JSONObject response = api.updateCustomerPoints(currentCustomer.getId(), newPointsBalance);
+               /* if (response != null && response.has("success")) {
+                    currentCustomer.setPointsBalance(newPointsBalance);
+                    return "Points redeemed successfully. New points balance: " + newPointsBalance;
+                } else {
+                    return "Failed to update points balance.";
+                }*/
+            } else {
+                return "Insufficient points to redeem.";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error redeeming points: " + e.getMessage();
+        }
+    }
+
+
 }
-    

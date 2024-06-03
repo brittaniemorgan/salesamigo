@@ -90,6 +90,37 @@ def get_users():
     except Exception as e:
         return jsonify({"error": str(e)})
 
+@app.route('/customers', methods=['GET'])
+def get_customers():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        query = "SELECT * FROM customers"
+        cursor.execute(query)
+        customers = cursor.fetchall()
+        cursor.close()
+        connection.close()
+        return jsonify(customers=customers), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+
+@app.route('/customers/<int:id>', methods=['GET'])
+def get_customer(id):
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        query = "SELECT * FROM customers WHERE customer_id = %s"
+        cursor.execute(query, (id,))
+        customers = cursor.fetchall()
+        cursor.close()
+        connection.close()
+        return jsonify(customers=customers), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
 @app.route('/csrf-token', methods=['GET']) 
 def get_csrf(): 
     return jsonify({'csrf_token': generate_csrf()}) 
@@ -569,6 +600,147 @@ def get_product_variants():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+from flask import Flask, request, jsonify
+from datetime import datetime
+
+@app.route('/discounts', methods=['GET'])
+def get_discounts():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        
+        cursor.execute("""
+            SELECT *
+            FROM discounts WHERE discount_type = "GENERAL" """)
+        general_discounts = cursor.fetchall()
+
+        cursor.execute("""SELECT d.*, product_id
+            FROM discounts d
+            RIGHT JOIN product_discounts pd ON d.discount_id = pd.discount_id
+            WHERE (d.end_date >= NOW())""")
+        product_discounts = cursor.fetchall()
+
+        cursor.execute("""SELECT d.*, category_id
+            FROM discounts d
+            RIGHT JOIN category_discounts cd ON d.discount_id = cd.discount_id
+            WHERE (d.end_date >= NOW())""")
+        category_discounts = cursor.fetchall()
+
+        cursor.execute("""SELECT d.*, brand_id
+            FROM discounts d
+            RIGHT JOIN brand_discounts bd ON d.discount_id = bd.discount_id
+            WHERE (d.end_date >= NOW())""")
+        brand_discounts = cursor.fetchall()
+
+        cursor.close()
+        connection.close()
+
+        return jsonify({"general discounts": general_discounts,
+                        "product discounts" : product_discounts,
+                        "category discounts": category_discounts,
+                        "brand discounts" : brand_discounts
+                        }), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+
+#@app.route('/discounts/<int:product_id>', methods=['GET'])
+def get_item_discounts(product_id):
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        # Fetch category and brand of the product
+        cursor.execute("""
+            SELECT category_id, brand_id
+            FROM product p
+            INNER JOIN productvariant pv ON pv.product_id = p.product_id
+            WHERE pv.variant_id = %s
+        """, (product_id,))
+        product_info = cursor.fetchone()
+
+        if not product_info:
+            return jsonify({"error": "Product not found"}), 404
+
+        #product_id = product_info['product_id']
+        category_id = product_info['category_id']
+        brand_id = product_info['brand_id']
+
+        # Fetch discounts applicable to the product based on category, brand, and general store discounts
+        cursor.execute("""
+            SELECT *
+            FROM discounts WHERE discount_type = "GENERAL"
+
+              UNION 
+
+            SELECT d.*
+            FROM discounts d
+            LEFT JOIN product_discounts pd ON d.discount_id = pd.discount_id
+            WHERE ((pd.product_id = %s)
+              AND d.end_date >= NOW())
+
+              UNION 
+
+            SELECT d.*
+            FROM discounts d
+            LEFT JOIN category_discounts cd ON d.discount_id = cd.discount_id
+            WHERE ((cd.category_id = %s)
+              AND d.end_date >= NOW())
+
+                UNION 
+
+            SELECT d.*
+            FROM discounts d
+            LEFT JOIN brand_discounts bd ON d.discount_id = bd.discount_id
+            WHERE ((bd.brand_id = %s)
+              AND d.end_date >= NOW())
+        """, (product_id, category_id, brand_id))
+
+        discounts = cursor.fetchall()
+
+        cursor.close()
+        connection.close()
+
+        return {"discounts": discounts}
+    except Exception as e:
+        return {"error": str(e)}
+
+def get_highest_discount_for_item(product_id):
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        current_date = datetime.now().date()
+
+        # Fetch all applicable discounts for the product
+        query = """
+            SELECT discount_id, discount_amount 
+            FROM discounts d
+            JOIN product_discounts pd ON d.discount_id = pd.discount_id
+            WHERE pd.product_id = %s 
+              AND d.start_date <= %s 
+              AND d.end_date >= %s
+            ORDER BY discount_amount DESC
+        """
+        cursor.execute(query, (product_id, current_date, current_date))
+        discounts = cursor.fetchall()
+
+        cursor.close()
+        connection.close()
+
+        if discounts:
+            max_discount = max(discounts, key=lambda x: x['discount_amount'])
+            return jsonify(discounts=discounts)
+        
+        return 0, None
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
 @app.route('/sales_transactions', methods=['POST'])
 def create_sales_transaction():
     try:
@@ -582,12 +754,13 @@ def create_sales_transaction():
         total = content['total']
         payment_method = content['payment_method']
         items = content['items']
+        pointsApplied = content.get('customer_id', 0)
 
         # Check inventory before proceeding
         for item in items:
             product_id = item['product_id']
             quantity = item['quantity']
-
+            
             # Fetch current quantity from inventory
             fetch_inventory_query = "SELECT quantity FROM productvariant WHERE variant_id = %s"
             cursor.execute(fetch_inventory_query, (product_id,))
@@ -595,6 +768,25 @@ def create_sales_transaction():
 
             if not current_quantity or current_quantity['quantity'] < quantity:
                 return jsonify({"error": f"Insufficient inventory for product ID {product_id}"}), 400
+
+            # Check if the discount applies to this product
+            
+            discount_id = item.get('discount_id')
+            discounts = get_item_discounts(product_id)
+            if "error" in discounts:
+                return jsonify({"error": discounts['error']}), 400
+
+            applicable_discount = next((discount for discount in discounts['discounts'] if discount['discount_id'] == discount_id), None)
+    
+            if not applicable_discount:
+                    return jsonify({"error": f"Discount ID {discount_id} does not apply to product ID {product_id}"}), 400
+
+        update_customers_query = """
+                UPDATE customers
+                SET points_balance = total + %s - %s
+                WHERE customer_id = %s
+            """
+        cursor.execute(update_customers_query, (customer_id, total//100, pointsApplied))
 
         # Insert into sales_transactions table
         insert_transaction_query = """
@@ -609,12 +801,13 @@ def create_sales_transaction():
             product_id = item['product_id']
             quantity = item['quantity']
             price = item['price']
-            
+            discount_id = item.get('discount_id')
+
             insert_item_query = """
-                INSERT INTO transaction_items (transaction_id, product_id, quantity, price)
-                VALUES (%s, %s, %s, %s)
+                INSERT INTO transaction_items (transaction_id, product_id, quantity, price, discount_id)
+                VALUES (%s, %s, %s, %s, %s)
             """
-            cursor.execute(insert_item_query, (transaction_id, product_id, quantity, price))
+            cursor.execute(insert_item_query, (transaction_id, product_id, quantity, price, discount_id))
 
             # Reduce inventory quantity
             update_inventory_query = """
@@ -632,6 +825,8 @@ def create_sales_transaction():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
+
 
 
 @app.route('/sales_transactions', methods=['GET'])

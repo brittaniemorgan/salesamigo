@@ -19,6 +19,7 @@ public class Transaction {
     private double total;
     private ArrayList<TransactionItem> items;
     private String paymentMethod;
+    private int pointsApplied;
     
     public Transaction(int transactionId, Date transactionDate, int customerId, int employeeId) {
         this.transactionId = transactionId;
@@ -26,16 +27,21 @@ public class Transaction {
         this.customerId = customerId;
         this.employeeId = employeeId;
         this.items = new ArrayList<TransactionItem>();
+        this.total = 0;
+        this.pointsApplied = 0;
     }
 
     public Transaction(int transactionId, Date transactionDate, int customerId, int employeeId, double total, ArrayList<TransactionItem> items, String paymentMethod) {
         this.transactionId = transactionId;
         this.transactionDate = transactionDate;
         this.customerId = customerId;
-        this.employeeId = employeeId;
-        this.total = total;
+        this.employeeId = employeeId;        
         this.items = items;
         this.paymentMethod = paymentMethod;
+        this.total = 0;
+        for (TransactionItem item : items){
+            this.total += item.getTotal();
+        }
     }
 
     // Getters and Setters
@@ -76,8 +82,19 @@ public class Transaction {
         return total;
     }
 
-    public void setTotal(double total) {
-        this.total = total;
+    public void calculateTotal() {
+        int sum = 0;
+        for (TransactionItem item : items){
+            sum += item.getTotal();
+        }
+        this.total = total - (pointsApplied/100);
+        this.total = sum;
+    }
+    
+    public void updateTotal(double num) {
+        for (TransactionItem item : items){
+            this.total += num;
+        }
     }
 
     public ArrayList<TransactionItem> getItems() {
@@ -113,6 +130,11 @@ public class Transaction {
     // Method to remove an transaction item
     public void removeTransactionItem(TransactionItem transactionItem) {
         this.items.remove(transactionItem);
+    }
+    
+    public void setPointsApplied(int points) {
+        this.pointsApplied = points;
+        this.total -= points/100;
     }
 
     @Override
