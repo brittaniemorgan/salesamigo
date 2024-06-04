@@ -315,7 +315,7 @@ public class LoginFrame extends javax.swing.JFrame {
                     adminFrame.setVisible(true);
                     break;
                 case "Cashier":
-                    POSFrame posFrame = new POSFrame();
+                    POSFrame posFrame = new POSFrame(user);
                     posFrame.setVisible(true);
                     break;
                 case "Inventory Clerk":

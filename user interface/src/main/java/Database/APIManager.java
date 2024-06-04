@@ -595,7 +595,7 @@ public class APIManager {
         }
         return transactions;
     }
-    
+    //Updated
      public JSONObject addTransaction(int employeeId, int customerId, double total, String paymentMethod, JSONArray items, int pointsApplied) {
         JSONObject response = null;
         try {
@@ -605,7 +605,8 @@ public class APIManager {
             transactionInfo.put("total", total);
             transactionInfo.put("payment_method", paymentMethod);
             transactionInfo.put("items", items);
-
+            transactionInfo.put("pointsApplied", pointsApplied);
+            
             response = new JSONObject(sendDataToAPI("/sales_transactions", transactionInfo));
             System.out.println("Response from server: " + response.toString());
         } catch (Exception e) {
@@ -665,6 +666,57 @@ public class APIManager {
             refundInfo.put("item_id", itemId);
 
             response = new JSONObject(sendDataToAPI("/refund", refundInfo)); // Adjust the endpoint as per your API
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+//Update
+    public JSONObject getPaymentTypes() {
+        JSONObject paymentTypes = null;
+        try {
+            paymentTypes = new JSONObject(fetchDataFromAPI("payment_types"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return paymentTypes;
+    }
+
+    public JSONObject addPaymentType(String name) {
+        JSONObject response = null;
+        try {
+            JSONObject paymentTypeInfo = new JSONObject();
+            paymentTypeInfo.put("name", name);
+
+            response = new JSONObject(sendDataToAPI("payment_types", paymentTypeInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public JSONObject updatePaymentType(int paymentTypeID, String name) {
+        JSONObject response = null;
+        try {
+            JSONObject paymentTypeInfo = new JSONObject();
+            paymentTypeInfo.put("name", name);
+            
+            response = new JSONObject(sendPutRequestToAPI("payment_types/" + paymentTypeID, paymentTypeInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public JSONObject deletePaymentType(int paymentTypeID) {
+        JSONObject response = null;
+        try {
+            JSONObject paymentTypeInfo = new JSONObject();
+           
+            response = new JSONObject(sendDeleteRequestToAPI("payment_types/" + paymentTypeID, paymentTypeInfo));
             System.out.println("Response from server: " + response.toString());
         } catch (Exception e) {
             e.printStackTrace();

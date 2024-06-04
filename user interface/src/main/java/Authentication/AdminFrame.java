@@ -627,32 +627,12 @@ public class AdminFrame extends javax.swing.JFrame {
 
     private void productTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productTableMouseClicked
         // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel) productTable.getModel();
-        int selectedRowIndex = productTable.getSelectedRow();
-
-        int id = (int) model.getValueAt(selectedRowIndex, 0);
-        String name = (String) model.getValueAt(selectedRowIndex, 1);
-        String category = (String) model.getValueAt(selectedRowIndex, 2);
-        String brand = (String) model.getValueAt(selectedRowIndex, 3);
-        double price = (double) model.getValueAt(selectedRowIndex, 4);
-        String description = (String) model.getValueAt(selectedRowIndex, 5);
-        String gender = (String) model.getValueAt(selectedRowIndex, 6);
-
-        productIDField.setText(String.valueOf(id));
-        nameField.setText(name);
-        priceField.setText(String.valueOf(price));
-        descField.setText(description);
-        categoryField.setSelectedItem(category);
-        brandField.setSelectedItem(brand);
-        genderField.setSelectedItem(gender);
-
-        updateVariantsTable(id);
     }//GEN-LAST:event_productTableMouseClicked
 
     private void POSMenuItemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_POSMenuItemMouseClicked
         // TODO add your handling code here:
-        POSFrame posFrame = new POSFrame();
-        posFrame.setVisible(true);
+        //POSFrame posFrame = new POSFrame();
+        //posFrame.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_POSMenuItemMouseClicked
 

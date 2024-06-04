@@ -4,6 +4,12 @@
  */
 package PointOfSale;
 
+import Authentication.LoginFrame;
+import java.text.NumberFormat;
+import java.util.Locale;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author richellewilliams
@@ -261,58 +267,11 @@ public class DiscountFrame extends javax.swing.JFrame {
 
     private void addItemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemBtnActionPerformed
         // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel) ordersTable.getModel();
-        int selectedRowIndex = ordersTable.getSelectedRow();
-
-        if (selectedRowIndex != -1) {
-            int orderId = (int) model.getValueAt(selectedRowIndex, 0);
-            Transaction pendingTransaction = pos.getPendingTransactionByID(orderId);
-            //do check for invalid item id and stock levels
-            int itemId = Integer.parseInt(itemIDField.getText());
-            int quantity = Integer.parseInt(itemQuantityField.getText());
-            double price = pos.getInventory().findVarantByID(itemId).getPrice();
-
-            if (pendingTransaction.getItemByID(itemId) != null) {
-                TransactionItem item = pendingTransaction.getItemByID(itemId);
-                item.setQuantity(item.getQuantity() + quantity);
-            } else {
-                pendingTransaction.addTransactionItem(new TransactionItem(itemId, quantity, price));
-            }
-            pendingTransaction.calculateTotal();
-            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US);
-            totalTxt.setText(currencyFormatter.format(pendingTransaction.getTotal()));
-            updateItemsTable(pendingTransaction.getItems());
-        } else {
-            JOptionPane.showMessageDialog(null, "Please select an order.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+       
     }//GEN-LAST:event_addItemBtnActionPerformed
 
     private void removeItemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeItemBtnActionPerformed
         // TODO add your handling code here:
-        DefaultTableModel itemsModel = (DefaultTableModel) itemsTable.getModel();
-        int selectedItem = itemsTable.getSelectedRow();
-
-        DefaultTableModel ordersModel = (DefaultTableModel) ordersTable.getModel();
-        int selectedOrder = ordersTable.getSelectedRow();
-
-        if (selectedItem != -1 && selectedItem != -1) {
-            int itemId = (int) itemsModel.getValueAt(selectedItem, 0);
-            int orderId = (int) ordersModel.getValueAt(selectedOrder, 0);
-            Transaction pendingTransaction = pos.getPendingTransactionByID(orderId);
-            TransactionItem item = pendingTransaction.getItemByID(itemId);
-            String message = String.format("Item Deletion:\nItem ID: %d\n", orderId);
-
-            int option = JOptionPane.showConfirmDialog(this, message + "\nAre you sure you want to item with ID: " + itemId + "?", "Delete item", JOptionPane.YES_NO_OPTION);
-
-            if (option == JOptionPane.YES_OPTION) {
-                //String feedback = inventory.deleteVariant(variant_id);
-                //JOptionPane.showMessageDialog(this, feedback, "Variant Deleted", JOptionPane.INFORMATION_MESSAGE);
-                pendingTransaction.getItems().remove(item);
-                updateItemsTable(pendingTransaction.getItems());
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Please select an item to delete.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
     }//GEN-LAST:event_removeItemBtnActionPerformed
 
     private void itemQuantityFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemQuantityFieldActionPerformed

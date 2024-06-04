@@ -5,6 +5,7 @@
 package PointOfSale;
 
 import Authentication.LoginFrame;
+import Authentication.User;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -19,16 +20,23 @@ import javax.swing.table.DefaultTableModel;
  */
 public class POSFrame extends javax.swing.JFrame {
 
-    POS pos;
+    POS pos;//update
+    ArrayList<String> discountCodes;
+    private User employee;
 
     /**
      * Creates new form POSFrame
      */
-    public POSFrame() {
+    public POSFrame(User user) {
         initComponents();
-        pos = new POS();
-        pointsToRedeemTxt.setText(String.valueOf(pos.getCurrentCustomer().getId()));
+        this.employee = user;
+        pos = new POS(user);
+        customerIdTxt.setText(String.valueOf(pos.getCurrentCustomer().getId()));
+        discountCodes = new ArrayList<>();
         DateTime();
+        loadPyamentDropDown();
+        employeeIdLabel.setText(String.valueOf(user.getId()));
+        greetLabel.setText("Hello " + user.getFirstname() + ",");
     }
     
     private void updateOrdersTable() {
@@ -78,6 +86,33 @@ public class POSFrame extends javax.swing.JFrame {
         }
     }
     
+    public void loadPyamentDropDown() {
+        ArrayList<PaymentType> paymentTypes = pos.getPaymentTypes();
+        ArrayList<String> names = new ArrayList<String>();
+        for (PaymentType paymentType : paymentTypes) {
+            names.add(paymentType.getName());
+        }
+        paymentField.setModel(new javax.swing.DefaultComboBoxModel<>(names.toArray(new String[0])));
+    }
+    public void updateTotal() {
+        DefaultTableModel model = (DefaultTableModel) ordersTable.getModel();
+        int selectedRowIndex = ordersTable.getSelectedRow();
+
+        if (selectedRowIndex != -1) {
+            int orderId = (int) model.getValueAt(selectedRowIndex, 0);
+            Transaction order = pos.getPendingTransactionByID(orderId);
+            discountCodes = pos.applyAllDiscount(order, discountCodes);
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US);
+            totalTxt.setText(currencyFormatter.format(order.getTotal()));
+            taxTxt.setText(currencyFormatter.format(order.getTotal() * 1.15));
+            updateOrdersTable();
+            updateItemsTable(order.getItems());
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select an order.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     public void DateTime(){
         LocalDateTime dt = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy hh:mm:ssa");
@@ -100,10 +135,7 @@ public class POSFrame extends javax.swing.JFrame {
         jLabel33 = new javax.swing.JLabel();
         jButton5 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         dateTime = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -116,8 +148,6 @@ public class POSFrame extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         totalTxt = new javax.swing.JLabel();
         completeOrderBtn = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
         redeemPointsBtn = new javax.swing.JButton();
         discCodeTxt = new javax.swing.JTextField();
@@ -126,12 +156,24 @@ public class POSFrame extends javax.swing.JFrame {
         jTextPane1 = new javax.swing.JTextPane();
         jPanel3 = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
         jLabel15 = new javax.swing.JLabel();
         applyDiscBtn = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         customerIdTxt = new javax.swing.JTextPane();
         pointsToRedeemTxt = new javax.swing.JTextField();
+        jLabel16 = new javax.swing.JLabel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        amtGivenTxt = new javax.swing.JTextPane();
+        jLabel10 = new javax.swing.JLabel();
+        changeTxt = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        totalTxt1 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        taxTxt = new javax.swing.JLabel();
+        paymentBtn = new javax.swing.JButton();
+        printReceiptBtn = new javax.swing.JButton();
+        allPointsTxt = new javax.swing.JLabel();
+        paymentField = new javax.swing.JComboBox<>();
         addOrderBtn = new javax.swing.JButton();
         removeOrderBtn = new javax.swing.JButton();
         jLabel13 = new javax.swing.JLabel();
@@ -141,6 +183,8 @@ public class POSFrame extends javax.swing.JFrame {
         itemItemLabel = new javax.swing.JLabel();
         addItemBtn = new javax.swing.JButton();
         removeItemBtn = new javax.swing.JButton();
+        employeeIdLabel = new javax.swing.JLabel();
+        greetLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -177,7 +221,7 @@ public class POSFrame extends javax.swing.JFrame {
                 .addComponent(jLabel33, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1301, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
         );
@@ -196,29 +240,20 @@ public class POSFrame extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(jButton5)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 15)); // NOI18N
         jLabel4.setText("Copyright © 2024 Sales Amigo");
 
-        jLabel8.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
-        jLabel8.setText("Station Number");
-
-        jLabel6.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        jLabel6.setText("Station:");
-
         jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel3.setText("Staff ID:");
-
-        jLabel7.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
-        jLabel7.setText("ID Number");
 
         jLabel9.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel9.setText("Date:");
 
         dateTime.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        dateTime.setText("0");
+        dateTime.setText(" ");
 
         itemsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -331,32 +366,6 @@ public class POSFrame extends javax.swing.JFrame {
             }
         });
 
-        jButton6.setBackground(new java.awt.Color(0, 102, 102));
-        jButton6.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
-        jButton6.setForeground(new java.awt.Color(255, 255, 255));
-        jButton6.setText("Print Receipt");
-        jButton6.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton6.setOpaque(true);
-        jButton6.setPreferredSize(new java.awt.Dimension(133, 24));
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-
-        jButton7.setBackground(new java.awt.Color(0, 153, 0));
-        jButton7.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
-        jButton7.setForeground(new java.awt.Color(255, 255, 255));
-        jButton7.setText("Show Total");
-        jButton7.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton7.setOpaque(true);
-        jButton7.setPreferredSize(new java.awt.Dimension(133, 24));
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
-
         jButton8.setBackground(new java.awt.Color(204, 102, 0));
         jButton8.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
         jButton8.setForeground(new java.awt.Color(255, 255, 255));
@@ -410,13 +419,6 @@ public class POSFrame extends javax.swing.JFrame {
         jLabel14.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
         jLabel14.setText("Points:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
-            }
-        });
-
         jLabel15.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel15.setText("Payment Method");
 
@@ -443,6 +445,70 @@ public class POSFrame extends javax.swing.JFrame {
             }
         });
 
+        jLabel16.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        jLabel16.setText("Amount given");
+
+        amtGivenTxt.setFont(new java.awt.Font("Helvetica Neue", 0, 16)); // NOI18N
+        jScrollPane5.setViewportView(amtGivenTxt);
+
+        jLabel10.setFont(new java.awt.Font("Helvetica Neue", 1, 22)); // NOI18N
+        jLabel10.setText("Change due");
+
+        changeTxt.setFont(new java.awt.Font("Helvetica Neue", 1, 22)); // NOI18N
+        changeTxt.setText("$0.00");
+
+        jLabel12.setFont(new java.awt.Font("Helvetica Neue", 1, 22)); // NOI18N
+        jLabel12.setText("Sub TOTAL:");
+
+        totalTxt1.setFont(new java.awt.Font("Helvetica Neue", 1, 22)); // NOI18N
+        totalTxt1.setText("$0.00");
+
+        jLabel17.setFont(new java.awt.Font("Helvetica Neue", 1, 22)); // NOI18N
+        jLabel17.setText("Tax");
+
+        taxTxt.setFont(new java.awt.Font("Helvetica Neue", 1, 22)); // NOI18N
+        taxTxt.setText("$0.00");
+
+        paymentBtn.setBackground(new java.awt.Color(0, 153, 0));
+        paymentBtn.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
+        paymentBtn.setForeground(new java.awt.Color(255, 255, 255));
+        paymentBtn.setText("Enter Payment");
+        paymentBtn.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        paymentBtn.setOpaque(true);
+        paymentBtn.setPreferredSize(new java.awt.Dimension(133, 24));
+        paymentBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                paymentBtnActionPerformed(evt);
+            }
+        });
+
+        printReceiptBtn.setBackground(new java.awt.Color(0, 102, 102));
+        printReceiptBtn.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
+        printReceiptBtn.setForeground(new java.awt.Color(255, 255, 255));
+        printReceiptBtn.setText("Print Receipt");
+        printReceiptBtn.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        printReceiptBtn.setOpaque(true);
+        printReceiptBtn.setPreferredSize(new java.awt.Dimension(133, 24));
+        printReceiptBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                printReceiptBtnActionPerformed(evt);
+            }
+        });
+
+        allPointsTxt.setText("All Points");
+        allPointsTxt.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                allPointsTxtMouseClicked(evt);
+            }
+        });
+
+        paymentField.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        paymentField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                paymentFieldActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -450,6 +516,42 @@ public class POSFrame extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel10)
+                                .addGap(18, 18, 18)
+                                .addComponent(changeTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(completeOrderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabel12)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(totalTxt1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(printReceiptBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel17)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(taxTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(paymentBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(35, 35, 35)
+                                        .addComponent(jLabel2)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(totalTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(31, 31, 31)
+                                        .addComponent(paymentField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(20, 20, 20))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -466,32 +568,22 @@ public class POSFrame extends javax.swing.JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(applyDiscBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
                                             .addComponent(discCodeTxt))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(0, 0, Short.MAX_VALUE))
-                                            .addGroup(jPanel1Layout.createSequentialGroup()
                                                 .addComponent(jLabel14)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(pointsToRedeemTxt)))
+                                                .addComponent(pointsToRedeemTxt))
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(applyDiscBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(allPointsTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(0, 0, Short.MAX_VALUE)))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))))
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(completeOrderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(35, 35, 35)
-                                .addComponent(jLabel2)))
-                        .addGap(18, 18, 18)
-                        .addComponent(totalTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -501,7 +593,7 @@ public class POSFrame extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel11)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -514,30 +606,50 @@ public class POSFrame extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(discCodeTxt)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(applyDiscBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(applyDiscBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(allPointsTxt))
                                 .addGap(24, 24, 24))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(66, 66, 66)))
+                        .addGap(86, 86, 86)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(redeemPointsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel14)
                     .addComponent(pointsToRedeemTxt))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGap(29, 29, 29)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel15)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(paymentField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel16)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(changeTxt))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(completeOrderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(24, 24, 24)
+                        .addComponent(printReceiptBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel2)
-                        .addComponent(totalTxt))))
+                        .addComponent(paymentBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel12)
+                            .addComponent(totalTxt1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel17)
+                            .addComponent(taxTxt))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(totalTxt)))))
         );
 
         addOrderBtn.setBackground(new java.awt.Color(51, 102, 255));
@@ -617,11 +729,17 @@ public class POSFrame extends javax.swing.JFrame {
             }
         });
 
+        employeeIdLabel.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        employeeIdLabel.setText(" ");
+
+        greetLabel.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        greetLabel.setText(" ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1606, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1727, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -635,40 +753,38 @@ public class POSFrame extends javax.swing.JFrame {
                                 .addComponent(jLabel1))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(addOrderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(37, 37, 37)
-                                        .addComponent(removeOrderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(addOrderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(37, 37, 37)
+                                            .addComponent(removeOrderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                             .addComponent(jLabel3)
-                                            .addComponent(jLabel6))
-                                        .addGap(24, 24, 24)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(73, 73, 73)
-                                        .addComponent(jLabel9)
-                                        .addGap(24, 24, 24)
-                                        .addComponent(dateTime, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jLabel13)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(itemQuantityLabel)
-                                            .addComponent(itemItemLabel))
-                                        .addGap(52, 52, 52)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(itemIDField, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
-                                            .addComponent(itemQuantityField)))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(addItemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(37, 37, 37)
-                                        .addComponent(removeItemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 829, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGap(24, 24, 24)
+                                            .addComponent(employeeIdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(146, 146, 146)
+                                            .addComponent(jLabel9)
+                                            .addGap(24, 24, 24)
+                                            .addComponent(dateTime, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jLabel13)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(itemQuantityLabel)
+                                                .addComponent(itemItemLabel))
+                                            .addGap(52, 52, 52)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(itemIDField, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+                                                .addComponent(itemQuantityField)))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(addItemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(37, 37, 37)
+                                            .addComponent(removeItemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 829, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(greetLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(47, 47, 47)
                                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(23, 23, 23))
+                .addContainerGap(313, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -681,14 +797,12 @@ public class POSFrame extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(jLabel7)
                             .addComponent(jLabel9)
-                            .addComponent(dateTime))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel8))
+                            .addComponent(dateTime)
+                            .addComponent(employeeIdLabel))
                         .addGap(18, 18, 18)
+                        .addComponent(greetLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(19, 19, 19)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -769,9 +883,12 @@ public class POSFrame extends javax.swing.JFrame {
         if (selectedRowIndex != -1) {
             int orderId = (int) model.getValueAt(selectedRowIndex, 0);
             Transaction pendingTransaction = pos.getPendingTransactionByID(orderId);
-            if (!customerIdTxt.getText().equals("1")) {
+            if (!customerIdTxt.getText().equals("1") && !customerIdTxt.getText().equals("")) {
                 int pointsToRedeem = Integer.parseInt(pointsToRedeemTxt.getText());
-                String message = String.format("Points Redemption:" );
+                //fix lol
+                pos.setCustomer(Integer.parseInt(customerIdTxt.getText()));
+                pendingTransaction.setCustomerId(Integer.parseInt(customerIdTxt.getText()));
+                String message = String.format("Points Redemption:");
 
                 int option = JOptionPane.showConfirmDialog(this, message + "\nAre you sure you want to redeem points?", "Redeem Points", JOptionPane.YES_NO_OPTION);
 
@@ -781,10 +898,10 @@ public class POSFrame extends javax.swing.JFrame {
                     NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US);
                     totalTxt.setText(currencyFormatter.format(pendingTransaction.getTotal()));
                 }
-            }else {
-                JOptionPane.showMessageDialog(null, "Please customer ID.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Please enter a valid customer ID.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        }else {
+        } else {
             JOptionPane.showMessageDialog(null, "Please select an order.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_redeemPointsBtnActionPerformed
@@ -792,14 +909,6 @@ public class POSFrame extends javax.swing.JFrame {
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton8ActionPerformed
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton7ActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
 
     private void completeOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_completeOrderBtnActionPerformed
         // TODO add your handling code here:
@@ -896,12 +1005,15 @@ public class POSFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         DefaultTableModel model = (DefaultTableModel) ordersTable.getModel();
         int selectedRowIndex = ordersTable.getSelectedRow();
-        
+
         if (selectedRowIndex != -1) {
             int orderId = (int) model.getValueAt(selectedRowIndex, 0);
             String discCode = discCodeTxt.getText();
-            Transaction order = pos.getPendingTransactionByID(orderId);             
+            Transaction order = pos.getPendingTransactionByID(orderId);
             String feedback = pos.applyDiscount(order, discCode);
+            if (!feedback.toLowerCase().contains("error")) {
+                discountCodes.add(discCode);//update 
+            }
             NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US);
             totalTxt.setText(currencyFormatter.format(order.getTotal()));
             JOptionPane.showMessageDialog(this, feedback, "Discount", JOptionPane.INFORMATION_MESSAGE);
@@ -913,13 +1025,57 @@ public class POSFrame extends javax.swing.JFrame {
 
     }//GEN-LAST:event_applyDiscBtnActionPerformed
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
-
     private void pointsToRedeemTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pointsToRedeemTxtActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_pointsToRedeemTxtActionPerformed
+
+    private void paymentBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paymentBtnActionPerformed
+        // TODO add your handling code here:
+        //update()
+
+        DefaultTableModel model = (DefaultTableModel) ordersTable.getModel();
+        int selectedRowIndex = ordersTable.getSelectedRow();
+
+        if (selectedRowIndex != -1) {
+            int orderId = (int) model.getValueAt(selectedRowIndex, 0);
+            Transaction pendingTransaction = pos.getPendingTransactionByID(orderId);
+            Double amtGiven = Double.valueOf(amtGivenTxt.getText());
+            pendingTransaction.setAmtGiven(amtGiven);
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US);
+            changeTxt.setText(currencyFormatter.format(pendingTransaction.getChange()));
+            updateTotal();
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select an order.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_paymentBtnActionPerformed
+
+    private void printReceiptBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printReceiptBtnActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) ordersTable.getModel();
+        int selectedRowIndex = ordersTable.getSelectedRow();
+
+        if (selectedRowIndex != -1) {
+            int orderId = (int) model.getValueAt(selectedRowIndex, 0);
+            String message = String.format("Order Completion:\nProduct Name: %d\n", orderId);
+            int option = JOptionPane.showConfirmDialog(this, message + "\nAre you sure you want to add this variant?", "Add New Variant", JOptionPane.YES_NO_OPTION);
+
+            if (option == JOptionPane.YES_OPTION) {
+                pos.printReceipt(orderId);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select an order.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_printReceiptBtnActionPerformed
+
+    private void allPointsTxtMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allPointsTxtMouseClicked
+        // TODO add your handling code here:
+        //Update
+        pointsToRedeemTxt.setText(String.valueOf(pos.getCurrentCustomer().getPointsBalance()));
+    }//GEN-LAST:event_allPointsTxtMouseClicked
+
+    private void paymentFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paymentFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_paymentFieldActionPerformed
 
     /**
      * @param args the command line arguments
@@ -949,9 +1105,24 @@ public class POSFrame extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
+        int id = 1;
+        String firstname = "John";
+        String lastname = "Doe";
+        String email = "johndoe@example.com";
+        String contactNumber = "123-456-7890";
+        String address = "123 Street, City, Country";
+        String joinDate = "2024-01-01"; // Assuming join date is in yyyy-MM-dd format
+        String role = "Employee";
+        String department = "IT";
+        float salary = 50000.0f; // Assuming salary is in dollars
+        String password = "password123";
+
+        User dummyUser = new User(id, firstname, lastname, email, contactNumber, address,
+                joinDate, role, department, salary, password);
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new POSFrame().setVisible(true);
+                //fix
+                new POSFrame(dummyUser).setVisible(true);
             }
         });
     }
@@ -959,11 +1130,16 @@ public class POSFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addItemBtn;
     private javax.swing.JButton addOrderBtn;
+    private javax.swing.JLabel allPointsTxt;
+    private javax.swing.JTextPane amtGivenTxt;
     private javax.swing.JButton applyDiscBtn;
+    private javax.swing.JLabel changeTxt;
     private javax.swing.JButton completeOrderBtn;
     private javax.swing.JTextPane customerIdTxt;
     private javax.swing.JLabel dateTime;
     private javax.swing.JTextField discCodeTxt;
+    private javax.swing.JLabel employeeIdLabel;
+    private javax.swing.JLabel greetLabel;
     private javax.swing.JTextField itemIDField;
     private javax.swing.JLabel itemItemLabel;
     private javax.swing.JTextField itemQuantityField;
@@ -971,23 +1147,21 @@ public class POSFrame extends javax.swing.JFrame {
     private javax.swing.JTable itemsTable;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -997,12 +1171,18 @@ public class POSFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTextPane jTextPane1;
     private javax.swing.JTable ordersTable;
+    private javax.swing.JButton paymentBtn;
+    private javax.swing.JComboBox<String> paymentField;
     private javax.swing.JTextField pointsToRedeemTxt;
+    private javax.swing.JButton printReceiptBtn;
     private javax.swing.JButton redeemPointsBtn;
     private javax.swing.JButton removeItemBtn;
     private javax.swing.JButton removeOrderBtn;
+    private javax.swing.JLabel taxTxt;
     private javax.swing.JLabel totalTxt;
+    private javax.swing.JLabel totalTxt1;
     // End of variables declaration//GEN-END:variables
 }

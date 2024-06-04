@@ -17,10 +17,16 @@ public class Transaction {
     private int customerId;
     private int employeeId;
     private double total;
+    private double amtGiven;
     private ArrayList<TransactionItem> items;
     private String paymentMethod;
     private int pointsApplied;
     
+    public Transaction (){
+        this.items = new ArrayList<TransactionItem>();
+        this.total = 0;
+        this.pointsApplied = 0;
+    }
     public Transaction(int transactionId, Date transactionDate, int customerId, int employeeId) {
         this.transactionId = transactionId;
         this.transactionDate = transactionDate;
@@ -86,15 +92,28 @@ public class Transaction {
         int sum = 0;
         for (TransactionItem item : items){
             sum += item.getTotal();
-        }
+        }//update
         this.total = total - (pointsApplied/100);
         this.total = sum;
+        this.total = Math.round(this.total*  100.0)/100.0;
     }
     
     public void updateTotal(double num) {
+        //update
         for (TransactionItem item : items){
             this.total += num;
+            this.total = Math.round(this.total*  100.0)/100.0;
         }
+    }
+    
+    public void setAmtGiven(double amt) {
+        this.amtGiven = amt;
+    }
+    
+    public double getChange(){
+        calculateTotal();
+        double finalTotal = this.total *= 1.15;
+        return Math.round((this.amtGiven - finalTotal)/100.0)*100.0;       
     }
 
     public ArrayList<TransactionItem> getItems() {
@@ -132,9 +151,14 @@ public class Transaction {
         this.items.remove(transactionItem);
     }
     
+    //Updateed
+    public int getPointsApplied() {
+        return this.pointsApplied;
+    }
+    //updated
     public void setPointsApplied(int points) {
         this.pointsApplied = points;
-        this.total -= points/100;
+        this.total -= points/10;
     }
 
     @Override

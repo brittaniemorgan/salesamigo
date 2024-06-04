@@ -5,10 +5,9 @@
 package PointOfSale;
 
 import Authentication.Customer;
+import Authentication.User;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /**
  *
  * @author britt
@@ -19,6 +18,7 @@ import Inventory.Product;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class POS {
 
@@ -26,18 +26,27 @@ public class POS {
     private Inventory inventory;
     private ArrayList<Transaction> pendingTransactions;
     private ArrayList<Discount> discounts;
+    private ArrayList<PaymentType> paymentTypes;
     private Customer currentCustomer;
-
-    public POS() {
+    private User employee;
+    ReceiptPrinter printer;
+//update
+        
+    public POS(User user) {
         try {
             api = APIManager.getAPIManager();
+            this.employee = user;
             inventory = new Inventory();
             pendingTransactions = new ArrayList<>();
             discounts = new ArrayList<>();
-            setCustomer(2);
+            paymentTypes = new ArrayList<>();
+            //Updated
+            setCustomer(1);
+            setPaymentTypes();
 
             // Load discounts from API
             loadDiscounts();
+            printer = new ReceiptPrinter();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -194,12 +203,8 @@ public class POS {
         return productDiscounts;
     }
 
-    private double calculateDiscountedPrice(double originalPrice, double discountAmount) {
-        return originalPrice * (1 - (discountAmount / 100));
-    }
-
     public String applyDiscount(Transaction order, String discountCode) {
-        String feedback = "Invalid Code";
+        String feedback = "Error: Invalid Code";
         for(TransactionItem item : order.getItems()){
             ArrayList<Discount> applicableDiscounts = getDiscountsForProduct(item.getProductId());
             double highestDiscount = 0.0;
@@ -221,6 +226,19 @@ public class POS {
         return feedback;
     }
     
+    //Update
+    public ArrayList<String> applyAllDiscount(Transaction order, ArrayList<String> discountCodes) {
+        ArrayList<String> validCodes = new ArrayList<>();
+        for(String discountCode : discountCodes){
+            String feedback = applyDiscount(order, discountCode);
+            if (feedback.contains("success")){
+                validCodes.add(discountCode);
+            }
+        }
+        return validCodes;
+    }
+    
+    
     /* Apply sale when item is added
     if (discount.getCode().equals("") && discount.getAmount() > highestDiscount) {
                     highestDiscount = discount.getAmount();
@@ -231,7 +249,7 @@ public class POS {
                     feedback += "Sale Discounts Applied";
                 }
     */
-
+//Updated
     public String performSaleTransaction(int orderId, String paymentMethod) {
         String feedback = "";
         try {
@@ -239,22 +257,26 @@ public class POS {
             int employeeId = transaction.getEmployeeId();
             int customerId = transaction.getCustomerId();
             double total = transaction.getTotal();
+            int pointsApplied = transaction.getPointsApplied();
             ArrayList<TransactionItem> items = transaction.getItems();
-
+            
+            
             JSONArray itemsArray = new JSONArray();
             for (TransactionItem item : items) {
                 JSONObject itemObj = new JSONObject();
                 itemObj.put("product_id", item.getProductId());
                 itemObj.put("quantity", item.getQuantity());
                 itemObj.put("price", item.getTotal());
-                itemObj.put("discount_id", item.getDiscount().getId());
+                if (item.getDiscount() != null){
+                    itemObj.put("discount_id", item.getDiscount().getId());
+                }
                 itemsArray.put(itemObj);
             }
 
-            JSONObject response = api.addTransaction(employeeId, customerId, total, paymentMethod, itemsArray);
+            JSONObject response = api.addTransaction(employeeId, customerId, total, paymentMethod, itemsArray, pointsApplied);
 
-            if (response != null && response.has("error")) {
-                feedback = "Error performing transaction.";
+            if (response.has("error")) {
+                feedback = "Error performing transaction:" + response.getString("error");
             } else {
                 int transactionId = response.getInt("transaction_id");
                 feedback = "Transaction successful!";
@@ -319,7 +341,9 @@ public class POS {
         return transactions;
     }
 
-    public void printReceipt(Transaction transaction) {
+    public void printReceipt(int transactionId) {
+        Transaction transaction = getPendingTransactionByID(transactionId);
+        printer.printReceipt(transaction);
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             DecimalFormat decimalFormat = new DecimalFormat("#.##");
@@ -379,6 +403,97 @@ public class POS {
             return "Error redeeming points: " + e.getMessage();
         }
     }
+    
+    public ArrayList<PaymentType> getPaymentTypes() {
+        return paymentTypes;
+    }
+    
+    public String createPaymentType(String name) {
+        String feedback = "";
+        try {            
+            JSONObject response = api.addPaymentType(name);
+            
+            if (response.has("error")) {
+                feedback = "Error adding payment type: " + response.getString("error");                
+            } else {
+                int typeId = response.getInt("id");
+                paymentTypes.add(new PaymentType(typeId, name));
+                feedback = "Payment type added successfully!";
+            }            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return feedback;
+    }
+    
+    public String updatePaymentType(int id, String name) {
+        String feedback = "";
+        try {
+            JSONObject response = api.updatePaymentType(id, name);
+            
+            if (response.has("error")) {
+                feedback = "Error updating payment type: " + response.getString("error");                
+            } else {
+                for (PaymentType paymentType : paymentTypes){
+                    if (paymentType.getId() == id){
+                        paymentType.setName(name);
+                        break;
+                    }
+                }
+                feedback = "Payment type updated successfully!";
+            } 
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return feedback;
+    }
 
+    public String deletePaymentType(int id) {
+        String feedback = "";
+        try {
+            JSONObject response = api.deletePaymentType(id);
+            if (response.has("error")) {
+                feedback = "Error deleting payment type: " + response.getString("error");                
+            } else {
+                for (PaymentType paymentType : paymentTypes){
+                    if (paymentType.getId() == id){
+                        paymentTypes.remove(paymentType);
+                        feedback = "Payment type deleted successfully!";
+                        break;
+                    }
+                }
+            } 
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return feedback;
+    }
+
+    public PaymentType findPaymentTypeByName(String name) {
+        for (PaymentType paymentType : paymentTypes) {
+            if (paymentType.getName().equals(name)) {
+                return paymentType;
+            }
+        }
+        return null; 
+    }
+    
+    private void setPaymentTypes() {
+        try {
+            JSONObject response = api.getPaymentTypes();
+            JSONArray paymentTypesArray = response.getJSONArray("payment_types");
+
+            for (int i = 0; i < paymentTypesArray.length(); i++) {
+                JSONObject paymentTypeObject = paymentTypesArray.getJSONObject(i);
+                int id = paymentTypeObject.getInt("payment_id");
+                String name = paymentTypeObject.getString("payment");
+                paymentTypes.add(new PaymentType(id, name));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

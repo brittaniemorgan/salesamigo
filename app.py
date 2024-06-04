@@ -600,8 +600,97 @@ def get_product_variants():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-from flask import Flask, request, jsonify
-from datetime import datetime
+@app.route('/payment_types', methods=['POST'])
+def add_payment_type():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        content = request.json
+        name = content['name']
+        query = "SELECT * FROM payment_type WHERE payment = %s"
+        cursor.execute(query, (name,))
+        payment_type = cursor.fetchone()
+
+        if payment_type:
+            return jsonify({"error": f"Payment type {name} already exists"}), 404
+
+        query = "INSERT INTO payment_type (payment) VALUES (%s)"
+        cursor.execute(query, (name,))
+        connection.commit()
+        id = cursor.lastrowid
+        cursor.close()
+        connection.close()
+        return jsonify({"success": "Payment type added", "id": id})
+
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+
+@app.route('/payment_types/<int:id>', methods=['PUT'])
+def update_payment_type(id):
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        content = request.json
+        name = content['name']
+        query = "SELECT * FROM payment_type WHERE payment_id = %s"
+        cursor.execute(query, (id,))
+        payment_type = cursor.fetchone()
+
+        if not payment_type:
+            return jsonify({"error": f"Payment type with ID {id} not found"}), 404
+
+        query = """UPDATE payment_type SET 
+                          payment = %s
+                          WHERE payment_id = %s"""
+
+        cursor.execute(query, (name, id))
+        connection.commit()
+
+        return jsonify({"success": "Payment type updated successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route('/payment_types/<int:id>', methods=['DELETE'])
+def delete_payment_type(id):
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        query = "SELECT * FROM payment_type WHERE payment_id = %s"
+        cursor.execute(query, (id,))
+        payment_type = cursor.fetchone()
+
+        if not payment_type:
+            return jsonify({"error": f"Payment type with ID {id} not found"}), 404
+
+        query = "DELETE FROM payment_type WHERE payment_id = %s"
+
+        cursor.execute(query, (id,))
+        connection.commit()
+
+        return jsonify({"success": "Payment type deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route('/payment_types', methods=['GET'])
+def view_payment_types():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        query = "SELECT * FROM payment_type"
+        cursor.execute(query)
+        payment_types = cursor.fetchall()
+
+        return jsonify({"payment_types": payment_types}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
 
 @app.route('/discounts', methods=['GET'])
 def get_discounts():
@@ -747,6 +836,8 @@ def create_sales_transaction():
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
         
+        connection.start_transaction()  # Start a new transaction
+
         content = request.json
         transaction_date = datetime.now()
         employee_id = content['employee_id']
@@ -754,7 +845,7 @@ def create_sales_transaction():
         total = content['total']
         payment_method = content['payment_method']
         items = content['items']
-        pointsApplied = content.get('customer_id', 0)
+        pointsApplied = content.get('pointsApplied', 0)
 
         # Check inventory before proceeding
         for item in items:
@@ -770,8 +861,9 @@ def create_sales_transaction():
                 return jsonify({"error": f"Insufficient inventory for product ID {product_id}"}), 400
 
             # Check if the discount applies to this product
-            
-            discount_id = item.get('discount_id')
+            discount_id = item.get('discount_id', 0)
+            if discount_id == 0:
+                continue
             discounts = get_item_discounts(product_id)
             if "error" in discounts:
                 return jsonify({"error": discounts['error']}), 400
@@ -779,14 +871,30 @@ def create_sales_transaction():
             applicable_discount = next((discount for discount in discounts['discounts'] if discount['discount_id'] == discount_id), None)
     
             if not applicable_discount:
-                    return jsonify({"error": f"Discount ID {discount_id} does not apply to product ID {product_id}"}), 400
+                return jsonify({"error": f"Discount ID {discount_id} does not apply to product ID {product_id}"}), 400
 
-        update_customers_query = """
+       # Check if customer exists and has enough points
+        if customer_id > 1:
+            fetch_customer_query = """
+                SELECT points_balance FROM customers WHERE customer_id = %s
+            """
+            cursor.execute(fetch_customer_query, (customer_id,))
+            customer = cursor.fetchone()
+
+            if not customer:
+                return jsonify({"error": "Customer does not exist"}), 400
+
+            if customer['points_balance'] < pointsApplied:
+                return jsonify({"error": "Insufficient points"}), 400
+
+            # Update customer points balance
+            update_customers_query = """
                 UPDATE customers
-                SET points_balance = total + %s - %s
+                SET points_balance = points_balance - %s + %s
                 WHERE customer_id = %s
             """
-        cursor.execute(update_customers_query, (customer_id, total//100, pointsApplied))
+            cursor.execute(update_customers_query, (pointsApplied, total / 10, customer_id))
+
 
         # Insert into sales_transactions table
         insert_transaction_query = """
@@ -817,13 +925,16 @@ def create_sales_transaction():
             """
             cursor.execute(update_inventory_query, (quantity, product_id))
         
-        connection.commit()
+        connection.commit()  # Commit the transaction if all operations succeed
         cursor.close()
         connection.close()
 
         return jsonify({"success": "Transaction created successfully", "transaction_id": transaction_id}), 200
 
     except Exception as e:
+        connection.rollback()  # Roll back the transaction if any error occurs
+        cursor.close()
+        connection.close()
         return jsonify({"error": str(e)}), 400
 
 
