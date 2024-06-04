@@ -32,8 +32,19 @@ public class DiscountFrame extends javax.swing.JFrame {
         jButton5 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        addItemBtn = new javax.swing.JButton();
+        removeItemBtn = new javax.swing.JButton();
+        itemQuantityField = new javax.swing.JTextField();
+        itemQuantityField1 = new javax.swing.JTextField();
+        itemQuantityField2 = new javax.swing.JTextField();
+        itemQuantityField3 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
         setPreferredSize(new java.awt.Dimension(1000, 700));
         setSize(new java.awt.Dimension(1000, 700));
 
@@ -51,9 +62,13 @@ public class DiscountFrame extends javax.swing.JFrame {
         jButton5.setForeground(new java.awt.Color(255, 255, 255));
         jButton5.setText("X");
         jButton5.setToolTipText("");
-        jButton5.setActionCommand("X");
         jButton5.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButton5.setOpaque(true);
+        jButton5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton5MouseClicked(evt);
+            }
+        });
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
@@ -97,6 +112,72 @@ public class DiscountFrame extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Helvetica Neue", 0, 15)); // NOI18N
         jLabel6.setText("Copyright © 2024 Sales Amigo");
 
+        jLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        jLabel2.setText("General Discount");
+
+        jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        jLabel3.setText("Category Discount");
+
+        jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        jLabel4.setText("Brand Discount");
+
+        jLabel7.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        jLabel7.setText("Product Discount");
+
+        addItemBtn.setBackground(new java.awt.Color(51, 102, 255));
+        addItemBtn.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
+        addItemBtn.setForeground(new java.awt.Color(255, 255, 255));
+        addItemBtn.setText("Add Discount");
+        addItemBtn.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        addItemBtn.setOpaque(true);
+        addItemBtn.setPreferredSize(new java.awt.Dimension(133, 24));
+        addItemBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addItemBtnActionPerformed(evt);
+            }
+        });
+
+        removeItemBtn.setBackground(new java.awt.Color(204, 0, 51));
+        removeItemBtn.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
+        removeItemBtn.setForeground(new java.awt.Color(255, 255, 255));
+        removeItemBtn.setText("Remove Discount");
+        removeItemBtn.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        removeItemBtn.setOpaque(true);
+        removeItemBtn.setPreferredSize(new java.awt.Dimension(133, 24));
+        removeItemBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeItemBtnActionPerformed(evt);
+            }
+        });
+
+        itemQuantityField.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        itemQuantityField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemQuantityFieldActionPerformed(evt);
+            }
+        });
+
+        itemQuantityField1.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        itemQuantityField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemQuantityField1ActionPerformed(evt);
+            }
+        });
+
+        itemQuantityField2.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        itemQuantityField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemQuantityField2ActionPerformed(evt);
+            }
+        });
+
+        itemQuantityField3.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        itemQuantityField3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemQuantityField3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -109,8 +190,32 @@ public class DiscountFrame extends javax.swing.JFrame {
                         .addComponent(jLabel6))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(381, 381, 381)
-                        .addComponent(jLabel1)))
-                .addContainerGap(396, Short.MAX_VALUE))
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(295, 295, 295)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(90, 90, 90)
+                                .addComponent(itemQuantityField, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(100, 100, 100)
+                                .addComponent(itemQuantityField1, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addGap(99, 99, 99)
+                                .addComponent(itemQuantityField3, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(115, 115, 115)
+                                .addComponent(itemQuantityField2, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(310, 310, 310)
+                        .addComponent(addItemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(37, 37, 37)
+                        .addComponent(removeItemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(319, 319, 319))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -118,12 +223,33 @@ public class DiscountFrame extends javax.swing.JFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 364, Short.MAX_VALUE)
+                .addGap(83, 83, 83)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(itemQuantityField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(itemQuantityField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(itemQuantityField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(itemQuantityField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(125, 125, 125)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addItemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(removeItemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(75, 75, 75)
                 .addComponent(jLabel6)
                 .addGap(23, 23, 23))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -132,6 +258,83 @@ public class DiscountFrame extends javax.swing.JFrame {
         loginFrame.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void addItemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemBtnActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) ordersTable.getModel();
+        int selectedRowIndex = ordersTable.getSelectedRow();
+
+        if (selectedRowIndex != -1) {
+            int orderId = (int) model.getValueAt(selectedRowIndex, 0);
+            Transaction pendingTransaction = pos.getPendingTransactionByID(orderId);
+            //do check for invalid item id and stock levels
+            int itemId = Integer.parseInt(itemIDField.getText());
+            int quantity = Integer.parseInt(itemQuantityField.getText());
+            double price = pos.getInventory().findVarantByID(itemId).getPrice();
+
+            if (pendingTransaction.getItemByID(itemId) != null) {
+                TransactionItem item = pendingTransaction.getItemByID(itemId);
+                item.setQuantity(item.getQuantity() + quantity);
+            } else {
+                pendingTransaction.addTransactionItem(new TransactionItem(itemId, quantity, price));
+            }
+            pendingTransaction.calculateTotal();
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US);
+            totalTxt.setText(currencyFormatter.format(pendingTransaction.getTotal()));
+            updateItemsTable(pendingTransaction.getItems());
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select an order.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_addItemBtnActionPerformed
+
+    private void removeItemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeItemBtnActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel itemsModel = (DefaultTableModel) itemsTable.getModel();
+        int selectedItem = itemsTable.getSelectedRow();
+
+        DefaultTableModel ordersModel = (DefaultTableModel) ordersTable.getModel();
+        int selectedOrder = ordersTable.getSelectedRow();
+
+        if (selectedItem != -1 && selectedItem != -1) {
+            int itemId = (int) itemsModel.getValueAt(selectedItem, 0);
+            int orderId = (int) ordersModel.getValueAt(selectedOrder, 0);
+            Transaction pendingTransaction = pos.getPendingTransactionByID(orderId);
+            TransactionItem item = pendingTransaction.getItemByID(itemId);
+            String message = String.format("Item Deletion:\nItem ID: %d\n", orderId);
+
+            int option = JOptionPane.showConfirmDialog(this, message + "\nAre you sure you want to item with ID: " + itemId + "?", "Delete item", JOptionPane.YES_NO_OPTION);
+
+            if (option == JOptionPane.YES_OPTION) {
+                //String feedback = inventory.deleteVariant(variant_id);
+                //JOptionPane.showMessageDialog(this, feedback, "Variant Deleted", JOptionPane.INFORMATION_MESSAGE);
+                pendingTransaction.getItems().remove(item);
+                updateItemsTable(pendingTransaction.getItems());
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select an item to delete.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_removeItemBtnActionPerformed
+
+    private void itemQuantityFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemQuantityFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_itemQuantityFieldActionPerformed
+
+    private void itemQuantityField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemQuantityField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_itemQuantityField1ActionPerformed
+
+    private void itemQuantityField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemQuantityField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_itemQuantityField2ActionPerformed
+
+    private void itemQuantityField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemQuantityField3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_itemQuantityField3ActionPerformed
+
+    private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseClicked
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_jButton5MouseClicked
 
     /**
      * @param args the command line arguments
@@ -169,11 +372,21 @@ public class DiscountFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addItemBtn;
+    private javax.swing.JTextField itemQuantityField;
+    private javax.swing.JTextField itemQuantityField1;
+    private javax.swing.JTextField itemQuantityField2;
+    private javax.swing.JTextField itemQuantityField3;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JButton removeItemBtn;
     // End of variables declaration//GEN-END:variables
 }

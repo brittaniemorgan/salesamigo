@@ -144,6 +144,7 @@ public class POSFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
+        setUndecorated(true);
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 1, 36)); // NOI18N
         jLabel1.setText("Point of Sale");
@@ -419,7 +420,7 @@ public class POSFrame extends javax.swing.JFrame {
         jLabel15.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel15.setText("Payment Method");
 
-        applyDiscBtn.setBackground(new java.awt.Color(0, 102, 255));
+        applyDiscBtn.setBackground(new java.awt.Color(51, 102, 255));
         applyDiscBtn.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
         applyDiscBtn.setForeground(new java.awt.Color(255, 255, 255));
         applyDiscBtn.setText("Apply");
@@ -539,7 +540,7 @@ public class POSFrame extends javax.swing.JFrame {
                         .addComponent(totalTxt))))
         );
 
-        addOrderBtn.setBackground(new java.awt.Color(0, 102, 255));
+        addOrderBtn.setBackground(new java.awt.Color(51, 102, 255));
         addOrderBtn.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
         addOrderBtn.setForeground(new java.awt.Color(255, 255, 255));
         addOrderBtn.setText("Add New Order");
@@ -590,7 +591,7 @@ public class POSFrame extends javax.swing.JFrame {
         itemItemLabel.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         itemItemLabel.setText("Item ID");
 
-        addItemBtn.setBackground(new java.awt.Color(0, 102, 255));
+        addItemBtn.setBackground(new java.awt.Color(51, 102, 255));
         addItemBtn.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
         addItemBtn.setForeground(new java.awt.Color(255, 255, 255));
         addItemBtn.setText("Add Item");
