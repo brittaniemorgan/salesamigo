@@ -80,7 +80,6 @@ public class AdminFrame extends javax.swing.JFrame {
         jTextField1.setText("jTextField1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setUndecorated(true);
         setPreferredSize(new java.awt.Dimension(1606, 883));
 
         jPanel3.setBackground(new java.awt.Color(0, 0, 0));
