@@ -13,11 +13,20 @@ public class TransactionItem {
     private int productId;
     private Transaction transaction;
     private int quantity;
+    private int transactionItemId;
     private double price;
     private double total;
     private Discount discount;
 
     public TransactionItem(int productId, int quantity, double price) {
+        this.productId = productId;
+        this.quantity = quantity;
+        this.price = price;
+        this.total = quantity * price;          
+    }
+    
+    public TransactionItem(int transactionItemId, int productId, int quantity, double price) {
+        this.transactionItemId = transactionItemId;
         this.productId = productId;
         this.quantity = quantity;
         this.price = price;
@@ -32,6 +41,14 @@ public class TransactionItem {
 
     public void setProductId(int productId) {
         this.productId = productId;
+    }
+    
+    public int getTransactionItemId() {
+        return transactionItemId;
+    }
+
+    public void setTransactionItemId(int transactionItemId) {
+        this.transactionItemId = transactionItemId;
     }
 
     public int getQuantity() {
@@ -52,7 +69,7 @@ public class TransactionItem {
         updateTotal();
     }
 
-    public double getTotal() {
+    public double getTotal() {       
         return total;
     }
 

@@ -4,7 +4,7 @@
  */
 package PointOfSale;
 
-import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -15,16 +15,25 @@ public class Discount {
     private String name;
     private String code;
     private double amount;
-    private ArrayList<String> selectProducts;
-    private ArrayList<String> selectBrands;
-    private ArrayList<String> selectCategories;
-    
+    private Date startDate;
+    private Date endDate;
 
+    // Constructor for general discounts
     public Discount(int id, String name, String code, double amount) {
         this.id = id;
         this.name = name;
         this.code = code;
         this.amount = amount;
+    }
+    
+    // Constructor for category, brand, or product discounts
+    public Discount(int id, String code, String name, double amount, Date startDate, Date endDate) {
+        this.id = id;
+        this.name = name;
+        this.code = code;
+        this.amount = amount;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     // Getters and Setters
@@ -61,6 +70,22 @@ public class Discount {
         this.amount = amount;
     }
 
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
     @Override
     public String toString() {
         return "Discount{" +
@@ -68,7 +93,8 @@ public class Discount {
                 ", name='" + name + '\'' +
                 ", code='" + code + '\'' +
                 ", amount=" + amount +
+                ", startDate='" + startDate + '\'' +
+                ", endDate='" + endDate + '\'' +
                 '}';
     }
 }
-

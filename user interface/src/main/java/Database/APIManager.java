@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -656,22 +657,6 @@ public class APIManager {
         }
         return response;
     }
-
-    // Method to refund an item from a transaction
-    public JSONObject refundTransactionItem(int transactionId, int itemId) {
-        JSONObject response = null;
-        try {
-            JSONObject refundInfo = new JSONObject();
-            refundInfo.put("transaction_id", transactionId);
-            refundInfo.put("item_id", itemId);
-
-            response = new JSONObject(sendDataToAPI("/refund", refundInfo)); // Adjust the endpoint as per your API
-            System.out.println("Response from server: " + response.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return response;
-    }
 //Update
     public JSONObject getPaymentTypes() {
         JSONObject paymentTypes = null;
@@ -723,6 +708,331 @@ public class APIManager {
         }
         return response;
     }
+    
+    public JSONObject processRefund(int transactionId, JSONArray items, int employeeId, double amount) {
+        JSONObject response = null;
+        try {
+            // Construct the refund request JSON object
+            JSONObject refundInfo = new JSONObject();
+            refundInfo.put("items", items);
+            refundInfo.put("employee_id", employeeId);
+            refundInfo.put("amount", amount);
+            response = new JSONObject(sendDataToAPI("/refunds/" + transactionId, refundInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+        
+    public JSONObject addDiscount(String discountCode, String discountName, double discountPercent, String startDate, String endDate, ArrayList<Integer> applicable_ids, String discountType) {
+        JSONObject response = null;
+        try {
+            JSONObject discountInfo = new JSONObject();
+            discountInfo.put("discount_code", discountCode);
+            discountInfo.put("discount_name", discountName);
+            discountInfo.put("discount_percent", discountPercent);
+            discountInfo.put("start_date", startDate);
+            discountInfo.put("end_date", endDate);
+            discountInfo.put("applicable_ids", applicable_ids);
+            discountInfo.put("discount_type", discountType);
+
+
+            response = new JSONObject(sendDataToAPI("discounts", discountInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+
+    public JSONObject updateDiscount(int discountID, String discountCode, String discountName, double discountPercent, String startDate, String endDate, ArrayList<Integer> applicable_ids, String discountType) {
+        JSONObject response = null;
+        try {
+            JSONObject discountInfo = new JSONObject();
+            discountInfo.put("discount_code", discountCode);
+            discountInfo.put("discount_name", discountName);
+            discountInfo.put("discount_percent", discountPercent);
+            discountInfo.put("start_date", startDate);
+            discountInfo.put("end_date", endDate);
+            discountInfo.put("applicable_ids", applicable_ids);
+            discountInfo.put("discount_type", discountType);
+
+            response = new JSONObject(sendPutRequestToAPI("discounts/" + discountID, discountInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }    
+    
+    public JSONObject deleteDiscount(int discountID) {
+        JSONObject response = null;
+        try {
+            JSONObject discountInfo = new JSONObject();
+            response = new JSONObject(sendDeleteRequestToAPI("discounts/" + discountID, discountInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+    
+    public JSONObject getSalesReport(String startDate, String endDate) {
+    JSONObject salesData = null;
+    try {
+        String endpoint = "sales_report?start_date=" + startDate + "&end_date=" + endDate;
+        salesData = new JSONObject(fetchDataFromAPI(endpoint));
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return salesData;
+}
+    
+    
+    
+    
+    
+    public JSONObject getGeneralDiscounts() {
+    JSONObject generalDiscounts = null;
+    try {
+        generalDiscounts = new JSONObject(fetchDataFromAPI("general_discounts"));
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return generalDiscounts;
+}
+
+    public JSONObject addGeneralDiscount(String discountCode, String discountName, double discountPercent, String startDate, String endDate) {
+        JSONObject response = null;
+        try {
+            JSONObject discountInfo = new JSONObject();
+            discountInfo.put("discount_code", discountCode);
+            discountInfo.put("discount_name", discountName);
+            discountInfo.put("discount_percent", discountPercent);
+            discountInfo.put("start_date", startDate);
+            discountInfo.put("end_date", endDate);
+
+            response = new JSONObject(sendDataToAPI("general_discounts", discountInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public JSONObject updateGeneralDiscount(int discountID, String discountCode, String discountName, double discountPercent, String startDate, String endDate) {
+        JSONObject response = null;
+        try {
+            JSONObject discountInfo = new JSONObject();
+            discountInfo.put("discount_code", discountCode);
+            discountInfo.put("discount_name", discountName);
+            discountInfo.put("discount_percent", discountPercent);
+            discountInfo.put("start_date", startDate);
+            discountInfo.put("end_date", endDate);
+
+            response = new JSONObject(sendPutRequestToAPI("general_discounts/" + discountID, discountInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public JSONObject deleteGeneralDiscount(int discountID) {
+        JSONObject response = null;
+        try {
+            JSONObject paymentTypeInfo = new JSONObject();
+            response = new JSONObject(sendDeleteRequestToAPI("general_discounts/" + discountID, paymentTypeInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+    
+    public JSONObject getBrandDiscounts() {
+        JSONObject brandDiscounts = null;
+        try {
+            brandDiscounts = new JSONObject(fetchDataFromAPI("brand_discounts"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return brandDiscounts;
+    }
+
+    public JSONObject addBrandDiscount(String discountCode, String discountName, double discountPercent, String startDate, String endDate, ArrayList<Integer> brandIds) {
+        JSONObject response = null;
+        try {
+            JSONObject discountInfo = new JSONObject();
+            discountInfo.put("discount_code", discountCode);
+            discountInfo.put("discount_name", discountName);
+            discountInfo.put("discount_percent", discountPercent);
+            discountInfo.put("start_date", startDate);
+            discountInfo.put("end_date", endDate);
+            discountInfo.put("brand_ids", brandIds);
+
+            response = new JSONObject(sendDataToAPI("brand_discounts", discountInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public JSONObject updateBrandDiscount(int discountID, String discountCode, String discountName, double discountPercent, String startDate, String endDate, ArrayList<Integer> brandIds) {
+        JSONObject response = null;
+        try {
+            JSONObject discountInfo = new JSONObject();
+            discountInfo.put("discount_code", discountCode);
+            discountInfo.put("discount_name", discountName);
+            discountInfo.put("discount_percent", discountPercent);
+            discountInfo.put("start_date", startDate);
+            discountInfo.put("end_date", endDate);
+            discountInfo.put("brand_ids", brandIds);
+
+            response = new JSONObject(sendPutRequestToAPI("brand_discounts/" + discountID, discountInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public JSONObject deleteBrandDiscount(int discountID) {
+        JSONObject response = null;
+        try {
+            JSONObject discountInfo = new JSONObject();
+            response = new JSONObject(sendDeleteRequestToAPI("brand_discounts/" + discountID, discountInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+    public JSONObject getCategoryDiscounts() {
+        JSONObject categoryDiscounts = null;
+        try {
+            categoryDiscounts = new JSONObject(fetchDataFromAPI("category_discounts"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return categoryDiscounts;
+    }
+
+    public JSONObject addCategoryDiscount(String discountCode, String discountName, double discountPercent, String startDate, String endDate, ArrayList<Integer> categoryIds) {
+        JSONObject response = null;
+        try {
+            JSONObject discountInfo = new JSONObject();
+            discountInfo.put("discount_code", discountCode);
+            discountInfo.put("discount_name", discountName);
+            discountInfo.put("discount_percent", discountPercent);
+            discountInfo.put("start_date", startDate);
+            discountInfo.put("end_date", endDate);
+            discountInfo.put("category_ids", categoryIds);
+
+            response = new JSONObject(sendDataToAPI("category_discounts", discountInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public JSONObject updateCategoryDiscount(int discountID, String discountCode, String discountName, double discountPercent, String startDate, String endDate, ArrayList<Integer> categoryIds) {
+        JSONObject response = null;
+        try {
+            JSONObject discountInfo = new JSONObject();
+            discountInfo.put("discount_code", discountCode);
+            discountInfo.put("discount_name", discountName);
+            discountInfo.put("discount_percent", discountPercent);
+            discountInfo.put("start_date", startDate);
+            discountInfo.put("end_date", endDate);
+            discountInfo.put("category_ids", categoryIds);
+
+            response = new JSONObject(sendPutRequestToAPI("category_discounts/" + discountID, discountInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public JSONObject deleteCategoryDiscount(int discountID) {
+        JSONObject response = null;
+        try {
+            JSONObject discountInfo = new JSONObject();
+            response = new JSONObject(sendDeleteRequestToAPI("category_discounts/" + discountID, discountInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public JSONObject getProductDiscounts() {
+        JSONObject productDiscounts = null;
+        try {
+            productDiscounts = new JSONObject(fetchDataFromAPI("product_discounts"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return productDiscounts;
+    }
+
+    public JSONObject addProductDiscount(String discountCode, String discountName, double discountPercent, String startDate, String endDate, ArrayList<Integer> productIds) {
+        JSONObject response = null;
+        try {
+            JSONObject discountInfo = new JSONObject();
+            discountInfo.put("discount_code", discountCode);
+            discountInfo.put("discount_name", discountName);
+            discountInfo.put("discount_percent", discountPercent);
+            discountInfo.put("start_date", startDate);
+            discountInfo.put("end_date", endDate);
+            discountInfo.put("product_ids", productIds);
+
+            response = new JSONObject(sendDataToAPI("product_discounts", discountInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public JSONObject updateProductDiscount(int discountID, String discountCode, String discountName, double discountPercent, String startDate, String endDate, ArrayList<Integer> productIds) {
+        JSONObject response = null;
+        try {
+            JSONObject discountInfo = new JSONObject();
+            discountInfo.put("discount_code", discountCode);
+            discountInfo.put("discount_name", discountName);
+            discountInfo.put("discount_percent", discountPercent);
+            discountInfo.put("start_date", startDate);
+            discountInfo.put("end_date", endDate);
+            discountInfo.put("product_ids", productIds);
+
+            response = new JSONObject(sendPutRequestToAPI("product_discounts/" + discountID, discountInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public JSONObject deleteProductDiscount(int discountID) {
+        JSONObject response = null;
+        try {
+            JSONObject discountInfo = new JSONObject();
+            response = new JSONObject(sendDeleteRequestToAPI("product_discounts/" + discountID, discountInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+
+
 
 
     public static void main(String[] args) throws IOException {

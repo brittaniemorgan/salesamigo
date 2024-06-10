@@ -501,6 +501,15 @@ public class Inventory {
         return null; 
     }
     
+    public Category findCategoryByID(int id) {
+        for (Category category : categories) {
+            if (category.getId() == id) {
+                return category;
+            }
+        }
+        return null; 
+    }
+    
     public Product findProductByID(int id) {
         for (Product product : products) {
             if (product.getID() == id) {
@@ -524,6 +533,15 @@ public class Inventory {
     public Brand findBrandByName(String name) {
         for (Brand brand : brands) {
             if (brand.getName().equals(name)) {
+                return brand;
+            }
+        }
+        return null;
+    }
+    
+    public Brand findBrandByID(int id) {
+        for (Brand brand : brands) {
+            if (brand.getId() == id) {
                 return brand;
             }
         }
@@ -568,10 +586,6 @@ public class Inventory {
             e.printStackTrace();
         } 
         
-    }
-
-    public void setVisible(boolean b) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
 }

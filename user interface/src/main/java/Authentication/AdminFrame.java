@@ -638,7 +638,7 @@ public class AdminFrame extends javax.swing.JFrame {
     private void InventoryMenuItemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InventoryMenuItemMouseClicked
         // TODO add your handling code here:
         Inventory inventory = new Inventory();
-        inventory.setVisible(true);
+        //inventory.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_InventoryMenuItemMouseClicked
 

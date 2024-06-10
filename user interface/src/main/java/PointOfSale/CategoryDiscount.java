@@ -4,6 +4,10 @@
  */
 package PointOfSale;
 
+import Inventory.Category;
+import java.util.ArrayList;
+import java.util.Date;
+
 /**
  *
  * @author britt
@@ -11,10 +15,21 @@ package PointOfSale;
 
 public class CategoryDiscount extends Discount {
     private int categoryId;
+    private ArrayList<Category> categories;
 
-    public CategoryDiscount(int discountId, String name, String description, double amount, int categoryId) {
-        super(discountId, name, description, amount);
+    public CategoryDiscount(int id,String discountCode, String discountName, double discountPercent,int categoryId) {
+        super(id, discountCode, discountName, discountPercent);
         this.categoryId = categoryId;
+    }
+    
+    public CategoryDiscount(int id,String discountCode, String discountName, double discountPercent, Date startDate, Date endDate, int categoryId) {
+        super(id, discountCode, discountName, discountPercent, startDate, endDate);
+        this.categoryId = categoryId;
+    }
+    
+    public CategoryDiscount(int id,String discountCode, String discountName, double discountPercent, Date startDate, Date endDate) {
+        super(id, discountCode, discountName, discountPercent, startDate, endDate);
+        this.categories = new ArrayList<>();
     }
 
     public int getCategoryId() {
@@ -23,6 +38,14 @@ public class CategoryDiscount extends Discount {
 
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
+    }
+    
+    public ArrayList<Category> getApplicableCategories(){
+        return this.categories;
+    }
+    
+    public void addCategory(Category category){
+        this.categories.add(category);
     }
 
     @Override

@@ -19,6 +19,7 @@ public class Transaction {
     private double total;
     private double amtGiven;
     private ArrayList<TransactionItem> items;
+    private ArrayList<RefundItem> refundItems;
     private String paymentMethod;
     private int pointsApplied;
     
@@ -34,7 +35,7 @@ public class Transaction {
         this.employeeId = employeeId;
         this.items = new ArrayList<TransactionItem>();
         this.total = 0;
-        this.pointsApplied = 0;
+        this.pointsApplied = 0;        
     }
 
     public Transaction(int transactionId, Date transactionDate, int customerId, int employeeId, double total, ArrayList<TransactionItem> items, String paymentMethod) {
@@ -44,10 +45,26 @@ public class Transaction {
         this.employeeId = employeeId;        
         this.items = items;
         this.paymentMethod = paymentMethod;
-        this.total = 0;
+        this.total = 0.0;
         for (TransactionItem item : items){
             this.total += item.getTotal();
         }
+        
+        
+    }
+    
+    public Transaction(int transactionId, Date transactionDate, int customerId, int employeeId, double total, ArrayList<TransactionItem> items, String paymentMethod, ArrayList<RefundItem> refundItems) {
+        this.transactionId = transactionId;
+        this.transactionDate = transactionDate;
+        this.customerId = customerId;
+        this.employeeId = employeeId;        
+        this.items = items;
+        this.paymentMethod = paymentMethod;
+        this.total = 0.0;
+        for (TransactionItem item : items){
+            this.total += item.getTotal();
+        }
+        this.refundItems = refundItems;
     }
 
     // Getters and Setters
@@ -84,12 +101,13 @@ public class Transaction {
         this.employeeId = employeeId;
     }
 
-    public double getTotal() {
+    public double getTotal() {    
+        
         return total;
     }
 
     public void calculateTotal() {
-        int sum = 0;
+        double sum = 0.0;
         for (TransactionItem item : items){
             sum += item.getTotal();
         }//update
@@ -112,8 +130,8 @@ public class Transaction {
     
     public double getChange(){
         calculateTotal();
-        double finalTotal = this.total *= 1.15;
-        return Math.round((this.amtGiven - finalTotal)/100.0)*100.0;       
+        double finalTotal = this.total * 1.15;
+        return Math.round((this.amtGiven - finalTotal)*100.0)/100.0;       
     }
 
     public ArrayList<TransactionItem> getItems() {
@@ -122,6 +140,14 @@ public class Transaction {
 
     public void setItems(ArrayList<TransactionItem> items) {
         this.items = items;
+    }
+    
+    public ArrayList<RefundItem> getRefundItems() {
+        return refundItems;
+    }
+
+    public void setRefundItems(ArrayList<RefundItem> items) {
+        this.refundItems = items;
     }
 
     public String getPaymentMethod() {
