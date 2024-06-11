@@ -387,9 +387,6 @@ public class PaymentTypeFrame extends javax.swing.JFrame {
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
-        LoginFrame loginFrame = new LoginFrame();
-        loginFrame.setVisible(true);
-        dispose();
     }//GEN-LAST:event_jButton6ActionPerformed
 
     /**

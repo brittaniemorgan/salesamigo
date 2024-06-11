@@ -886,16 +886,6 @@ public class DiscountFrame extends javax.swing.JFrame {
         double price = (double) model.getValueAt(selectedRowIndex, 4);
         String description = (String) model.getValueAt(selectedRowIndex, 5);
         String gender = (String) model.getValueAt(selectedRowIndex, 6);
-
-        productIDField.setText(String.valueOf(id));
-        nameField.setText(name);
-        priceField.setText(String.valueOf(price));
-        descField.setText(description);
-        categoryField.setSelectedItem(category);
-        brandField.setSelectedItem(brand);
-        genderField.setSelectedItem(gender);
-
-        updateVariantsTable(id);
     }//GEN-LAST:event_productTableMouseClicked
 
     private void productSearchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productSearchFieldActionPerformed
@@ -904,13 +894,10 @@ public class DiscountFrame extends javax.swing.JFrame {
 
     private void productSearchBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productSearchBtn1ActionPerformed
         // TODO add your handling code here:
-        String query = productSearchField.getText();
-        updateProductsTable(inventory.getProductsByNameOrBrand(query));
     }//GEN-LAST:event_productSearchBtn1ActionPerformed
 
     private void viewAllProductsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewAllProductsActionPerformed
         // TODO add your handling code here:
-        updateProductsTable(inventory.getProducts());
     }//GEN-LAST:event_viewAllProductsActionPerformed
 
     private void productTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productTable1MouseClicked
@@ -970,82 +957,14 @@ public class DiscountFrame extends javax.swing.JFrame {
 
     private void addProdBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addProdBtnActionPerformed
         // TODO add your handling code here:
-
-        //int id = (int) model.getValueAt(selectedRowIndex, 0);
-        String name = nameField.getText();
-        Double price = Double.valueOf(priceField.getText());
-        String description = descField.getText();
-        String category = (String) categoryField.getSelectedItem();
-        String brand = (String) brandField.getSelectedItem();
-        String gender = (String) genderField.getSelectedItem();
-
-        String message = String.format("Product Update:\nName: %s\nPrice: %.2f\nDescription: %s\nCategory: %s \nBrand: %s\nGender: %s",
-            name, price, description, category, brand, gender);
-        int option = JOptionPane.showConfirmDialog(this, message + "\nAre you sure you want to this product?", "Add New Product", JOptionPane.YES_NO_OPTION);
-
-        if (option == JOptionPane.YES_OPTION) {
-            String feedback = inventory.addProduct(name, description, price, category, brand, gender);
-            updateProductsTable(inventory.getProducts());
-            // Show details in another JOptionPane
-            JOptionPane.showMessageDialog(this, feedback, "Product Added", JOptionPane.INFORMATION_MESSAGE);
-        }
     }//GEN-LAST:event_addProdBtnActionPerformed
 
     private void editProdBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editProdBtnActionPerformed
         // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel) productTable.getModel();
-        int selectedRowIndex = productTable.getSelectedRow();
-        int id = -1;
-        if (selectedRowIndex != -1) {
-            id = (int) model.getValueAt(selectedRowIndex, 0);
-            String name = nameField.getText();
-            double price = Double.parseDouble(priceField.getText());
-            String description = descField.getText();
-            String category = (String) categoryField.getSelectedItem();
-            String brand = (String) brandField.getSelectedItem();
-            String gender = (String) genderField.getSelectedItem();
-
-            String message = String.format("Product Update:\nName: %s\nPrice: %.2f\nDescription: %s\nCategory: %s \nBrand: %s\nGender: %s",
-                name, price, description, category, brand, gender);
-            int option = JOptionPane.showConfirmDialog(this, message + "\nAre you sure you want to update product with ID: " + id + "?", "Save Changes", JOptionPane.YES_NO_OPTION);
-
-            if (option == JOptionPane.YES_OPTION) {
-                String feedback = inventory.updateProduct(id, name, category, price, description, gender, brand);
-                updateProductsTable(inventory.getProducts());
-                JOptionPane.showMessageDialog(this, feedback, "Product Added", JOptionPane.INFORMATION_MESSAGE);
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Please select a product to update.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
     }//GEN-LAST:event_editProdBtnActionPerformed
 
     private void deleteProBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteProBtnActionPerformed
         // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel) productTable.getModel();
-        int selectedRowIndex = productTable.getSelectedRow();
-
-        int id = -1;
-        if (selectedRowIndex != -1) {
-            id = (int) model.getValueAt(selectedRowIndex, 0);
-            String name = nameField.getText();
-            double price = Double.parseDouble(priceField.getText());
-            String description = descField.getText();
-            String category = (String) categoryField.getSelectedItem();
-            String brand = (String) brandField.getSelectedItem();
-            String gender = (String) genderField.getSelectedItem();
-
-            String message = String.format("Product Deletion:\nName: %s\nPrice: %.2f\nDescription: %s\nCategory: %s \nBrand: %s\nGender: %s",
-                name, price, description, category, brand, gender);
-            int option = JOptionPane.showConfirmDialog(this, message + "\nAre you sure you want to delete product with ID: " + id + "?", "Delete Product", JOptionPane.YES_NO_OPTION);
-
-            if (option == JOptionPane.YES_OPTION) {
-                String feedback = inventory.deleteProduct(id);
-                updateProductsTable(inventory.getProducts());
-                JOptionPane.showMessageDialog(this, feedback, "Product Deleted", JOptionPane.INFORMATION_MESSAGE);
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Please select a product to delete.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
     }//GEN-LAST:event_deleteProBtnActionPerformed
 
     private void editProdBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editProdBtn1ActionPerformed
