@@ -29,9 +29,9 @@ CREATE TABLE `discounts` (
   `discount_percent` decimal(5,2) NOT NULL,
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
-  `discount_type` enum('GENERAL','ITEM','BRAND','CATEGORY') NOT NULL,
+  `discount_type` enum('GENERAL','PRODUCT','BRAND','CATEGORY') NOT NULL,
   PRIMARY KEY (`discount_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `discounts` (
 
 LOCK TABLES `discounts` WRITE;
 /*!40000 ALTER TABLE `discounts` DISABLE KEYS */;
-INSERT INTO `discounts` VALUES (1,'STORE10','',10.00,'2024-06-01','2024-06-30','GENERAL'),(2,'STORE20','',20.00,'2024-06-01','2024-06-30','ITEM');
+INSERT INTO `discounts` VALUES (1,'STORE10','',10.00,'2024-06-01','2024-06-30','GENERAL'),(2,'PROD15','Product Discount 15%',15.00,'2024-06-20','2024-06-30','PRODUCT'),(5,'BRAND20','Brand Discount 20%',30.00,'2024-07-04','2024-07-17','BRAND'),(10,'PROD15','Product Discount 15%',15.00,'2024-06-20','2024-06-30','PRODUCT'),(11,'PROD15','Product Discount 15%',15.00,'2024-06-20','2024-06-30','PRODUCT'),(12,'PROD15','Product Discount 15%',15.00,'2024-06-20','2024-06-30','GENERAL'),(14,'jTextField1','jTextField1',8.00,'2024-06-06','2024-06-06','GENERAL'),(16,'Test Discoi','fghjkl',20.00,'2024-06-06','2024-06-06','GENERAL'),(20,'TET','BIG TINGS A GWAN!',50.00,'2024-06-06','2024-06-13','GENERAL'),(21,'test','vj bn',90.00,'2024-06-14','2024-06-20','PRODUCT'),(22,'test','nm',90.00,'2024-06-13','2024-06-19','PRODUCT'),(25,'jTextField1','jTextField1',40.00,'2024-06-13','2024-06-14','PRODUCT'),(26,'jTextField1','jTextField1',89.00,'2024-06-08','2024-06-08','CATEGORY');
 /*!40000 ALTER TABLE `discounts` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -53,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-04 17:07:03
+-- Dump completed on 2024-06-18 21:43:22

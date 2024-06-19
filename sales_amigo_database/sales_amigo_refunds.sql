@@ -16,32 +16,39 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `category_discounts`
+-- Table structure for table `refunds`
 --
 
-DROP TABLE IF EXISTS `category_discounts`;
+DROP TABLE IF EXISTS `refunds`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `category_discounts` (
-  `category_discount_id` int NOT NULL AUTO_INCREMENT,
-  `category_id` int DEFAULT NULL,
-  `discount_id` int DEFAULT NULL,
-  PRIMARY KEY (`category_discount_id`),
-  KEY `category_id` (`category_id`),
-  KEY `discount_id` (`discount_id`),
-  CONSTRAINT `category_discounts_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`),
-  CONSTRAINT `category_discounts_ibfk_2` FOREIGN KEY (`discount_id`) REFERENCES `discounts` (`discount_id`)
+CREATE TABLE `refunds` (
+  `refund_id` int NOT NULL AUTO_INCREMENT,
+  `transaction_id` int NOT NULL,
+  `transaction_item_id` int NOT NULL,
+  `employee_id` int NOT NULL,
+  `quantity` int NOT NULL,
+  `refund_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `restock` tinyint(1) DEFAULT '0',
+  `amount` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`refund_id`),
+  KEY `transaction_id` (`transaction_id`),
+  KEY `transaction_item_id` (`transaction_item_id`),
+  KEY `employee_id` (`employee_id`),
+  CONSTRAINT `refunds_ibfk_1` FOREIGN KEY (`transaction_id`) REFERENCES `sales_transactions` (`transaction_id`),
+  CONSTRAINT `refunds_ibfk_2` FOREIGN KEY (`transaction_item_id`) REFERENCES `transaction_items` (`transaction_item_id`),
+  CONSTRAINT `refunds_ibfk_3` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `category_discounts`
+-- Dumping data for table `refunds`
 --
 
-LOCK TABLES `category_discounts` WRITE;
-/*!40000 ALTER TABLE `category_discounts` DISABLE KEYS */;
-INSERT INTO `category_discounts` VALUES (9,3,26),(10,6,26);
-/*!40000 ALTER TABLE `category_discounts` ENABLE KEYS */;
+LOCK TABLES `refunds` WRITE;
+/*!40000 ALTER TABLE `refunds` DISABLE KEYS */;
+INSERT INTO `refunds` VALUES (2,57,53,1,1,'2024-06-05 02:19:21',1,0.00),(4,57,53,1,1,'2024-06-05 02:26:40',1,0.00),(5,1,1,1,1,'2024-06-05 06:09:28',0,50.00),(6,1,1,1,1,'2024-06-05 06:10:33',0,50.00),(7,1,2,1,1,'2024-06-05 06:11:56',0,50.00),(8,5,5,1,1,'2024-06-05 06:20:36',0,50.00),(9,8,11,1,1,'2024-06-05 06:21:57',0,19.99),(10,5,5,1,1,'2024-06-05 06:24:13',1,50.00);
+/*!40000 ALTER TABLE `refunds` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

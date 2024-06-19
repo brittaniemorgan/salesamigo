@@ -31,7 +31,7 @@ CREATE TABLE `brand_discounts` (
   KEY `discount_id` (`discount_id`),
   CONSTRAINT `brand_discounts_ibfk_1` FOREIGN KEY (`brand_id`) REFERENCES `brand` (`brand_id`),
   CONSTRAINT `brand_discounts_ibfk_2` FOREIGN KEY (`discount_id`) REFERENCES `discounts` (`discount_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,6 +40,7 @@ CREATE TABLE `brand_discounts` (
 
 LOCK TABLES `brand_discounts` WRITE;
 /*!40000 ALTER TABLE `brand_discounts` DISABLE KEYS */;
+INSERT INTO `brand_discounts` VALUES (12,3,5),(13,1,5);
 /*!40000 ALTER TABLE `brand_discounts` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-04 17:07:02
+-- Dump completed on 2024-06-18 21:43:22
