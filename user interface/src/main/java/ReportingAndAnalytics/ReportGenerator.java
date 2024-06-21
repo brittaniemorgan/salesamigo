@@ -31,4 +31,22 @@ public class ReportGenerator {
         // Process the response as needed
         return response;
     }
+    
+    public JSONObject getInventoryReport(ReportFilter filter) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String startDate = dateFormat.format(filter.getStartDate());
+        String endDate = dateFormat.format(filter.getEndDate());
+        JSONObject response = api.getInventoryReport(startDate, endDate);
+        // Process the response as needed
+        return response;
+    }
+    
+    public JSONObject getFinanceReport(ReportFilter filter) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String startDate = dateFormat.format(filter.getStartDate());
+        String endDate = dateFormat.format(filter.getEndDate());
+        JSONObject response = api.getFinanceReport(startDate, endDate);
+        // Process the response as needed
+        return response;
+    }
 }

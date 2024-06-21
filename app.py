@@ -1372,9 +1372,6 @@ def sales_report():
         params = [start_date, end_date]
 
         # Add filters dynamically
-        if employee_id:
-            query += " AND st.employee_id = %s"
-            params.append(employee_id)
         if customer_id:
             query += " AND st.customer_id = %s"
             params.append(customer_id)
@@ -1700,7 +1697,7 @@ def finance_report():
 
             monthly_profit_loss_data.append({
                 'sale_month': month_name,
-                'year': int(month['sale_month'].split('-')[0]),
+                'sale_year': int(month['sale_month'].split('-')[0]),
                 'month': int(month['sale_month'].split('-')[1]),
                 'total_sales': month_total_sales,
                 'total_expenses': month_total_expenses,
@@ -1964,15 +1961,55 @@ def inventory_report_test():
 
 
 
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from flask import Flask, request, jsonify
 
+def fetch_data():
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
 
+    try:
+        query = """SELECT DISTINCT p.product_id, p.name, b.brand, c.category, pv.color, p.gender, p.price
+                FROM product p
+                JOIN productvariant pv ON p.product_id = pv.product_id
+                JOIN brand b ON b.brand_id = p.brand_id
+                JOIN category c ON c.category_id = p.category_id
+                """
+        cursor.execute(query)
+        products = cursor.fetchall()
+        data = [{
+            'Product ID': product['product_id'],
+            'Category': product['category'],
+            'Brand': product['brand'],
+            'Price': product['price'],
+            'Color': product['color'],
+            'Gender': product['gender']
+        } for product in products]
+        return pd.DataFrame(data)
+        cursor.close()
+        connection.close()
+    except Exception as e:
+        return str(e)
 
-
-
-
-
-
-
+#not collaborative
+@app.route('/recommend', methods=['GET'])
+def recommend():
+    products_df = fetch_data()
+    products_df['features'] = products_df[['Category', 'Brand', 'Color', 'Gender']].apply(lambda x: ' '.join(x), axis=1)
+    vectorizer = TfidfVectorizer()
+    feature_vectors = vectorizer.fit_transform(products_df['features'])
+    similarity_matrix = cosine_similarity(feature_vectors)
+    product_id = int(request.args.get('product_id'))
+    num_recommendations = 10    
+    idx = products_df.index[products_df['Product ID'] == product_id].tolist()[0]    
+    similarity_scores = list(enumerate(similarity_matrix[idx]))
+    similarity_scores = sorted(similarity_scores, key=lambda x: x[1], reverse=True)
+    recommended_indices = [i[0] for i in similarity_scores[1:num_recommendations + 1]]
+    recommended_products = products_df.iloc[recommended_indices][['Product ID', 'Category', 'Brand', 'Price', 'Color', 'Gender']].to_dict('records')
+    
+    return jsonify(recommended_products)
 
 
 
