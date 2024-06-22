@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en" style="height: 538.727px;">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Signup</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Navbar-Right-Links-Dark-icons.css') }}">    
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='salesamigo-logo.png') }}">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md bg-dark py-3 navbar-dark">
+        <div class="container"><a class="navbar-brand d-flex align-items-center" href="{{ url_for('home') }}"><span class="bs-icon-sm bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center me-2 bs-icon" style="background: var(--bs-green);"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-currency-dollar">
+                        <path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718H4zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73l.348.086z"></path>
+                    </svg></span><span>Sales Amigo</span></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-5"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navcol-5"></div>
+        </div>
+    </nav>
+    <section class="py-4 py-xl-5" style="height: 740.727px;">
+        <h1 style="font-size: 38.112px;text-align: center;font-weight: bold;padding-right: 10px;">Sign Up</h1>
+        <div class="container">
+            <div class="row" style="height: 856px;">
+                <div class="col-md-4" style="width: 137.992px;margin-right: 220px;margin-left: 0px;"></div>
+                <div class="col-md-4">
+                    
+                    <form method="post" action="{{ url_for('signup') }}" style="height: 808px;padding: 0px;width: 423px;margin-right: 0px;padding-left: 18px;padding-right: 0px;margin-left: 105px;text-align: left;padding-top: 34px;">
+                        {{ form.csrf_token }}
+
+                        <p style="padding-bottom: 0px;margin-bottom: 31px;">Fill in this form to sign up for Sales Amigo.</p>
+                        <p>{% include 'flash_messages.html' %}</p>
+                        <label class="form-label" style="font-size: 20px;">{{ form.firstname.label }}</label>
+                        {{ form.firstname(class="form-control", style="width: 360px;margin-bottom: 25px;") }}
+                    
+                        <label class="form-label" style="font-size: 20px;">{{ form.lastname.label }}</label>
+                        {{ form.lastname(class="form-control", style="width: 360px;margin-bottom: 25px;") }}
+
+                        <label class="form-label" style="font-size: 20px;">{{ form.email.label }}</label>
+                        {{ form.email(class="form-control", style="width: 360px;margin-bottom: 25px;") }}
+                        
+                        <label class="form-label" style="font-size: 20px;">{{ form.password.label }}</label>
+                        {{ form.password(class="form-control", style="width: 360px;margin-bottom: 25px;") }}
+
+                        <label class="form-label" style="font-size: 20px;">{{ form.contact_number.label }}</label>
+                        {{ form.contact_number(class="form-control", style="width: 360px;margin-bottom: 25px;") }}
+                        <label class="form-label" style="font-size: 20px;">{{ form.address.label }}</label>
+                        {{ form.address(class="form-control", style="width: 360px;height: 82px;margin-bottom: 30px;") }}
+                        <a href="javascript:history.back()" class="btn btn-secondary mt-3 mt-md-0">
+                            Back
+                        </a>
+                        <input class="btn btn-primary" type="submit" style="width: 83.1094px;height: 38px;">
+                    </form>
+                </div>
+                <div class="col-md-4" style="width: 137.992px;margin-left: 130px;"></div>
+            </div>
+        </div>
+        <footer class="text-center">
+            <div class="container text-muted py-4 py-lg-5" style="padding-top: 0px;height: 129px;margin-top: 0px;padding-bottom: 0px;">
+                <p class="mb-0" style="color: var(--bs-emphasis-color);padding-top: 0px;padding-left: 30px;margin-right: 6px;padding-bottom: 24px;margin-top: 0px;">Copyright © 2024 Sales Amigo</p>
+            </div>
+        </footer>
+    </section>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+</body>
+
+</html>

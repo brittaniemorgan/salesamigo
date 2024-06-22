@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.reflowhq.com/v2/toolkit.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Navbar-Right-Links-Dark-icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Profile-Edit-Form-styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Profile-Edit-Form.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='salesamigo-logo.png') }}">
+    <style>
+        .badge {
+            font-size: 0.75rem;
+            min-width: 1rem;
+            padding: 0.25rem 0.4rem;
+            border-radius: 0.5rem;
+        }
+
+        #view-cart-link {
+            background-color: #f0f0f0;
+        }
+
+        #view-cart-link:hover {
+            background-color: #e1e1e1 !important;
+        }
+
+        .flash-messages {
+            text-align: center;
+        }
+
+        a.card-link {
+            text-decoration: none;
+        }
+
+        .card-title,
+        .card-text {
+            color: black;
+        }
+
+        .col-md-6 h1,p {
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md bg-dark py-3 navbar-dark">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('home') }}">
+                <span class="bs-icon-sm bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center me-2 bs-icon"
+                    style="background: var(--bs-green);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor"
+                        viewBox="0 0 16 16" class="bi bi-currency-dollar">
+                        <path
+                            d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718H4zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73l.348.086z">
+                        </path>
+                    </svg>
+                </span>
+                <span>Sales Amigo</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navcol-5">
+                <span class="visually-hidden">Toggle navigation</span>
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="container text-muted py-4 py-lg-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 text-center">
+                <h1>Welcome to Sales Amigo</h1>
+                <br>
+                <p class="lead">Your one-stop shop for all your shopping needs!</p>
+            </div>
+        </div>
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">New to Sales Amigo? Sign Up</h5>
+                        <p class="card-text">Join Sales Amigo today. Sign up and start shopping!</p>
+                        <a href="{{ url_for('signup') }}" class="btn btn-primary">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Login</h5>
+                        <p class="card-text">Already a member? Log in to access your account.</p>
+                        <a href="{{ url_for('login') }}" class="btn btn-primary">Login Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Start Shopping</h5>
+                        <p class="card-text">Explore our wide range of products and start shopping today.</p>
+                        <a href="{{ url_for('shop') }}" class="btn btn-primary">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container text-muted py-4 py-lg-5">
+        <p class="mb-0" style="color: var(--bs-emphasis-color);padding-top: 0px;padding-left: 0px;margin-right: 6px;padding-bottom: 24px;margin-top: 0px;text-align: center;margin-left: 0px;">Copyright © 2024 Sales Amigo</p>
+    </div>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="https://cdn.reflowhq.com/v2/toolkit.min.js"></script>
+    <script src="{{ url_for('static', filename='js/bs-init.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/Profile-Edit-Form-profile.js') }}"></script>
+</body>
+
+</html>
