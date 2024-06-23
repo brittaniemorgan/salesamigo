@@ -102,7 +102,6 @@ public class InventoryFrame extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
-        catNameField = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         categoryTable = new javax.swing.JTable();
         jLabel34 = new javax.swing.JLabel();
@@ -111,9 +110,9 @@ public class InventoryFrame extends javax.swing.JFrame {
         addCatBtn = new javax.swing.JButton();
         editCatBtn = new javax.swing.JButton();
         deleteCatBtn = new javax.swing.JButton();
+        jComboBox2 = new javax.swing.JComboBox<>();
         jPanel6 = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
-        brandNameField = new javax.swing.JTextField();
         jScrollPane5 = new javax.swing.JScrollPane();
         brandTable = new javax.swing.JTable();
         jLabel37 = new javax.swing.JLabel();
@@ -122,6 +121,7 @@ public class InventoryFrame extends javax.swing.JFrame {
         addBrandBtn = new javax.swing.JButton();
         editBrandBtn = new javax.swing.JButton();
         deleteBrandBtn = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
         jPanel5 = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
         sizeNameField = new javax.swing.JTextField();
@@ -808,13 +808,6 @@ public class InventoryFrame extends javax.swing.JFrame {
         jLabel12.setFont(new java.awt.Font("Helvetica Neue", 0, 16)); // NOI18N
         jLabel12.setText("Enter Category:");
 
-        catNameField.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        catNameField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                catNameFieldActionPerformed(evt);
-            }
-        });
-
         categoryTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
@@ -919,6 +912,9 @@ public class InventoryFrame extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox2.setSelectedIndex(-1);
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -934,14 +930,14 @@ public class InventoryFrame extends javax.swing.JFrame {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(246, 246, 246)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(catNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(136, 136, 136)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(171, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -953,26 +949,19 @@ public class InventoryFrame extends javax.swing.JFrame {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel12)
-                            .addComponent(catNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(56, 56, 56)
+                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(53, 53, 53)
                         .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(278, 278, 278)
                         .addComponent(jLabel34))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(345, Short.MAX_VALUE))
+                .addContainerGap(349, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Category", jPanel4);
 
         jLabel18.setFont(new java.awt.Font("Helvetica Neue", 0, 16)); // NOI18N
         jLabel18.setText("Enter Brand:");
-
-        brandNameField.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        brandNameField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                brandNameFieldActionPerformed(evt);
-            }
-        });
 
         brandTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1077,6 +1066,9 @@ public class InventoryFrame extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.setSelectedIndex(-1);
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -1095,13 +1087,13 @@ public class InventoryFrame extends javax.swing.JFrame {
                                     .addGroup(jPanel6Layout.createSequentialGroup()
                                         .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
-                                        .addComponent(brandNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addGap(136, 136, 136)
                         .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(572, 572, 572)
                         .addComponent(jLabel37)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(171, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1113,13 +1105,13 @@ public class InventoryFrame extends javax.swing.JFrame {
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel18)
-                            .addComponent(brandNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(56, 56, 56)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(53, 53, 53)
                         .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(278, 278, 278)
                         .addComponent(jLabel37))
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(345, Short.MAX_VALUE))
+                .addContainerGap(349, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Brand", jPanel6);
@@ -1515,11 +1507,6 @@ public class InventoryFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_deleteBrandBtnActionPerformed
 
-    private void brandNameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_brandNameFieldActionPerformed
-        // TODO add your handling code here:
-
-    }//GEN-LAST:event_brandNameFieldActionPerformed
-
     private void editBrandBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBrandBtnActionPerformed
         // TODO add your handling code here:
         DefaultTableModel model = (DefaultTableModel) brandTable.getModel();
@@ -1729,10 +1716,6 @@ public class InventoryFrame extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_addCatBtnActionPerformed
-
-    private void catNameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_catNameFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_catNameFieldActionPerformed
 
     private void productTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productTableMouseClicked
         // TODO add your handling code here:
@@ -2071,9 +2054,7 @@ public class InventoryFrame extends javax.swing.JFrame {
     private javax.swing.JButton addSizeBtn;
     private javax.swing.JButton addVariantBtn;
     private javax.swing.JComboBox<String> brandField;
-    private javax.swing.JTextField brandNameField;
     private javax.swing.JTable brandTable;
-    private javax.swing.JTextField catNameField;
     private javax.swing.JComboBox<String> categoryField;
     private javax.swing.JTable categoryTable;
     private javax.swing.JTextField colourField;
@@ -2090,6 +2071,8 @@ public class InventoryFrame extends javax.swing.JFrame {
     private javax.swing.JButton editVariantBtn;
     private javax.swing.JComboBox<String> genderField;
     private javax.swing.JButton jButton5;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
