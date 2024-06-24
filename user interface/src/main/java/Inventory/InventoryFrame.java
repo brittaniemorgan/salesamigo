@@ -79,8 +79,6 @@ public class InventoryFrame extends javax.swing.JFrame {
         viewAllVariants = new javax.swing.JButton();
         viewLowStock = new javax.swing.JButton();
         productIDField = new javax.swing.JTextField();
-        jLabel11 = new javax.swing.JLabel();
-        LowStockProductCount = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         nameField = new javax.swing.JTextField();
@@ -532,20 +530,6 @@ public class InventoryFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel11.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
-        jLabel11.setForeground(new java.awt.Color(204, 0, 51));
-        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/notification-bell.png"))); // NOI18N
-        jLabel11.setLabelFor(viewLowStock);
-        jLabel11.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-
-        LowStockProductCount.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
-        LowStockProductCount.setForeground(new java.awt.Color(204, 0, 51));
-        LowStockProductCount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        LowStockProductCount.setLabelFor(viewLowStock);
-        LowStockProductCount.setText("22");
-        LowStockProductCount.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-
         javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
         jPanel12.setLayout(jPanel12Layout);
         jPanel12Layout.setHorizontalGroup(
@@ -558,28 +542,20 @@ public class InventoryFrame extends javax.swing.JFrame {
                 .addComponent(viewAllVariants, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(55, 55, 55)
                 .addComponent(viewLowStock, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jLabel11)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)
                 .addComponent(productIDField, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(LowStockProductCount)
-                .addGap(126, 126, 126))
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
-                .addComponent(LowStockProductCount)
-                .addGap(0, 0, 0)
+                .addGap(17, 17, 17)
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel12Layout.createSequentialGroup()
                         .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(variantSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(viewLowStock)
                             .addComponent(viewAllVariants)
-                            .addComponent(productSearchBtn2)
-                            .addComponent(jLabel11))
+                            .addComponent(productSearchBtn2))
                         .addGap(1, 1, 1))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -2047,7 +2023,6 @@ public class InventoryFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel LowStockProductCount;
     private javax.swing.JButton addBrandBtn;
     private javax.swing.JButton addCatBtn;
     private javax.swing.JButton addProdBtn;
@@ -2075,7 +2050,6 @@ public class InventoryFrame extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
