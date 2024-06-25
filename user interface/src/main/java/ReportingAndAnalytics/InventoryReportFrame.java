@@ -4,6 +4,7 @@
  */
 package ReportingAndAnalytics;
 
+import Authentication.LoginFrame;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.print.PrinterException;

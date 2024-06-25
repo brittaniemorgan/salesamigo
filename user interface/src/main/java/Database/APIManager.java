@@ -268,6 +268,27 @@ public class APIManager {
         return errorMessage; 
     }
     
+        public JSONObject addEmployee(String firstname, String lastname, String address, String email, String number, String role, String password) {
+        JSONObject response = null;
+        try {
+            JSONObject productInfo = new JSONObject();
+            productInfo.put("firstname", firstname);
+            productInfo.put("lastname", lastname);
+            productInfo.put("address", address);
+            productInfo.put("email", email);
+            productInfo.put("contact_number", number);
+            productInfo.put("role", role);
+            productInfo.put("password", password);
+
+            response =  new JSONObject(sendDataToAPI("register_user", productInfo));
+            System.out.println("Response from server: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+    
+    
     public JSONObject getCustomers(){
         JSONObject customers = null;
         try {
@@ -789,7 +810,28 @@ public class APIManager {
     }
     return salesData;
 }
-    
+
+public JSONObject getInventoryReport(String startDate, String endDate) {
+    JSONObject salesData = null;
+    try {
+        String endpoint = "inventory_report_test?start_date=" + startDate + "&end_date=" + endDate;
+        salesData = new JSONObject(fetchDataFromAPI(endpoint));
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return salesData;
+}    
+
+public JSONObject getFinanceReport(String startDate, String endDate) {
+    JSONObject salesData = null;
+    try {
+        String endpoint = "finance_report?start_date=" + startDate + "&end_date=" + endDate;
+        salesData = new JSONObject(fetchDataFromAPI(endpoint));
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return salesData;
+}    
     
     
     

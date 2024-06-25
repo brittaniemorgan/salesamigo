@@ -4,6 +4,7 @@
  */
 package ReportingAndAnalytics;
 
+import Authentication.LoginFrame;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.print.PrinterException;
@@ -22,7 +23,6 @@ import javax.swing.table.TableModel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.json.JSONArray;

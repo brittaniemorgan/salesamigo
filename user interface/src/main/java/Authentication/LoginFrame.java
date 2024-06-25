@@ -275,7 +275,7 @@ public class LoginFrame extends javax.swing.JFrame {
                 JSONObject userDets = response.getJSONObject("user");
                 errorText.setText("Login Successful");
                 String fname = userDets.getString("firstname");
-                String lname = userDets.getString("lastame");
+                String lname = userDets.getString("lastname");
                 String role = userDets.getString("role");
                 String address = userDets.getString("address");
                 String number = userDets.getString("contact_number");

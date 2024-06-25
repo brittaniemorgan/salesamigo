@@ -4,6 +4,7 @@
  */
 package PointOfSale;
 
+import Authentication.LoginFrame;
 import Authentication.User;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -97,8 +98,7 @@ public class SalesHistoryFrame extends javax.swing.JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-    
+    }    
     /*
 
     private void updateVariantsTable() {

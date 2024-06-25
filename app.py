@@ -20,7 +20,6 @@ def get_db_connection():
     database = 'sales_amigo')
     return connection
 
-
 @app.route('/')
 def hello():
     data = {'message': 'Hello from API'}
@@ -32,17 +31,37 @@ def register():
         connection = get_db_connection()
         cursor = connection.cursor()
         content = request.json
-        username = content['username']
-        password = content['password']
+        
+        # Extracting data from the request
+        firstname = content['firstname']
+        lastname = content['lastname']
+        email = content['email']
+        contact_number = content['contact_number']
+        address = content['address']
         role = content['role']
-        query = "INSERT INTO User (username, password, role) VALUES (%s, %s, %s)"
-        cursor.execute(query, (username, password, role))
+        password = content['password']
+        
+
+        # Insert user into the employees table
+        query ="""
+            INSERT INTO employees (
+                firstname, lastname, email, contact_number, address, role, password
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(query, (
+            firstname, lastname, email, contact_number, address, role, password
+        ))
         connection.commit()
 
-        return jsonify({"success" : "User added"})
+        return jsonify({"success": "User added"})
 
     except Exception as e:
         return jsonify({'error': str(e)})
+    finally:
+        cursor.close()
+        connection.close()
+
+
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -62,7 +81,7 @@ def login():
 
         if user is not None:
            # user.pop('password', None)
-            return jsonify({"message": "User logged in successfully",
+            return jsonify({"success": "User logged in successfully",
                             "user":user}), 200
         else:
             return jsonify({"error": "Invalid password"}), 400  
@@ -1964,7 +1983,6 @@ def inventory_report_test():
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from flask import Flask, request, jsonify
 
 def fetch_data():
     connection = get_db_connection()
