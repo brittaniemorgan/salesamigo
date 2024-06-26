@@ -5,6 +5,7 @@
 package ReportingAndAnalytics;
 
 import Authentication.LoginFrame;
+import Authentication.User;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.print.PrinterException;
@@ -40,12 +41,16 @@ public class FinanceReportFrame extends javax.swing.JFrame {
      */
     Calendar cal = Calendar.getInstance();
     ReportGenerator reportGenerator;
-
-    public FinanceReportFrame() {
+    private User employee;
+    public FinanceReportFrame(User user) {
         initComponents();
+        
+        this.employee = user;
         monthlySalesTable.setAutoCreateRowSorter(true);
         yearlySalesTable.setAutoCreateRowSorter(true);
         reportGenerator = new ReportGenerator();
+        employeeIdLabel.setText(String.valueOf(user.getId()));
+        greetLabel.setText("Hello " + user.getFirstname() + ",");
     }
 
     private void updateMonthlySalesTable(JSONArray sales_data) {
@@ -185,21 +190,13 @@ public class FinanceReportFrame extends javax.swing.JFrame {
         String tabTitle = null;
         int selectedIndex = inventoryReportTab.getSelectedIndex();
         switch (selectedIndex) {
-            case 1:
-                //currentTable = dailySalesTable;
-                tabTitle = "Sales Data";
-                break;
-            case 2:
+            case 0:
                 currentTable = monthlySalesTable;
                 tabTitle = "Sales Data";
                 break;
-            case 3:
-                currentTable = yearlySalesTable;
+            case 1:
+                currentTable = yearlySalesTable ;
                 tabTitle = "Sales Data";
-                break;
-            case 4:
-                //currentTable = metricsTable;
-                tabTitle = "Metrics Summary";
                 break;
         }
 
@@ -260,6 +257,7 @@ public class FinanceReportFrame extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jLabel39 = new javax.swing.JLabel();
         jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         salesStartDate = new com.toedter.calendar.JDateChooser();
         salesEndDate = new com.toedter.calendar.JDateChooser();
@@ -272,20 +270,20 @@ public class FinanceReportFrame extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         monthlySalesTable = new javax.swing.JTable();
         monthChartPanel = new javax.swing.JPanel();
-        printMonthlyInvReport = new javax.swing.JButton();
         csvMonthlynvReport = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         jSplitPane2 = new javax.swing.JSplitPane();
         yearChartPanel = new javax.swing.JPanel();
-        printYearlyInvReport = new javax.swing.JButton();
-        csvYearlyInvReport = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         yearlySalesTable = new javax.swing.JTable();
+        csvYearlyInvReport = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        greetLabel = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        employeeIdLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1442, 800));
 
         jPanel7.setBackground(new java.awt.Color(0, 0, 0));
         jPanel7.setPreferredSize(new java.awt.Dimension(187, 67));
@@ -308,6 +306,18 @@ public class FinanceReportFrame extends javax.swing.JFrame {
             }
         });
 
+        jButton8.setBackground(new java.awt.Color(51, 102, 255));
+        jButton8.setFont(new java.awt.Font("Helvetica Neue", 1, 19)); // NOI18N
+        jButton8.setForeground(new java.awt.Color(255, 255, 255));
+        jButton8.setText("Back to Reports");
+        jButton8.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButton8.setOpaque(true);
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -318,6 +328,8 @@ public class FinanceReportFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(63, 63, 63)
                 .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
         );
@@ -331,12 +343,14 @@ public class FinanceReportFrame extends javax.swing.JFrame {
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addComponent(jLabel39)
-                        .addGap(0, 13, Short.MAX_VALUE)))
+                        .addGap(0, 3, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(jButton7)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton7)
+                    .addComponent(jButton8))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         salesStartDate.setDate(cal.getTime());
@@ -381,17 +395,6 @@ public class FinanceReportFrame extends javax.swing.JFrame {
         monthChartPanel.setLayout(new java.awt.BorderLayout());
         jSplitPane1.setRightComponent(monthChartPanel);
 
-        printMonthlyInvReport.setBackground(new java.awt.Color(51, 102, 255));
-        printMonthlyInvReport.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
-        printMonthlyInvReport.setForeground(new java.awt.Color(255, 255, 255));
-        printMonthlyInvReport.setText("Print");
-        printMonthlyInvReport.setOpaque(true);
-        printMonthlyInvReport.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                printMonthlyInvReportActionPerformed(evt);
-            }
-        });
-
         csvMonthlynvReport.setBackground(new java.awt.Color(51, 102, 255));
         csvMonthlynvReport.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
         csvMonthlynvReport.setForeground(new java.awt.Color(255, 255, 255));
@@ -408,14 +411,12 @@ public class FinanceReportFrame extends javax.swing.JFrame {
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addComponent(jSplitPane1)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1180, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap(449, Short.MAX_VALUE)
-                .addComponent(printMonthlyInvReport)
-                .addGap(30, 30, 30)
+                .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(csvMonthlynvReport)
-                .addGap(444, 444, 444))
+                .addGap(447, 447, 447))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -423,10 +424,8 @@ public class FinanceReportFrame extends javax.swing.JFrame {
                 .addGap(0, 0, 0)
                 .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(csvMonthlynvReport)
-                    .addComponent(printMonthlyInvReport))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(csvMonthlynvReport)
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         inventoryReportTab.addTab("Monthly", jPanel6);
@@ -436,26 +435,6 @@ public class FinanceReportFrame extends javax.swing.JFrame {
 
         yearChartPanel.setLayout(new java.awt.BorderLayout());
         jSplitPane2.setBottomComponent(yearChartPanel);
-
-        printYearlyInvReport.setBackground(new java.awt.Color(51, 102, 255));
-        printYearlyInvReport.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
-        printYearlyInvReport.setForeground(new java.awt.Color(255, 255, 255));
-        printYearlyInvReport.setText("Print");
-        printYearlyInvReport.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                printYearlyInvReportActionPerformed(evt);
-            }
-        });
-
-        csvYearlyInvReport.setBackground(new java.awt.Color(51, 102, 255));
-        csvYearlyInvReport.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
-        csvYearlyInvReport.setForeground(new java.awt.Color(255, 255, 255));
-        csvYearlyInvReport.setText("Save as CSV");
-        csvYearlyInvReport.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                csvYearlyInvReportActionPerformed(evt);
-            }
-        });
 
         yearlySalesTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -470,33 +449,37 @@ public class FinanceReportFrame extends javax.swing.JFrame {
         ));
         jScrollPane3.setViewportView(yearlySalesTable);
 
+        jSplitPane2.setLeftComponent(jScrollPane3);
+
+        csvYearlyInvReport.setBackground(new java.awt.Color(51, 102, 255));
+        csvYearlyInvReport.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
+        csvYearlyInvReport.setForeground(new java.awt.Color(255, 255, 255));
+        csvYearlyInvReport.setText("Save as CSV");
+        csvYearlyInvReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                csvYearlyInvReportActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 1088, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(jSplitPane2)
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(printYearlyInvReport)
-                .addGap(30, 30, 30)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(501, 501, 501)
                 .addComponent(csvYearlyInvReport)
-                .addGap(476, 476, 476))
+                .addContainerGap(565, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSplitPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(printYearlyInvReport)
-                    .addComponent(csvYearlyInvReport))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(jSplitPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addComponent(csvYearlyInvReport))
         );
 
         inventoryReportTab.addTab("Yearly", jPanel8);
@@ -542,35 +525,58 @@ public class FinanceReportFrame extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 15)); // NOI18N
         jLabel4.setText("Copyright © 2024 Sales Amigo");
 
+        greetLabel.setFont(new java.awt.Font("Helvetica Neue", 2, 21)); // NOI18N
+        greetLabel.setText(" ");
+
+        jLabel5.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
+        jLabel5.setText("Staff ID:");
+
+        employeeIdLabel.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        employeeIdLabel.setText(" ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 1442, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addGap(635, 635, 635))
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(155, Short.MAX_VALUE)
+                .addGap(156, 156, 156)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(171, Short.MAX_VALUE))
+                .addContainerGap(170, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel4)
                 .addGap(595, 595, 595))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(38, 38, 38)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(employeeIdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(greetLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addGap(635, 635, 635))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(employeeIdLabel))
+                        .addGap(18, 18, 18)
+                        .addComponent(greetLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
 
         pack();
@@ -598,20 +604,10 @@ public class FinanceReportFrame extends javax.swing.JFrame {
         saveTableToCSV();
     }//GEN-LAST:event_csvYearlyInvReportActionPerformed
 
-    private void printYearlyInvReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printYearlyInvReportActionPerformed
-        // TODO add your handling code here:
-        printReport();
-    }//GEN-LAST:event_printYearlyInvReportActionPerformed
-
     private void csvMonthlynvReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_csvMonthlynvReportActionPerformed
         // TODO add your handling code here:
         saveTableToCSV();
     }//GEN-LAST:event_csvMonthlynvReportActionPerformed
-
-    private void printMonthlyInvReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printMonthlyInvReportActionPerformed
-        // TODO add your handling code here:
-        printReport();
-    }//GEN-LAST:event_printMonthlyInvReportActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // TODO add your handling code here:
@@ -619,6 +615,13 @@ public class FinanceReportFrame extends javax.swing.JFrame {
         loginFrame.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        // TODO add your handling code here:
+        ReportFrame frame = new ReportFrame(employee);
+        frame.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButton8ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -650,7 +653,21 @@ public class FinanceReportFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FinanceReportFrame().setVisible(true);
+                int id = 1;
+        String firstname = "John";
+        String lastname = "Doe";
+        String email = "johndoe@example.com";
+        String contactNumber = "123-456-7890";
+        String address = "123 Street, City, Country";
+        String joinDate = "2024-01-01"; // Assuming join date is in yyyy-MM-dd format
+        String role = "Employee";
+        String department = "IT";
+        float salary = 50000.0f; // Assuming salary is in dollars
+        String password = "password123";
+
+        User dummyUser = new User(id, firstname, lastname, email, contactNumber, address,
+                joinDate, role, department, salary, password);
+                new FinanceReportFrame(dummyUser).setVisible(true);
             }
         });
     }
@@ -658,14 +675,18 @@ public class FinanceReportFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton csvMonthlynvReport;
     private javax.swing.JButton csvYearlyInvReport;
+    private javax.swing.JLabel employeeIdLabel;
     private javax.swing.JButton generateReportBtn;
+    private javax.swing.JLabel greetLabel;
     private javax.swing.JTabbedPane inventoryReportTab;
     private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel6;
@@ -677,8 +698,6 @@ public class FinanceReportFrame extends javax.swing.JFrame {
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JPanel monthChartPanel;
     private javax.swing.JTable monthlySalesTable;
-    private javax.swing.JButton printMonthlyInvReport;
-    private javax.swing.JButton printYearlyInvReport;
     private com.toedter.calendar.JDateChooser salesEndDate;
     private com.toedter.calendar.JDateChooser salesStartDate;
     private javax.swing.JPanel yearChartPanel;

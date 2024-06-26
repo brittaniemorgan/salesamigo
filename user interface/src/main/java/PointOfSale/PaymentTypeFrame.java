@@ -4,6 +4,7 @@
  */
 package PointOfSale;
 
+import Authentication.AdminFrame;
 import Authentication.User;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -19,12 +20,14 @@ public class PaymentTypeFrame extends javax.swing.JFrame {
      * Creates new form PaymentTypeFrame
      */
     POS pos;
-    User user;
+    User employee;
     public PaymentTypeFrame(User user) {
         initComponents();
-        this.user = user;
+        this.employee = user;
         pos = new POS(user);
         updatePaymentTable();
+        employeeIdLabel.setText(String.valueOf(user.getId()));
+        greetLabel.setText("Hello " + user.getFirstname() + ",");
     }
     
     
@@ -65,10 +68,14 @@ public class PaymentTypeFrame extends javax.swing.JFrame {
         addPaymentBtn = new javax.swing.JButton();
         editPaymentBtn = new javax.swing.JButton();
         deletePaymentBtn = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        greetLabel = new javax.swing.JLabel();
+        employeeIdLabel = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jLabel38 = new javax.swing.JLabel();
         jButton6 = new javax.swing.JButton();
+        jButton12 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -186,6 +193,15 @@ public class PaymentTypeFrame extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jLabel6.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
+        jLabel6.setText("Staff ID:");
+
+        greetLabel.setFont(new java.awt.Font("Helvetica Neue", 2, 21)); // NOI18N
+        greetLabel.setText(" ");
+
+        employeeIdLabel.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        employeeIdLabel.setText(" ");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -193,7 +209,14 @@ public class PaymentTypeFrame extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(615, 615, 615)
+                        .addGap(38, 38, 38)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(employeeIdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(greetLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(262, 262, 262)
                         .addComponent(jLabel10))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(619, 619, 619)
@@ -214,8 +237,15 @@ public class PaymentTypeFrame extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
-                .addComponent(jLabel10)
-                .addGap(60, 60, 60)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel10)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(employeeIdLabel))
+                        .addGap(18, 18, 18)
+                        .addComponent(greetLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(35, 35, 35)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -226,7 +256,7 @@ public class PaymentTypeFrame extends javax.swing.JFrame {
                         .addGap(345, 345, 345)
                         .addComponent(jLabel35))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(237, Short.MAX_VALUE))
+                .addContainerGap(233, Short.MAX_VALUE))
         );
 
         jPanel6.setBackground(new java.awt.Color(0, 0, 0));
@@ -250,6 +280,18 @@ public class PaymentTypeFrame extends javax.swing.JFrame {
             }
         });
 
+        jButton12.setBackground(new java.awt.Color(51, 102, 255));
+        jButton12.setFont(new java.awt.Font("Helvetica Neue", 1, 19)); // NOI18N
+        jButton12.setForeground(new java.awt.Color(255, 255, 255));
+        jButton12.setText("Back to Dashboard");
+        jButton12.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButton12.setOpaque(true);
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -259,7 +301,9 @@ public class PaymentTypeFrame extends javax.swing.JFrame {
                 .addComponent(jLabel38, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1258, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(100, 100, 100)
                 .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
         );
@@ -277,7 +321,9 @@ public class PaymentTypeFrame extends javax.swing.JFrame {
                 .addContainerGap())
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(jButton6)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton6)
+                    .addComponent(jButton12))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
 
@@ -288,7 +334,7 @@ public class PaymentTypeFrame extends javax.swing.JFrame {
             .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 1563, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 121, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -389,6 +435,13 @@ public class PaymentTypeFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton6ActionPerformed
 
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        // TODO add your handling code here:
+        AdminFrame frame = new AdminFrame(employee);
+        frame.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButton12ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -430,11 +483,15 @@ public class PaymentTypeFrame extends javax.swing.JFrame {
     private javax.swing.JButton addPaymentBtn;
     private javax.swing.JButton deletePaymentBtn;
     private javax.swing.JButton editPaymentBtn;
+    private javax.swing.JLabel employeeIdLabel;
+    private javax.swing.JLabel greetLabel;
+    private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel38;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel5;

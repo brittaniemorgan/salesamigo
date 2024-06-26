@@ -1984,7 +1984,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-def fetch_data():
+def fetchProducts():
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
 
@@ -1998,12 +1998,12 @@ def fetch_data():
         cursor.execute(query)
         products = cursor.fetchall()
         data = [{
-            'Product ID': product['product_id'],
-            'Category': product['category'],
-            'Brand': product['brand'],
-            'Price': product['price'],
-            'Color': product['color'],
-            'Gender': product['gender']
+            'product_id': product['product_id'],
+            'category': product['category'],
+            'brand': product['brand'],
+            'price': product['price'],
+            'color': product['color'],
+            'gender': product['gender']
         } for product in products]
         return pd.DataFrame(data)
         cursor.close()
@@ -2011,24 +2011,55 @@ def fetch_data():
     except Exception as e:
         return str(e)
 
-#not collaborative
-@app.route('/recommend', methods=['GET'])
-def recommend():
-    products_df = fetch_data()
-    products_df['features'] = products_df[['Category', 'Brand', 'Color', 'Gender']].apply(lambda x: ' '.join(x), axis=1)
+def get_similar_products(product_id):
+    products_df = fetchProducts()
+    products_df['features'] = products_df[['category', 'brand', 'color', 'gender']].apply(lambda x: ' '.join(x), axis=1)
     vectorizer = TfidfVectorizer()
     feature_vectors = vectorizer.fit_transform(products_df['features'])
     similarity_matrix = cosine_similarity(feature_vectors)
-    product_id = int(request.args.get('product_id'))
     num_recommendations = 10    
-    idx = products_df.index[products_df['Product ID'] == product_id].tolist()[0]    
+    idx = products_df.index[products_df['product_id'] == product_id].tolist()[0]    
     similarity_scores = list(enumerate(similarity_matrix[idx]))
     similarity_scores = sorted(similarity_scores, key=lambda x: x[1], reverse=True)
     recommended_indices = [i[0] for i in similarity_scores[1:num_recommendations + 1]]
-    recommended_products = products_df.iloc[recommended_indices][['Product ID', 'Category', 'Brand', 'Price', 'Color', 'Gender']].to_dict('records')
-    
-    return jsonify(recommended_products)
+    recommended_products = products_df.iloc[recommended_indices][['product_id', 'category', 'brand', 'price', 'color', 'gender']].to_dict('records')   
+    return recommended_products
 
+def remove_duplicates(input_list):
+    seen = set()
+    output_list = []
+    for item in input_list:
+        product_id = (item['product_id'], item['color'])
+        if product_id not in seen:
+            output_list.append(item)
+            seen.add(product_id)
+    return output_list
+
+@app.route("/product_recommendations/<int:customer_id>", methods=['GET'])
+def get_recommendations(customer_id):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        query = """SELECT DISTINCT ti.product_id FROM sales_transactions t  
+                    JOIN transaction_items ti ON  t.transaction_id = ti.transaction_id
+                    WHERE t.customer_id = %s
+                """
+        cursor.execute(query,(customer_id,))
+        product_ids_json = cursor.fetchall()
+        product_ids = [item['product_id'] for item in product_ids_json]
+        recommended_products = []
+        for product_id in product_ids:
+            recommendations = get_similar_products(product_id)
+            recommended_products.extend(recommendations)
+        
+        recommended_products = [product for product in recommended_products if product['product_id'] not in product_ids]
+        recommended_products = remove_duplicates(recommended_products)
+        return jsonify(recommended_products=recommended_products)
+        cursor.close()
+        connection.close()
+    except Exception as e:
+        return str(e)
 
 
 

@@ -3,6 +3,7 @@
  */
 package PointOfSale;
 
+import PromotionAndMarketing.Discount;
 import Inventory.ProductVariant;
 import java.util.ArrayList;
 import java.util.Date;

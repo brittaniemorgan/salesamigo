@@ -314,7 +314,7 @@ public class LoginFrame extends javax.swing.JFrame {
         String role = user.getRole(); 
             switch (role) {
                 case "Manager":
-                    AdminFrame adminFrame = new AdminFrame();
+                    AdminFrame adminFrame = new AdminFrame(user);
                     adminFrame.setVisible(true);
                     break;
                 case "Cashier":
@@ -322,7 +322,7 @@ public class LoginFrame extends javax.swing.JFrame {
                     posFrame.setVisible(true);
                     break;
                 case "Inventory Clerk":
-                    InventoryFrame inventoryFrame = new InventoryFrame();
+                    InventoryFrame inventoryFrame = new InventoryFrame(user);
                     inventoryFrame.setVisible(true);
                     break;
                 default: 

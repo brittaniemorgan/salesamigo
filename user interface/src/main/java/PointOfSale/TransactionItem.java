@@ -4,6 +4,8 @@
  */
 package PointOfSale;
 
+import PromotionAndMarketing.Discount;
+
 /**
  *
  * @author britt

@@ -5,6 +5,7 @@
 package ReportingAndAnalytics;
 
 import Authentication.LoginFrame;
+import Authentication.User;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.Calendar;
@@ -32,13 +33,17 @@ public class SalesReportFrame extends javax.swing.JFrame {
      */
     ReportGenerator reportGenerator;
     Calendar cal = Calendar.getInstance();
+    private User employee;
 
-    public SalesReportFrame() {
+    public SalesReportFrame(User user) {
         initComponents();
         dailySalesTable.setAutoCreateRowSorter(true);
         monthlySalesTable.setAutoCreateRowSorter(true);
         yearlySalesTable.setAutoCreateRowSorter(true);
-        reportGenerator = new ReportGenerator();
+        reportGenerator = new ReportGenerator();        
+        this.employee = user;
+        employeeIdLabel.setText(String.valueOf(user.getId()));
+        greetLabel.setText("Hello " + user.getFirstname() + ",");
     }
 
     private void updateDailySalesTable(JSONArray sales_data) {
@@ -197,11 +202,14 @@ private void updateYearlySalesTable(JSONArray sales_data) {
         jLabel9 = new javax.swing.JLabel();
         jLabel39 = new javax.swing.JLabel();
         jButton7 = new javax.swing.JButton();
+        jButton11 = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
+        greetLabel = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        employeeIdLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1442, 800));
 
         salesStartDate.setDate(cal.getTime());
 
@@ -433,6 +441,18 @@ private void updateYearlySalesTable(JSONArray sales_data) {
             }
         });
 
+        jButton11.setBackground(new java.awt.Color(51, 102, 255));
+        jButton11.setFont(new java.awt.Font("Helvetica Neue", 1, 19)); // NOI18N
+        jButton11.setForeground(new java.awt.Color(255, 255, 255));
+        jButton11.setText("Back to Reports");
+        jButton11.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButton11.setOpaque(true);
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -442,7 +462,9 @@ private void updateYearlySalesTable(JSONArray sales_data) {
                 .addComponent(jLabel39, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 870, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(86, 86, 86)
                 .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
         );
@@ -460,7 +482,9 @@ private void updateYearlySalesTable(JSONArray sales_data) {
                 .addContainerGap())
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(jButton7)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton7)
+                    .addComponent(jButton11))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
 
@@ -470,33 +494,57 @@ private void updateYearlySalesTable(JSONArray sales_data) {
         jLabel8.setFont(new java.awt.Font("Helvetica Neue", 0, 15)); // NOI18N
         jLabel8.setText("Copyright © 2024 Sales Amigo");
 
+        greetLabel.setFont(new java.awt.Font("Helvetica Neue", 2, 21)); // NOI18N
+        greetLabel.setText(" ");
+
+        jLabel10.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
+        jLabel10.setText("Staff ID:");
+
+        employeeIdLabel.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        employeeIdLabel.setText(" ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 1175, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(31, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addGap(653, 653, 653))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(29, 29, 29))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel8)
-                        .addGap(604, 604, 604))))
+                        .addGap(604, 604, 604))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel10)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(employeeIdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(greetLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel7)
+                            .addGap(653, 653, 653))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(29, 29, 29)))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel10)
+                            .addComponent(employeeIdLabel))
+                        .addGap(18, 18, 18)
+                        .addComponent(greetLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 487, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel8)
                 .addGap(44, 44, 44))
         );
@@ -529,6 +577,13 @@ private void updateYearlySalesTable(JSONArray sales_data) {
         loginFrame.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        // TODO add your handling code here:
+        ReportFrame frame = new ReportFrame(employee);
+        frame.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButton11ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -563,7 +618,21 @@ private void updateYearlySalesTable(JSONArray sales_data) {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new SalesReportFrame().setVisible(true);
+                int id = 1;
+        String firstname = "John";
+        String lastname = "Doe";
+        String email = "johndoe@example.com";
+        String contactNumber = "123-456-7890";
+        String address = "123 Street, City, Country";
+        String joinDate = "2024-01-01"; // Assuming join date is in yyyy-MM-dd format
+        String role = "Employee";
+        String department = "IT";
+        float salary = 50000.0f; // Assuming salary is in dollars
+        String password = "password123";
+
+        User dummyUser = new User(id, firstname, lastname, email, contactNumber, address,
+                joinDate, role, department, salary, password);
+                new SalesReportFrame(dummyUser).setVisible(true);
             }
         });
     }
@@ -571,9 +640,16 @@ private void updateYearlySalesTable(JSONArray sales_data) {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable dailySalesTable;
     private javax.swing.JPanel dayChartPanel;
+    private javax.swing.JLabel employeeIdLabel;
     private javax.swing.JButton generateReportBtn;
+    private javax.swing.JLabel greetLabel;
+    private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel39;

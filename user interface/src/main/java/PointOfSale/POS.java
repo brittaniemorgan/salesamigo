@@ -4,6 +4,9 @@
  */
 package PointOfSale;
 
+import PromotionAndMarketing.Discount;
+import PromotionAndMarketing.BrandDiscount;
+import PromotionAndMarketing.CategoryDiscount;
 import Authentication.Customer;
 import Authentication.User;
 import java.text.DecimalFormat;

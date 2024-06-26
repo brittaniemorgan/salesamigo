@@ -4,7 +4,7 @@
  */
 package Inventory;
 
-import PointOfSale.Discount;
+import PromotionAndMarketing.Discount;
 import java.util.ArrayList;
 
 /**

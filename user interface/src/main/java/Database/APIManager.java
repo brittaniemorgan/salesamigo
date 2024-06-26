@@ -1073,7 +1073,15 @@ public JSONObject getFinanceReport(String startDate, String endDate) {
         return response;
     }
 
-
+    public JSONObject getProductRecommendations(int customerID) {
+        JSONObject productRecommendations = null;
+        try {
+            productRecommendations = new JSONObject(fetchDataFromAPI("product_recommendations/"+customerID));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return productRecommendations;
+    }
 
 
 

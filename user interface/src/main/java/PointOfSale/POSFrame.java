@@ -4,6 +4,7 @@
  */
 package PointOfSale;
 
+import Authentication.AdminFrame;
 import Authentication.LoginFrame;
 import Authentication.User;
 import java.text.NumberFormat;
@@ -39,6 +40,9 @@ public class POSFrame extends javax.swing.JFrame {
         loadPyamentDropDown();
         employeeIdLabel.setText(String.valueOf(user.getId()));
         greetLabel.setText("Hello " + user.getFirstname() + ",");
+        if(!user.getRole().equals("Manager")){
+            jButton12.setVisible(false);
+        }
     }
     
     private void updateOrdersTable() {
@@ -193,6 +197,7 @@ public class POSFrame extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jLabel38 = new javax.swing.JLabel();
         jButton6 = new javax.swing.JButton();
+        jButton12 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -797,6 +802,18 @@ public class POSFrame extends javax.swing.JFrame {
             }
         });
 
+        jButton12.setBackground(new java.awt.Color(51, 102, 255));
+        jButton12.setFont(new java.awt.Font("Helvetica Neue", 1, 19)); // NOI18N
+        jButton12.setForeground(new java.awt.Color(255, 255, 255));
+        jButton12.setText("Back to Dashboard");
+        jButton12.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButton12.setOpaque(true);
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -807,6 +824,8 @@ public class POSFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(58, 58, 58)
                 .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
         );
@@ -824,7 +843,9 @@ public class POSFrame extends javax.swing.JFrame {
                 .addContainerGap())
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(jButton6)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton6)
+                    .addComponent(jButton12))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
 
@@ -854,7 +875,7 @@ public class POSFrame extends javax.swing.JFrame {
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(19, 19, 19)
                 .addComponent(jLabel1)
-                .addGap(30, 30, 30)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1049,6 +1070,7 @@ public class POSFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, feedback, "Discount", JOptionPane.INFORMATION_MESSAGE);
             updateOrdersTable();
             updateItemsTable(order.getItems());
+            updateTotal();
         } else {
             JOptionPane.showMessageDialog(null, "Please select an order.", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -1127,6 +1149,13 @@ public class POSFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_enterCusIdBtnActionPerformed
 
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        // TODO add your handling code here:
+        AdminFrame frame = new AdminFrame(employee);
+        frame.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButton12ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1197,6 +1226,7 @@ public class POSFrame extends javax.swing.JFrame {
     private javax.swing.JTextField itemQuantityField;
     private javax.swing.JLabel itemQuantityLabel;
     private javax.swing.JTable itemsTable;
+    private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton8;
