@@ -189,6 +189,7 @@ public class SalesHistoryFrame extends javax.swing.JFrame {
         employeeIdLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(1563, 919));
 
         refundsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -389,7 +390,7 @@ public class SalesHistoryFrame extends javax.swing.JFrame {
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(159, 159, 159)
+                .addGap(80, 80, 80)
                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
         );
@@ -627,8 +628,6 @@ public class SalesHistoryFrame extends javax.swing.JFrame {
     private javax.swing.JLabel employeeIdLabel;
     private javax.swing.JLabel greetLabel;
     private javax.swing.JTable itemsTable;
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel3;
