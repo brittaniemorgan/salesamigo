@@ -156,13 +156,19 @@
                                             <tr>
                                                 <th>Order ID</th>
                                                 <th>Date</th>
-                                                <th>Status</th>
+                                                <th>Payment</th>
                                                 <th>Total</th>
-                                                <th>Total Price</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="order-items-body">
-                                            <!-- Order items will be populated here -->
+                                        <tbody>
+                                            {% for order in orders %}
+                                                <tr>
+                                                    <td>{{ order.transaction_id }}</td>
+                                                    <td>{{ order.transaction_date }}</td>
+                                                    <td>{{ order.payment_method }}</td>
+                                                    <td>{{ order.total }}</td>
+                                                </tr>
+                                            {% endfor %}
                                         </tbody>
                                     </table>
                                 </div>

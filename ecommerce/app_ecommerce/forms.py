@@ -14,7 +14,7 @@ class SignUpForm(FlaskForm):
     contact_number = StringField('Contact Number', validators=[InputRequired()])
     address = TextAreaField('Address', validators=[InputRequired()])
 
-class RewardsForm(FlaskForm):
+class LoyaltyProgramsForm(FlaskForm):
     firstname = StringField('First Name', validators=[InputRequired()])
     lastname = StringField('Last Name', validators=[InputRequired()])
     email= StringField('Email', validators=[InputRequired(), Email()])

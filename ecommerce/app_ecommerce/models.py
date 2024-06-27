@@ -16,8 +16,8 @@ class Customers(db.Model):
     points_balance = db.Column(db.Integer)
     date_joined = db.Column(db.DateTime)
 
-    rewards = db.relationship('Rewards', uselist=False, back_populates='customers')
-    sales_transaction = db.relationship('SalesTransaction', back_populates='customers')
+    loyalty_programs = db.relationship('LoyaltyPrograms', uselist=False, back_populates='customers')
+    sales_transactions = db.relationship('SalesTransactions', back_populates='customers')
 
     def __init__(self, firstname, lastname, email, contact_number, password, address, points_balance=0, date_joined=None):
         self.firstname = firstname
@@ -151,29 +151,24 @@ class Size(db.Model):
         return f'<Size {self.size}>'
 
 
-class Rewards(db.Model):
-    __tablename__ = 'rewards'
+class LoyaltyPrograms(db.Model):
+    __tablename__ = 'loyalty_programs'
 
-    rewards_id = Column(Integer, primary_key=True, autoincrement=True)
-    customer_id = Column(Integer, ForeignKey('customers.customer_id'))
-    firstname = Column(String(50))
-    lastname = Column(String(50))
-    email = Column(String(255))
-    contact_number = Column(String(20))
-    rewards_balance = Column(Integer, default=10)
+    loyalty_tier = db.Column(db.String(50), primary_key=True)
+    points = db.Column(db.Integer)
+    reward = db.Column(db.String(255))
+    customer_id = db.Column(db.Integer, db.ForeignKey('customers.customer_id'))
 
-    customers = relationship("Customers", back_populates="rewards")
+    customers = db.relationship('Customers', back_populates='loyalty_programs')
 
-    def __init__(self, customer_id, firstname, lastname, email, contact_number, rewards_balance=0):
+    def __init__(self, loyalty_tier, points, reward, customer_id):
+        self.loyalty_tier = loyalty_tier
+        self.points = points
+        self.reward = reward
         self.customer_id = customer_id
-        self.firstname = firstname
-        self.lastname = lastname
-        self.email = email
-        self.contact_number = contact_number
-        self.rewards_balance = rewards_balance
 
     def __repr__(self):
-        return f'<Rewards {self.rewards_id}: {self.firstname} {self.lastname}>'
+        return f'<LoyaltyPrograms {self.loyalty_tier} - Customer ID: {self.customer_id}>'
 
 
 class ProductInventory(db.Model):
@@ -205,19 +200,20 @@ class ProductInventory(db.Model):
         return f'<ProductInventory {self.product_id}: {self.name}>'
 
 
-class SalesTransaction(db.Model):
-    __tablename__ = 'sales_transaction'
+class SalesTransactions(db.Model):
+    __tablename__ = 'sales_transactions'
 
     transaction_id = Column(db.Integer, primary_key=True, autoincrement=True)
     transaction_date = Column(db.DateTime)
-    employee_id = Column(db.Integer, default=550)
+    employee_id = db.Column(db.Integer, db.ForeignKey('employees.employee_id', ondelete='SET DEFAULT'), default=550, nullable=False)
     customer_id = Column(db.Integer, ForeignKey('customers.customer_id'))
     total = Column(db.Numeric(10, 2))
     payment_method = Column(db.String(50))
-    discount_id = Column(db.Integer, nullable=True)
+    discount_id = Column(db.Integer, default=550)
 
-    customers = relationship('Customers', back_populates='sales_transaction')
-    transaction_items = relationship('TransactionItems', back_populates='sales_transaction')
+    customers = relationship('Customers', back_populates='sales_transactions')
+    transaction_items = relationship('TransactionItems', back_populates='sales_transactions')
+    employees = relationship('Employees', back_populates='sales_transactions')
 
     def __init__(self, customer_id, total, payment_method, discount_id, transaction_date=None):
         self.customer_id = customer_id
@@ -227,20 +223,20 @@ class SalesTransaction(db.Model):
         self.transaction_date = transaction_date
 
     def __repr__(self):
-        return f'<SalesTransaction {self.transaction_id}>'
+        return f'<SalesTransactions {self.transaction_id}>'
 
 
 class TransactionItems(db.Model):
     __tablename__ = 'transaction_items'
 
     item_id = Column(db.Integer, primary_key=True, autoincrement=True)
-    transaction_id = Column(db.Integer, ForeignKey('sales_transaction.transaction_id'))
+    transaction_id = Column(db.Integer, ForeignKey('sales_transactions.transaction_id'))
     product_id = Column(db.Integer, ForeignKey('product.product_id'))
     quantity = Column(db.Integer)
     price = Column(db.Numeric(10, 2))
     discount_id = Column(db.Integer, nullable=True)
 
-    sales_transaction = relationship('SalesTransaction', back_populates='transaction_items')
+    sales_transactions = relationship('SalesTransactions', back_populates='transaction_items')
     product = relationship('Product', back_populates='transaction_items')
 
     def __init__(self, transaction_id, product_id, quantity, price, discount_id=None):
@@ -251,4 +247,37 @@ class TransactionItems(db.Model):
         self.discount_id = discount_id
 
     def __repr__(self):
-        return f'<TransactionItem {self.item_id}>'
+        return f'<TransactionItems {self.item_id}>'
+
+
+class Employees(db.Model):
+    __tablename__ = 'employees'
+
+    employee_id = Column(db.Integer, primary_key=True, default=550)
+    firstname = Column(db.String(50))
+    lastname = Column(db.String(50))
+    email = Column(db.String(255))
+    contact_number = Column(db.String(20))
+    address = Column(db.String(255))
+    join_date = Column(db.DateTime)
+    role = Column(db.String(50))
+    department = Column(db.String(50))
+    salary = Column(db.Numeric(10, 2))
+    password = Column(String(50))
+
+    sales_transactions = relationship('SalesTransactions', back_populates='employees')
+
+    def __init__(self, firstname, lastname, email, contact_number, address, join_date, role, department, salary, password):
+        self.firstname = firstname
+        self.lastname = lastname
+        self.email = email
+        self.contact_number = contact_number
+        self.address = address
+        self.join_date = join_date
+        self.role = role
+        self.department = department
+        self.salary = salary
+        self.password = password
+
+    def __repr__(self):
+        return f'<Employees {self.firstname} {self.lastname}>'
