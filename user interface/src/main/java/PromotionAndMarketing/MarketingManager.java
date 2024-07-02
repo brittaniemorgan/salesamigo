@@ -64,7 +64,7 @@ public class MarketingManager {
 
     public void sendRecommendationEmails() {
         try {
-            for (Customer customer : customers) {
+            for (Customer customer : customers.subList(1, 4)) {
                 Email email = new Email();
                 String[] recipients = new String[1];
                 recipients[0] = customer.getEmail();

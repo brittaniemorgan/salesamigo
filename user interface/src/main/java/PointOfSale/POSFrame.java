@@ -906,7 +906,7 @@ public class POSFrame extends javax.swing.JFrame {
             Transaction pendingTransaction = pos.getPendingTransactionByID(orderId);
             String message = String.format("Order Deletion:\nOrder ID: %d\n", orderId);
 
-            int option = JOptionPane.showConfirmDialog(this, message + "\nAre you sure you want to order variant with ID: " + orderId + "?", "Delete Product", JOptionPane.YES_NO_OPTION);
+            int option = JOptionPane.showConfirmDialog(this, message + "\nAre you sure you want to order with ID: " + orderId + "?", "Delete Product", JOptionPane.YES_NO_OPTION);
 
             if (option == JOptionPane.YES_OPTION) {
                 //String feedback = inventory.deleteVariant(variant_id);
@@ -966,7 +966,7 @@ public class POSFrame extends javax.swing.JFrame {
             int orderId = (int) model.getValueAt(selectedRowIndex, 0);
             String payment = (String) paymentField.getSelectedItem();
             String message = String.format("Order Completion:\nProduct Name: %d\n", orderId);
-            int option = JOptionPane.showConfirmDialog(this, message + "\nAre you sure you want to add this variant?", "Add New Variant", JOptionPane.YES_NO_OPTION);
+            int option = JOptionPane.showConfirmDialog(this, message + "\nAre you sure you want to complete this order?", "Complete Order", JOptionPane.YES_NO_OPTION);
 
             if (option == JOptionPane.YES_OPTION) {
                 String feedback = pos.performSaleTransaction(orderId, payment);
@@ -1069,7 +1069,7 @@ public class POSFrame extends javax.swing.JFrame {
             NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US);
             totalTxt.setText(currencyFormatter.format(order.getTotal()));
             JOptionPane.showMessageDialog(this, feedback, "Discount", JOptionPane.INFORMATION_MESSAGE);
-            updateOrdersTable();
+            //updateOrdersTable();
             updateItemsTable(order.getItems());
             updateTotal();
         } else {
@@ -1092,6 +1092,7 @@ public class POSFrame extends javax.swing.JFrame {
             Transaction pendingTransaction = pos.getPendingTransactionByID(orderId);
             Double amtGiven = Double.valueOf(amtGivenTxt.getText());
             pendingTransaction.setAmtGiven(amtGiven);
+            pendingTransaction.setPaymentMethod(paymentField.getSelectedItem().toString());
             NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US);
             changeTxt.setText(currencyFormatter.format(pendingTransaction.getChange()));
             updateTotal();
@@ -1108,7 +1109,7 @@ public class POSFrame extends javax.swing.JFrame {
         if (selectedRowIndex != -1) {
             int orderId = (int) model.getValueAt(selectedRowIndex, 0);
             String message = String.format("Order Completion:\nProduct Name: %d\n", orderId);
-            int option = JOptionPane.showConfirmDialog(this, message + "\nAre you sure you want to add this variant?", "Add New Variant", JOptionPane.YES_NO_OPTION);
+            int option = JOptionPane.showConfirmDialog(this, message + "\nAre you sure you want to pint recipt?", "Print Receipt", JOptionPane.YES_NO_OPTION);
 
             if (option == JOptionPane.YES_OPTION) {
                 pos.printReceipt(orderId);

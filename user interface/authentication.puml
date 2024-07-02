@@ -1,0 +1,52 @@
+@startuml
+annotation java.lang.Override
+annotation java.lang.SuppressWarnings
+class Authentication.AdminFrame
+class Authentication.Authenticator
+class Authentication.Customer
+class Authentication.Employee
+class Authentication.LoginFrame
+class Authentication.User
+class Database.APIManager
+class Inventory.InventoryFrame
+class PointOfSale.POSFrame
+class PointOfSale.PaymentTypeFrame
+class PointOfSale.SalesHistoryFrame
+class PromotionAndMarketing.DiscountFrame
+class PromotionAndMarketing.MarketingFrame
+class ReportingAndAnalytics.ReportFrame
+class java.awt.Color
+class java.io.IOException
+class java.security.MessageDigest
+class java.security.NoSuchAlgorithmException
+class java.util.Base64
+class java.util.Date
+class javax.swing.JFrame
+class javax.swing.JOptionPane
+class org.json.JSONObject
+Authentication.AdminFrame ..> java.lang.SuppressWarnings
+Authentication.AdminFrame ..> Inventory.InventoryFrame
+Authentication.AdminFrame ..> PointOfSale.POSFrame
+Authentication.AdminFrame ..> PointOfSale.PaymentTypeFrame
+Authentication.AdminFrame ..> PointOfSale.SalesHistoryFrame
+Authentication.AdminFrame ..> PromotionAndMarketing.DiscountFrame
+Authentication.AdminFrame ..> PromotionAndMarketing.MarketingFrame
+Authentication.AdminFrame ..> ReportingAndAnalytics.ReportFrame
+Authentication.AdminFrame ..> java.awt.Color
+Authentication.AdminFrame --|> javax.swing.JFrame
+Authentication.AdminFrame ..> javax.swing.JOptionPane
+Authentication.Authenticator ..> Database.APIManager
+Authentication.Authenticator ..> java.io.IOException
+Authentication.Authenticator ..> java.security.MessageDigest
+Authentication.Authenticator ..> java.security.NoSuchAlgorithmException
+Authentication.Authenticator ..> java.util.Base64
+Authentication.Authenticator ..> org.json.JSONObject
+Authentication.Customer ..> java.lang.Override
+Authentication.Customer ..> java.util.Date
+Authentication.LoginFrame ..> java.lang.SuppressWarnings
+Authentication.LoginFrame ..> Inventory.InventoryFrame
+Authentication.LoginFrame ..> PointOfSale.POSFrame
+Authentication.LoginFrame --|> javax.swing.JFrame
+Authentication.LoginFrame ..> org.json.JSONObject
+Authentication.User ..> java.lang.Override
+@enduml

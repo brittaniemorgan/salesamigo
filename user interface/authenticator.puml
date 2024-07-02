@@ -1,0 +1,25 @@
+@startuml
+class Authentication.AdminFrame
+class Authentication.Authenticator
+class Authentication.Customer
+class Authentication.Employee
+class Authentication.LoginFrame
+class Authentication.User
+class Database.APIManager
+class Inventory.InventoryFrame
+class PointOfSale.POSFrame
+class PointOfSale.PaymentTypeFrame
+class PointOfSale.SalesHistoryFrame
+class PromotionAndMarketing.DiscountFrame
+class PromotionAndMarketing.MarketingFrame
+class ReportingAndAnalytics.ReportFrame
+class java.awt.Color
+class java.io.IOException
+class java.security.MessageDigest
+class java.security.NoSuchAlgorithmException
+class java.util.Base64
+class java.util.Date
+class javax.swing.JFrame
+class javax.swing.JOptionPane
+class org.json.JSONObject
+@enduml

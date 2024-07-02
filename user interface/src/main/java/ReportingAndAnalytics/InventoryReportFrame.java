@@ -67,7 +67,7 @@ public class InventoryReportFrame extends javax.swing.JFrame {
                     item.getString("sale_date"),
                     item.getString("product_name"),
                     item.getString("color"),
-                    item.getInt("size_id"),
+                    item.getString("size"),
                     item.getInt("total_quantity_sold")
                 };
                 model.addRow(rowData);
@@ -188,21 +188,20 @@ public class InventoryReportFrame extends javax.swing.JFrame {
 
             try {
                 JSONObject item = sales_data.getJSONObject(i);
+                String productName = item.getString("product_name");
                 int productId = item.getInt("product_id");
                 int variantId = item.getInt("variant_id");
                 double avgInventoryLevel = Double.parseDouble(item.getString("avg_inventory_level"));
                 double sellThroughRate = Double.parseDouble(item.getString("sell_through_rate"));
                 double turnoverRate = Double.parseDouble(item.getString("turnover_rate"));
                 Object[] rowData = {
-                    productId,
-                    "size",
-                    "colour",
+                    productName,
                     avgInventoryLevel,
                     sellThroughRate,
                     turnoverRate
                 };
                 model.addRow(rowData);
-                String productVariant = "Product " + productId + " - Variant " + variantId;
+                String productVariant = productName;
                 dataset.addValue(avgInventoryLevel, "Average Inventory Level", productVariant);
                 dataset.addValue(sellThroughRate, "Sell-Through Rate (%)", productVariant);
                 dataset.addValue(turnoverRate, "Turnover Rate (%)", productVariant);
@@ -353,11 +352,6 @@ public class InventoryReportFrame extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         inventoryReportTab = new javax.swing.JTabbedPane();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jSplitPane3 = new javax.swing.JSplitPane();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -404,48 +398,6 @@ public class InventoryReportFrame extends javax.swing.JFrame {
         salesEndDate = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1544, 728));
-
-        jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 16)); // NOI18N
-        jLabel3.setText("Total Items Sold");
-
-        jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 16)); // NOI18N
-        jLabel4.setText("Online");
-
-        jLabel5.setFont(new java.awt.Font("Helvetica Neue", 0, 16)); // NOI18N
-        jLabel5.setText("Instore");
-
-        jLabel6.setFont(new java.awt.Font("Helvetica Neue", 0, 16)); // NOI18N
-        jLabel6.setText("Total Items Bought");
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(35, 35, 35)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(1044, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(jLabel6)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel3)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel4)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel5)
-                .addContainerGap(607, Short.MAX_VALUE))
-        );
-
-        inventoryReportTab.addTab("Summary", jPanel3);
 
         jSplitPane3.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
@@ -679,13 +631,13 @@ public class InventoryReportFrame extends javax.swing.JFrame {
 
         metricsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Product Name", "Size", "Colour", "Avergae Inventory Level", "Sell-Through Rate (%)", "Turnover Rate"
+                "Product Name", "Average Inventory Level", "Sell-Through Rate (%)", "Turnover Rate"
             }
         ));
         jScrollPane5.setViewportView(metricsTable);
@@ -976,46 +928,6 @@ public class InventoryReportFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_generateReportBtnActionPerformed
 
-    private void printDailyInvReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printDailyInvReportActionPerformed
-        // TODO add your handling code here:
-        printReport();
-    }//GEN-LAST:event_printDailyInvReportActionPerformed
-
-    private void printInvMetricsReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printInvMetricsReportActionPerformed
-        // TODO add your handling code here:
-        printReport();
-    }//GEN-LAST:event_printInvMetricsReportActionPerformed
-
-    private void printMonthlyInvReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printMonthlyInvReportActionPerformed
-        // TODO add your handling code here:
-        printReport();
-    }//GEN-LAST:event_printMonthlyInvReportActionPerformed
-
-    private void printYearlyInvReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printYearlyInvReportActionPerformed
-        // TODO add your handling code here:
-        printReport();
-    }//GEN-LAST:event_printYearlyInvReportActionPerformed
-
-    private void csvYearlyInvReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_csvYearlyInvReportActionPerformed
-        // TODO add your handling code here:
-        saveTableToCSV();
-    }//GEN-LAST:event_csvYearlyInvReportActionPerformed
-
-    private void csvInvMetricsReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_csvInvMetricsReportActionPerformed
-        // TODO add your handling code here:
-        saveTableToCSV();
-    }//GEN-LAST:event_csvInvMetricsReportActionPerformed
-
-    private void csvMonthlynvReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_csvMonthlynvReportActionPerformed
-        // TODO add your handling code here:
-        saveTableToCSV();
-    }//GEN-LAST:event_csvMonthlynvReportActionPerformed
-
-    private void csvDailyInvReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_csvDailyInvReportActionPerformed
-        // TODO add your handling code here:
-        saveTableToCSV();
-    }//GEN-LAST:event_csvDailyInvReportActionPerformed
-
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // TODO add your handling code here:
         LoginFrame loginFrame = new LoginFrame();
@@ -1029,6 +941,46 @@ public class InventoryReportFrame extends javax.swing.JFrame {
         frame.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void csvInvMetricsReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_csvInvMetricsReportActionPerformed
+        // TODO add your handling code here:
+        saveTableToCSV();
+    }//GEN-LAST:event_csvInvMetricsReportActionPerformed
+
+    private void printInvMetricsReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printInvMetricsReportActionPerformed
+        // TODO add your handling code here:
+        printReport();
+    }//GEN-LAST:event_printInvMetricsReportActionPerformed
+
+    private void csvYearlyInvReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_csvYearlyInvReportActionPerformed
+        // TODO add your handling code here:
+        saveTableToCSV();
+    }//GEN-LAST:event_csvYearlyInvReportActionPerformed
+
+    private void printYearlyInvReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printYearlyInvReportActionPerformed
+        // TODO add your handling code here:
+        printReport();
+    }//GEN-LAST:event_printYearlyInvReportActionPerformed
+
+    private void csvMonthlynvReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_csvMonthlynvReportActionPerformed
+        // TODO add your handling code here:
+        saveTableToCSV();
+    }//GEN-LAST:event_csvMonthlynvReportActionPerformed
+
+    private void printMonthlyInvReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printMonthlyInvReportActionPerformed
+        // TODO add your handling code here:
+        printReport();
+    }//GEN-LAST:event_printMonthlyInvReportActionPerformed
+
+    private void csvDailyInvReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_csvDailyInvReportActionPerformed
+        // TODO add your handling code here:
+        saveTableToCSV();
+    }//GEN-LAST:event_csvDailyInvReportActionPerformed
+
+    private void printDailyInvReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printDailyInvReportActionPerformed
+        // TODO add your handling code here:
+        printReport();
+    }//GEN-LAST:event_printDailyInvReportActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1096,17 +1048,12 @@ public class InventoryReportFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel39;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;

@@ -1,0 +1,5 @@
+@startuml
+class Authentication.LoginFrame
+class trbsoftware.salesamigo.SalesAmigo
+trbsoftware.salesamigo.SalesAmigo ..> Authentication.LoginFrame
+@enduml

@@ -4,6 +4,30 @@ from flask_wtf.csrf import generate_csrf
 import os
 import mysql.connector
 from datetime import datetime
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.metrics import mean_squared_error
+
+import pandas as pd
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.stattools import adfuller
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import TimeSeriesSplit, cross_val_score
+
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import mean_squared_error
+from statsmodels.tsa.stattools import adfuller
+from math import ceil
+
+import mysql.connector
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key_here'  # Set your secret key here
@@ -1340,15 +1364,6 @@ def sales_report():
         # Get the filter parameters from query parameters
         start_date = request.args.get('start_date')
         end_date = request.args.get('end_date')
-        employee_id = request.args.get('employee_id')
-        customer_id = request.args.get('customer_id')
-        payment_method = request.args.get('payment_method')
-        product_id = request.args.get('product_id')
-        category_id = request.args.get('category_id')
-        brand_id = request.args.get('brand_id')
-        discount_code = request.args.get('discount_code')
-        min_amount = request.args.get('min_amount')
-        max_amount = request.args.get('max_amount')
 
         # Validate date format
         date_format = "%Y-%m-%d"
@@ -1387,36 +1402,9 @@ def sales_report():
             JOIN productvariant pv ON ti.product_id = pv.variant_id
             JOIN product p ON pv.product_id = p.product_id
             WHERE st.transaction_date BETWEEN %s AND %s
+            ORDER BY st.transaction_date, st.transaction_id, ti.transaction_item_id
         """
         params = [start_date, end_date]
-
-        # Add filters dynamically
-        if customer_id:
-            query += " AND st.customer_id = %s"
-            params.append(customer_id)
-        if payment_method:
-            query += " AND st.payment_method = %s"
-            params.append(payment_method)
-        if product_id:
-            query += " AND ti.product_id = %s"
-            params.append(product_id)
-        if category_id:
-            query += " AND p.category_id = %s"
-            params.append(category_id)
-        if brand_id:
-            query += " AND p.brand_id = %s"
-            params.append(brand_id)
-        if discount_code:
-            query += " AND st.discount_id IN (SELECT discount_id FROM discounts WHERE discount_code = %s)"
-            params.append(discount_code)
-        if min_amount:
-            query += " AND st.total >= %s"
-            params.append(min_amount)
-        if max_amount:
-            query += " AND st.total <= %s"
-            params.append(max_amount)
-
-        query += " ORDER BY st.transaction_date, st.transaction_id, ti.transaction_item_id"
 
         cursor.execute(query, tuple(params))
         sales_data = cursor.fetchall()
@@ -1439,7 +1427,7 @@ def sales_report():
         # Get monthly sales
         monthly_sales_query = """
             SELECT 
-                DATE_FORMAT(st.transaction_date, '%Y-%M') AS sale_month, 
+                DATE_FORMAT(st.transaction_date, '%Y-%m') AS sale_month,
                 SUM(st.total) AS total_sales,
                 SUM(ti.quantity) AS total_quantity
             FROM sales_transactions st
@@ -1449,12 +1437,29 @@ def sales_report():
             ORDER BY sale_month
         """
         cursor.execute(monthly_sales_query, (start_date, end_date))
-        monthly_sales = cursor.fetchall()
+        monthly_data = cursor.fetchall()
+
+        # Convert month to month name
+        monthly_sales = []
+
+        for month in monthly_data:
+            month_total_sales = month['total_sales']
+            month_total_quantity = month['total_quantity']
+            month_number = int(month['sale_month'].split('-')[1])
+            month_name = calendar.month_name[month_number]
+
+            monthly_sales.append({
+                'sale_month': month_name,
+                'sale_year': int(month['sale_month'].split('-')[0]),
+                'month': int(month['sale_month'].split('-')[1]),
+                'total_sales': month_total_sales,
+                'total_quantity': month_total_quantity
+            })
 
         # Get yearly sales
         yearly_sales_query = """
             SELECT 
-                YEAR(st.transaction_date) AS sale_year, 
+                YEAR(st.transaction_date) AS sale_year,
                 SUM(st.total) AS total_sales,
                 SUM(ti.quantity) AS total_quantity
             FROM sales_transactions st
@@ -1500,6 +1505,7 @@ def sales_report():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+#delete
 @app.route('/inventory_report', methods=['GET'])
 def inventory_report():
     try:
@@ -1525,7 +1531,7 @@ def inventory_report():
                 p.product_id,
                 p.name AS product_name,
                 pv.variant_id,
-                pv.size_id,
+                s.size,
                 pv.color,
                 SUM(ti.quantity) AS total_quantity_sold,
                 SUM(ti.quantity * ti.price) AS total_sales
@@ -1533,6 +1539,7 @@ def inventory_report():
             JOIN transaction_items ti ON st.transaction_id = ti.transaction_id
             JOIN productvariant pv ON ti.product_id = pv.variant_id
             JOIN product p ON pv.product_id = p.product_id
+            JOIN size s ON s.size_id = pv.size_id
             WHERE st.transaction_date BETWEEN %s AND %s
             GROUP BY sale_date, p.product_id, pv.variant_id, pv.size_id, pv.color
             ORDER BY sale_date;
@@ -1549,7 +1556,7 @@ def inventory_report():
                 p.product_id,
                 p.name AS product_name,
                 pv.variant_id,
-                pv.size_id,
+                s.size,
                 pv.color,
                 SUM(ti.quantity) AS total_quantity_sold,
                 SUM(ti.quantity * ti.price) AS total_sales
@@ -1557,6 +1564,7 @@ def inventory_report():
             JOIN transaction_items ti ON st.transaction_id = ti.transaction_id
             JOIN productvariant pv ON ti.product_id = pv.variant_id
             JOIN product p ON pv.product_id = p.product_id
+            JOIN size s ON s.size_id = pv.size_id
             WHERE st.transaction_date BETWEEN %s AND %s
             GROUP BY sale_year, sale_week, p.product_id, pv.variant_id, pv.size_id, pv.color
             ORDER BY sale_year, sale_week;
@@ -1568,12 +1576,11 @@ def inventory_report():
         # Monthly sales report
         monthly_sales_query = """
             SELECT 
-                YEAR(st.transaction_date) AS sale_year,
-                MONTH(st.transaction_date) AS sale_month,
+                DATE_FORMAT(st.transaction_date, '%Y-%m') AS sale_month,
                 p.product_id,
                 p.name AS product_name,
                 pv.variant_id,
-                pv.size_id,
+                s.size,
                 pv.color,
                 SUM(ti.quantity) AS total_quantity_sold,
                 SUM(ti.quantity * ti.price) AS total_sales
@@ -1581,6 +1588,7 @@ def inventory_report():
             JOIN transaction_items ti ON st.transaction_id = ti.transaction_id
             JOIN productvariant pv ON ti.product_id = pv.variant_id
             JOIN product p ON pv.product_id = p.product_id
+            JOIN size s ON s.size_id = pv.size_id
             WHERE st.transaction_date BETWEEN %s AND %s
             GROUP BY sale_year, sale_month, p.product_id, pv.variant_id, pv.size_id, pv.color
             ORDER BY sale_year, sale_month;
@@ -1596,7 +1604,7 @@ def inventory_report():
                 p.product_id,
                 p.name AS product_name,
                 pv.variant_id,
-                pv.size_id,
+                s.size,
                 pv.color,
                 SUM(ti.quantity) AS total_quantity_sold,
                 SUM(ti.quantity * ti.price) AS total_sales
@@ -1604,6 +1612,7 @@ def inventory_report():
             JOIN transaction_items ti ON st.transaction_id = ti.transaction_id
             JOIN productvariant pv ON ti.product_id = pv.variant_id
             JOIN product p ON pv.product_id = p.product_id
+            JOIN size s ON s.size_id = pv.size_id
             WHERE st.transaction_date BETWEEN %s AND %s
             GROUP BY sale_year, p.product_id, pv.variant_id, pv.size_id, pv.color
             ORDER BY sale_year;
@@ -1691,7 +1700,7 @@ def finance_report():
         # Yearly sales query
         yearly_sales_query = """
             SELECT 
-                DATE_FORMAT(st.transaction_date, '%Y') AS sale_year,
+                YEAR(st.transaction_date) AS sale_year,
                 SUM(ti.quantity * ti.price) AS total_sales
             FROM sales_transactions st
             JOIN transaction_items ti ON st.transaction_id = ti.transaction_id
@@ -1769,19 +1778,21 @@ def create_inventory_views(start_date, end_date):
             SELECT 
                 r.variant_id,
                 pv.variant_id AS product_id,
+                p.name AS product_name,
                 SUM(r.quantity) - COALESCE(SUM(ti.quantity), 0) AS beginning_inventory
             FROM restock r
             LEFT JOIN (
                 SELECT ti.product_id, pv.variant_id, SUM(ti.quantity) AS quantity
                 FROM transaction_items ti
                 JOIN productvariant pv ON ti.product_id = pv.variant_id
-                JOIN sales_transactions st ON ti.transaction_id = st.transaction_id
+                JOIN sales_transactions st ON ti.transaction_id = st.transaction_id                
                 WHERE st.transaction_date < '{start_date}'
                 GROUP BY ti.product_id, pv.variant_id
             ) ti ON r.variant_id = ti.product_id AND r.variant_id = ti.variant_id
             JOIN productvariant pv ON r.variant_id = pv.variant_id
+            JOIN product p ON p.product_id = pv.product_id
             WHERE r.restock_date < '{start_date}'
-            GROUP BY r.variant_id, pv.variant_id;
+            GROUP BY r.variant_id, pv.variant_id,product_name;
         """
         cursor.execute(create_beginning_inventory_view)
 
@@ -1806,7 +1817,7 @@ def create_inventory_views(start_date, end_date):
                 p.product_id,
                 p.name AS product_name,
                 pv.variant_id,
-                pv.size_id,
+                s.size,
                 pv.color,
                 COALESCE(SUM(ti.quantity),0) AS total_quantity_sold,
                 COALESCE(SUM(ti.quantity * ti.price),0) AS total_sales
@@ -1814,6 +1825,7 @@ def create_inventory_views(start_date, end_date):
             JOIN transaction_items ti ON st.transaction_id = ti.transaction_id
             JOIN productvariant pv ON ti.product_id = pv.variant_id
             JOIN product p ON pv.product_id = p.product_id
+            JOIN size s ON s.size_id = pv.size_id
             WHERE st.transaction_date BETWEEN '{start_date}' AND '{end_date}'
             GROUP BY sale_date, p.product_id, pv.variant_id, pv.size_id, pv.color
             ORDER BY sale_date;
@@ -1829,7 +1841,7 @@ def create_inventory_views(start_date, end_date):
                 p.product_id,
                 p.name AS product_name,
                 pv.variant_id,
-                pv.size_id,
+                s.size,
                 pv.color,
                 COALESCE(SUM(ti.quantity),0) AS total_quantity_sold,
                 COALESCE(SUM(ti.quantity * ti.price),0) AS total_sales
@@ -1837,6 +1849,7 @@ def create_inventory_views(start_date, end_date):
             JOIN transaction_items ti ON st.transaction_id = ti.transaction_id
             JOIN productvariant pv ON ti.product_id = pv.variant_id
             JOIN product p ON pv.product_id = p.product_id
+            JOIN size s ON s.size_id = pv.size_id
             WHERE st.transaction_date BETWEEN '{start_date}' AND '{end_date}'
             GROUP BY sale_year, sale_week, p.product_id, pv.variant_id, pv.size_id, pv.color
             ORDER BY sale_year, sale_week;
@@ -1847,12 +1860,11 @@ def create_inventory_views(start_date, end_date):
         create_monthly_sales_view = f"""
             CREATE VIEW monthly_sales_view AS
             SELECT 
-                YEAR(st.transaction_date) AS sale_year,
-                MONTH(st.transaction_date) AS sale_month,
+                DATE_FORMAT(st.transaction_date, '%Y-%m') AS sale_month,
                 p.product_id,
                 p.name AS product_name,
                 pv.variant_id,
-                pv.size_id,
+                s.size,
                 pv.color,
                 COALESCE(SUM(ti.quantity),0) AS total_quantity_sold,
                 COALESCE(SUM(ti.quantity * ti.price),0) AS total_sales
@@ -1860,9 +1872,10 @@ def create_inventory_views(start_date, end_date):
             JOIN transaction_items ti ON st.transaction_id = ti.transaction_id
             JOIN productvariant pv ON ti.product_id = pv.variant_id
             JOIN product p ON pv.product_id = p.product_id
+            JOIN size s ON s.size_id = pv.size_id
             WHERE st.transaction_date BETWEEN '{start_date}' AND '{end_date}'
-            GROUP BY sale_year, sale_month, p.product_id, pv.variant_id, pv.size_id, pv.color
-            ORDER BY sale_year, sale_month;
+            GROUP BY sale_month, p.product_id, pv.variant_id, pv.size_id, pv.color
+            ORDER BY sale_month;
         """
         cursor.execute(create_monthly_sales_view)
 
@@ -1873,7 +1886,7 @@ def create_inventory_views(start_date, end_date):
                 p.product_id,
                 p.name AS product_name,
                 pv.variant_id,
-                pv.size_id,
+                s.size,
                 pv.color,
                 COALESCE(SUM(ti.quantity),0) AS total_quantity_sold,
                 COALESCE(SUM(ti.quantity * ti.price),0) AS total_sales
@@ -1881,6 +1894,7 @@ def create_inventory_views(start_date, end_date):
             JOIN transaction_items ti ON st.transaction_id = ti.transaction_id
             JOIN productvariant pv ON ti.product_id = pv.variant_id
             JOIN product p ON pv.product_id = p.product_id
+            JOIN size s ON s.size_id = pv.size_id
             WHERE st.transaction_date BETWEEN '{start_date}' AND '{end_date}'
             GROUP BY sale_year, p.product_id, pv.variant_id, pv.size_id, pv.color
             ORDER BY sale_year;
@@ -1923,6 +1937,7 @@ def inventory_report_test():
         inventory_metrics_query = """
             CREATE VIEW inventory_metrics_view AS
             SELECT
+                bi.product_name,
                 bi.product_id,
                 bi.variant_id,
                 (bi.beginning_inventory + ei.ending_inventory)/2 AS avg_inventory_level,
@@ -1938,6 +1953,7 @@ def inventory_report_test():
         # Fetch the results from inventory_metrics_view
         inventory_metrics_query = """
             SELECT
+                product_name,
                 product_id,
                 variant_id,
                 avg_inventory_level,
@@ -1958,7 +1974,28 @@ def inventory_report_test():
 
         # Fetch monthly sales data
         cursor.execute("SELECT * FROM monthly_sales_view;")
-        monthly_sales = cursor.fetchall()
+        monthly_data = cursor.fetchall()
+        monthly_sales = []
+
+        for month in monthly_data:
+            month_total_sales = month['total_sales']
+            month_total_quantity = month['total_quantity_sold']
+            month_number = int(month['sale_month'].split('-')[1])
+            month_name = calendar.month_name[month_number]
+
+            monthly_sales.append({
+                'sale_month': month_name,
+                'sale_year': int(month['sale_month'].split('-')[0]),
+                'month': int(month['sale_month'].split('-')[1]),
+                'total_sales': month_total_sales,
+                'total_quantity_sold': month_total_quantity,
+                'size':month['size'],
+                'color': month['color'],
+                'product_name' : month['product_name'],
+                'variant_id' : month['variant_id'],
+                'product_id' : month['product_id']
+            })
+
 
         # Fetch yearly sales data
         cursor.execute("SELECT * FROM yearly_sales_view;")
@@ -2010,6 +2047,7 @@ def fetchProducts():
         connection.close()
     except Exception as e:
         return str(e)
+
 
 def get_similar_products(product_id):
     products_df = fetchProducts()
@@ -2563,6 +2601,182 @@ def delete_sales_transaction(transaction_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+def fetchSalesData():
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
 
+    try:
+        query = """
+SELECT
+    DATE_FORMAT(t.transaction_date, '%Y-%m') AS month_year,
+    ti.product_id,
+    SUM(ti.quantity) AS items_sold
+FROM
+    transaction_items ti
+JOIN
+    sales_transactions t ON ti.transaction_id = t.transaction_id
+GROUP BY
+    DATE_FORMAT(t.transaction_date, '%Y-%m'),
+    ti.product_id
+ORDER BY
+    ti.product_id,
+    month_year;
+                """
+        cursor.execute(query)
+        transaction_items = cursor.fetchall()
+        data = [{
+            'month_year': transaction_item['month_year'],
+            'product_id': transaction_item['product_id'],
+            'items_sold': transaction_item['items_sold']
+        } for transaction_item in transaction_items]
+        """data = [{
+            'transaction_id': transaction_item['transaction_id'],
+            'transaction_date': transaction_item['transaction_date'],
+            'employee_id': transaction_item['employee_id'], 
+            'customer_id': transaction_item['customer_id'],
+            'total' : transaction_item['total'],
+            'payment_method' : transaction_item['payment_method'],
+            'transaction_item_id': transaction_item['transaction_item_id'], 
+            'product_id': transaction_item['product_id'],       
+            'quantity' : transaction_item['quantity'],
+            'price' : transaction_item['price']
+        } for transaction_item in transaction_items]"""
+        df = pd.DataFrame(data)
+        df['month_year'] = pd.to_datetime(df['month_year'])
+
+        # Extract month and year from t_dat
+       # df['month_year'] = df['transaction_date'].dt.to_period('M')
+
+        # Aggregate monthly sales for each article
+        #monthly_sales_df = df.groupby(['month_year', 'product_id']).size().reset_index(name='items_sold')
+        return df
+        cursor.close()
+        connection.close()
+    except Exception as e:
+        return str(e)
+
+def adf_test(series):
+    result = adfuller(series, autolag='AIC')
+    print('ADF Statistic:', result[0])
+    print('p-value:', result[1])
+    for key, value in result[4].items():
+        print('Critical Values:')
+        print(f'   {key}, {value}')
+
+def predict_sales(model, product_id, month, year, lag_1, lag_2, lag_3, diff_items_sold):
+    # Prepare the prediction data
+    prediction_data = pd.DataFrame({
+        'diff_items_sold': diff_items_sold,
+        'month': [month],
+        'year': [year],
+        'sin_month': [np.sin(2 * np.pi * month / 12)],
+        'cos_month': [np.cos(2 * np.pi * month / 12)],
+        'lag_1': [lag_1],
+        'lag_2': [lag_2],
+        'lag_3': [lag_3],
+    })
+    # Make prediction
+    forecast_quantity = model.predict(prediction_data)
+    return ceil(forecast_quantity[0])
+    
+
+@app.route('/test', methods=['GET'])
+def test():
+    monthly_sales_df = fetchSalesData()
+    # Apply differencing to remove trend and seasonality
+    monthly_sales_df['diff_items_sold'] = monthly_sales_df.groupby('product_id')['items_sold'].diff().dropna()
+    
+    adf_test(monthly_sales_df['diff_items_sold'].dropna())
+    # Assuming you have monthly sales data
+    monthly_sales_featured = monthly_sales_df.copy()
+
+    # Extract month and year from the date column
+    monthly_sales_featured['month'] = monthly_sales_featured['month_year'].dt.month
+    monthly_sales_featured['year'] = monthly_sales_featured['month_year'].dt.year
+
+    # Sort values by date for correct calculation
+    monthly_sales_featured = monthly_sales_featured.sort_values(by=['product_id', 'month_year'])
+
+    # Aggregate total items sold per month for each product
+    monthly_sales_featured = monthly_sales_featured.groupby(['product_id', 'month', 'year'])['items_sold'].sum().reset_index()
+
+    # Feature Engineering
+    monthly_sales_featured['sin_month'] = np.sin(2 * np.pi * monthly_sales_featured['month'] / 12)
+    monthly_sales_featured['cos_month'] = np.cos(2 * np.pi * monthly_sales_featured['month'] / 12)
+
+    # Adding lagged features
+    for i in range(1, 2):
+        monthly_sales_featured[f'lag_{i}'] = monthly_sales_featured.groupby('product_id')['items_sold'].shift(i)
+
+    # Assuming you have monthly sales data
+    monthly_sales_featured = monthly_sales_df.copy()
+    # Drop rows with NaN values (lags up to 6 months back)
+    monthly_sales_featured .dropna(inplace=True)
+
+    # Extract month and year from the date column
+    monthly_sales_featured['month'] = monthly_sales_featured ['month_year'].dt.month
+    monthly_sales_featured['year'] = monthly_sales_featured ['month_year'].dt.year
+
+    # Feature Engineering
+    monthly_sales_featured['sin_month'] = np.sin(2 * np.pi * monthly_sales_featured['month'] / 12)
+    monthly_sales_featured['cos_month'] = np.cos(2 * np.pi * monthly_sales_featured['month'] / 12)
+
+    # Adding lagged features (using fewer lags)
+    for i in range(1, 4):
+        monthly_sales_featured[f'lag_{i}'] = monthly_sales_featured.groupby('product_id')['items_sold'].shift(i)
+
+    # Drop rows with NaN values (lags up to 3 months back)
+    monthly_sales_featured.dropna(inplace=True)
+
+
+    # Assuming you have monthly sales data
+    # Define features and target
+    X = monthly_sales_featured.drop(['product_id', 'items_sold', 'month_year'], axis=1)
+    y = monthly_sales_featured['items_sold']
+
+    # Models to test
+    models = {
+        'Linear Regression': LinearRegression(),
+        'Random Forest': RandomForestRegressor(n_estimators=100, random_state=0),
+        'Gradient Boosting': GradientBoostingRegressor(n_estimators=100, learning_rate=0.1, max_depth=3, random_state=0)
+    }
+
+    # Cross-validation to find the best model
+    best_model = None
+    best_rmse = float('inf')
+    tscv = TimeSeriesSplit(n_splits=5)
+    for name, model in models.items():
+        scores = cross_val_score(model, X, y, scoring='neg_root_mean_squared_error', cv=tscv)
+        avg_rmse = -scores.mean()
+        model.fit(X, y)
+        y_pred = model.predict(X)
+        train_rmse = np.sqrt(mean_squared_error(y, y_pred))
+        print(f"Model: {name}")
+        print(f"Training RMSE: {train_rmse}")
+        print(f"Cross-Validation RMSE: {avg_rmse}\n")
+        if avg_rmse < best_rmse:
+            best_rmse = avg_rmse
+            best_model = model
+
+    print(f"Best Model: {best_model.__class__.__name__}")
+    print(f"Best Cross-Validation RMSE: {best_rmse}")
+    #return jsonify({"best model": best_model.__class__.__name__, "best_rmse": best_rmse})
+        # Example usage:
+    # Assuming you have a trained model named `model` and the required prediction data
+    product_id = 44
+    month = 6
+    year = 2024
+    product_sales = monthly_sales_featured[monthly_sales_featured['product_id'] == product_id]
+    if len(product_sales) < 1:
+        return jsonify(error="Insufficient data for prediction.")
+    else:
+        lag_1 = product_sales['lag_1'].iloc[-1]
+        lag_2 = product_sales['lag_2'].iloc[-1]
+        lag_3 = product_sales['lag_3'].iloc[-1]
+        diff_items_sold = product_sales['diff_items_sold'].iloc[-1]
+        forecast_quantity = predict_sales(model, product_id, month, year, lag_1, lag_2, lag_3, diff_items_sold)
+        return jsonify({"suggested_quantity":forecast_quantity})
+
+  
 if __name__ == '__main__':
     app.run(debug=True)
