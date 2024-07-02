@@ -6,7 +6,7 @@ package PointOfSale;
 
 import Authentication.AdminFrame;
 import Authentication.LoginFrame;
-import Authentication.User;
+import Authentication.Employee;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,13 +23,13 @@ public class POSFrame extends javax.swing.JFrame {
 
     POS pos;//update
     ArrayList<String> discountCodes;
-    private User employee;//update
+    private Employee employee;//update
 
     /**
      * Creates new form POSFrame
      */
     //update
-    public POSFrame(User user) {
+    public POSFrame(Employee user) {
         initComponents();
         this.employee = user;
         pos = new POS(user);
@@ -1198,7 +1198,7 @@ public class POSFrame extends javax.swing.JFrame {
         float salary = 50000.0f; // Assuming salary is in dollars
         String password = "password123";
 
-        User dummyUser = new User(id, firstname, lastname, email, contactNumber, address,
+        Employee dummyUser = new Employee(id, firstname, lastname, email, contactNumber, address,
                 joinDate, role, department, salary, password);
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

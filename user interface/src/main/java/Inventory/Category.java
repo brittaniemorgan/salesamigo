@@ -16,8 +16,6 @@ public class Category {
         this.id = id;
         this.name = name;
     }
-
-    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -32,11 +30,6 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return name; // Override toString() to display category name in JComboBox
     }
 }
 

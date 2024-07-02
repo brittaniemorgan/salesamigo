@@ -6,7 +6,7 @@ package ReportingAndAnalytics;
 
 import Authentication.AdminFrame;
 import Authentication.LoginFrame;
-import Authentication.User;
+import Authentication.Employee;
 
 /**
  *
@@ -17,8 +17,8 @@ public class ReportFrame extends javax.swing.JFrame {
     /**
      * Creates new form ReportFrame
      */
-    private User employee;
-    public ReportFrame(User user) {
+    private Employee employee;
+    public ReportFrame(Employee user) {
         initComponents();        
         this.employee = user;
         employeeIdLabel.setText(String.valueOf(user.getId()));

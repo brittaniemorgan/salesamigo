@@ -5,7 +5,7 @@
 package ReportingAndAnalytics;
 
 import Authentication.LoginFrame;
-import Authentication.User;
+import Authentication.Employee;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.print.PrinterException;
@@ -42,9 +42,9 @@ public class InventoryReportFrame extends javax.swing.JFrame {
      */
     ReportGenerator reportGenerator;
     Calendar cal = Calendar.getInstance();
-    private User employee;
+    private Employee employee;
 
-    public InventoryReportFrame(User user) {
+    public InventoryReportFrame(Employee user) {
         initComponents();
         dailySalesTable.setAutoCreateRowSorter(true);
         monthlySalesTable.setAutoCreateRowSorter(true);
@@ -1025,7 +1025,7 @@ public class InventoryReportFrame extends javax.swing.JFrame {
         float salary = 50000.0f; // Assuming salary is in dollars
         String password = "password123";
 
-        User dummyUser = new User(id, firstname, lastname, email, contactNumber, address,
+        Employee dummyUser = new Employee(id, firstname, lastname, email, contactNumber, address,
                 joinDate, role, department, salary, password);
                 new InventoryReportFrame(dummyUser).setVisible(true);
             }

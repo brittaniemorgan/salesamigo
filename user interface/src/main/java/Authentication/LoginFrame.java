@@ -283,7 +283,7 @@ public class LoginFrame extends javax.swing.JFrame {
                 String dept = userDets.getString("department");
                 float salary = Float.parseFloat(userDets.getString("salary"));
                 String join_date = userDets.getString("join_date");
-                User user = new User(Integer.parseInt(username), fname, lname, email, number, address, join_date, role, dept, salary, password);
+                Employee user = new Employee(Integer.parseInt(username), fname, lname, email, number, address, join_date, role, dept, salary, password);
                 handleSuccessfulLogin(user);
                 }
         } catch (Exception e) {
@@ -309,7 +309,7 @@ public class LoginFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jCheckBox1StateChanged
 
-    private void handleSuccessfulLogin(User user) {
+    private void handleSuccessfulLogin(Employee user) {
         try{
         String role = user.getRole(); 
             switch (role) {

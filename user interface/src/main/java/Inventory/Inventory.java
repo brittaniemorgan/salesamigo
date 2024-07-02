@@ -4,7 +4,7 @@
  */
 package Inventory;
 
-import Database.APIManager;
+import API.APIManager;
 import java.io.IOException;
 import java.util.ArrayList;
 import org.json.JSONArray;
@@ -555,18 +555,6 @@ public class Inventory {
             }
         }
         return null; 
-    }
-    
-    public ArrayList<Product> searchProducts(String query) {
-        ArrayList<Product> filteredProducts = new ArrayList<>();
-        for (Product product : products) {
-            if (product.getName().toLowerCase().contains(query.toLowerCase()) ||
-                product.getCategory().toLowerCase().contains(query.toLowerCase()) ||
-                product.getDescription().toLowerCase().contains(query.toLowerCase())) {
-                filteredProducts.add(product);
-            }
-        }
-        return filteredProducts;
     }
     
     public ArrayList<Product> getProductsByNameOrBrand(String query) {

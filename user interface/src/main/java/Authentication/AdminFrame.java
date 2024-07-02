@@ -22,11 +22,11 @@ public class AdminFrame extends javax.swing.JFrame {
 
     Color DefaultColor, ClickedColor, DefaultTextColor, ClickedTextColor;
     Authenticator authenticator = new Authenticator();
-    private User employee;
+    private Employee employee;
     /**
      * Creates new form AdminFrame
      */
-    public AdminFrame(User user) {
+    public AdminFrame(Employee user) {
         initComponents();
         
         this.employee = user;

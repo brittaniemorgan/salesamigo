@@ -16,8 +16,7 @@ public class Brand {
         this.id = id;
         this.name = name;
     }
-
-    // Getters and Setters
+    
     public int getId() {
         return id;
     }
@@ -34,9 +33,6 @@ public class Brand {
         this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return name; // Override toString() to display brand name in JComboBox
-    }
+    
 }
 

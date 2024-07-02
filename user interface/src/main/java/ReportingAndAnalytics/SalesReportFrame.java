@@ -5,7 +5,7 @@
 package ReportingAndAnalytics;
 
 import Authentication.LoginFrame;
-import Authentication.User;
+import Authentication.Employee;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.Calendar;
@@ -33,9 +33,9 @@ public class SalesReportFrame extends javax.swing.JFrame {
      */
     ReportGenerator reportGenerator;
     Calendar cal = Calendar.getInstance();
-    private User employee;
+    private Employee employee;
 
-    public SalesReportFrame(User user) {
+    public SalesReportFrame(Employee user) {
         initComponents();
         dailySalesTable.setAutoCreateRowSorter(true);
         monthlySalesTable.setAutoCreateRowSorter(true);
@@ -592,7 +592,7 @@ private void updateYearlySalesTable(JSONArray sales_data) {
         float salary = 50000.0f; // Assuming salary is in dollars
         String password = "password123";
 
-        User dummyUser = new User(id, firstname, lastname, email, contactNumber, address,
+        Employee dummyUser = new Employee(id, firstname, lastname, email, contactNumber, address,
                 joinDate, role, department, salary, password);
                 new SalesReportFrame(dummyUser).setVisible(true);
             }

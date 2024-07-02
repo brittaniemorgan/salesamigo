@@ -22,7 +22,7 @@ public class Product {
     private ArrayList<ProductVariant> variants;
     private ArrayList<Discount> discounts;
 
-    // Constructor
+    
     public Product(int id, String name, String description, double price, String category, String brand, String gender) {
         this.id = id;
         this.name = name;
@@ -34,7 +34,6 @@ public class Product {
         this.variants = new ArrayList<ProductVariant>();
     }
 
-    // Getters and Setters
     public int getID() {
         return id;
     }
@@ -105,20 +104,6 @@ public class Product {
     
     public ArrayList<ProductVariant> getVariants(){
         return this.variants;
-    }
-
-    // Override toString method for debugging
-    @Override
-    public String toString() {
-        return "Product{" +
-                "productId=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", price=" + price +
-                ", category='" + category + '\'' +
-                ", brand='" + brand + '\'' +
-                ", gender=" + gender +
-                '}';
     }
 }
 

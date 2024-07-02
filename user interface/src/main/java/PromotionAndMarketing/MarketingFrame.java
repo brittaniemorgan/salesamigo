@@ -7,7 +7,7 @@ package PromotionAndMarketing;
 import Authentication.AdminFrame;
 import Authentication.Customer;
 import Authentication.LoginFrame;
-import Authentication.User;
+import Authentication.Employee;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
@@ -21,12 +21,12 @@ public class MarketingFrame extends javax.swing.JFrame {
 
     MarketingManager marketingManager;
     ArrayList<File> attachments;
-    private User employee;
+    private Employee employee;
 
     /**
      * Creates new form EmailFrame
      */
-    public MarketingFrame(User user) {
+    public MarketingFrame(Employee user) {
         initComponents();
         marketingManager = new MarketingManager();
         attachments = new ArrayList<>();

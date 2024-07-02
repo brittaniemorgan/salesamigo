@@ -9,7 +9,7 @@ package PromotionAndMarketing;
  * @author britt
  */
 import Authentication.Customer;
-import Database.APIManager;
+import API.APIManager;
 import ReportingAndAnalytics.ProductRecommendation;
 import ReportingAndAnalytics.ProductRecommendationEngine;
 import java.io.File;

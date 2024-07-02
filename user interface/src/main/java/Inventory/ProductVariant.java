@@ -27,7 +27,6 @@ public class ProductVariant {
         this.minQuantity = minQuantity;
     }
 
-    // Getters and Setters
     public int getVariantID() {
         return variantId;
     }
@@ -86,20 +85,6 @@ public class ProductVariant {
     
     public boolean isLowStock() {
         return quantity < minQuantity;
-    }
-
-    // toString method
-    @Override
-    public String toString() {
-        return "ProductVariation{" +
-                "variantId=" + variantId +
-                ", productId=" + product.getID() +
-                ", size='" + size + '\'' +
-                ", color='" + colour + '\'' +
-                ", quantity=" + quantity +
-                ", price=" + price +
-                ", minQuantity=" + minQuantity + '\'' +
-                '}';
     }
 }
 

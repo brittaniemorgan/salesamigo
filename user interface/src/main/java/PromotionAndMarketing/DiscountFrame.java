@@ -6,7 +6,7 @@ package PromotionAndMarketing;
 
 import Authentication.AdminFrame;
 import Authentication.LoginFrame;
-import Authentication.User;
+import Authentication.Employee;
 import Inventory.Brand;
 import Inventory.Category;
 import Inventory.Product;
@@ -30,10 +30,10 @@ public class DiscountFrame extends javax.swing.JFrame {
     /**
      * Creates new form DiscountFrame
      */
-    private User employee;
+    private Employee employee;
     Calendar cal = Calendar.getInstance();
 
-    public DiscountFrame(User user) {
+    public DiscountFrame(Employee user) {
         initComponents();
         pos = new POS(user);
         updateTables();
@@ -2162,7 +2162,7 @@ public class DiscountFrame extends javax.swing.JFrame {
         float salary = 50000.0f; // Assuming salary is in dollars
         String password = "password123";
 
-        User dummyUser = new User(id, firstname, lastname, email, contactNumber, address,
+        Employee dummyUser = new Employee(id, firstname, lastname, email, contactNumber, address,
                 joinDate, role, department, salary, password);
 
         /* Create and display the form */

@@ -6,7 +6,7 @@ package PointOfSale;
 
 import Authentication.AdminFrame;
 import Authentication.LoginFrame;
-import Authentication.User;
+import Authentication.Employee;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -23,8 +23,8 @@ public class SalesHistoryFrame extends javax.swing.JFrame {
      * Creates new form SalesHistoryFrame
      */
     POS pos;
-    User employee;
-    public SalesHistoryFrame(User user) {
+    Employee employee;
+    public SalesHistoryFrame(Employee user) {
         initComponents();
         this.employee = user;
         pos = new POS(user);
@@ -617,7 +617,7 @@ public class SalesHistoryFrame extends javax.swing.JFrame {
         float salary = 50000.0f; // Assuming salary is in dollars
         String password = "password123";
 
-        User dummyUser = new User(id, firstname, lastname, email, contactNumber, address,
+        Employee dummyUser = new Employee(id, firstname, lastname, email, contactNumber, address,
                 joinDate, role, department, salary, password);
                 new SalesHistoryFrame(dummyUser).setVisible(true);
             }

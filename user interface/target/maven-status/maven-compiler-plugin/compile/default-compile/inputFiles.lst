@@ -10,7 +10,6 @@ C:\Users\britt\Documents\School\Year3\SWEN3920\salesamigo\user interface\src\mai
 C:\Users\britt\Documents\School\Year3\SWEN3920\salesamigo\user interface\src\main\java\trbsoftware\salesamigo\SalesAmigo.java
 C:\Users\britt\Documents\School\Year3\SWEN3920\salesamigo\user interface\src\main\java\PromotionAndMarketing\Discount.java
 C:\Users\britt\Documents\School\Year3\SWEN3920\salesamigo\user interface\src\main\java\Inventory\Size.java
-C:\Users\britt\Documents\School\Year3\SWEN3920\salesamigo\user interface\src\main\java\Authentication\User.java
 C:\Users\britt\Documents\School\Year3\SWEN3920\salesamigo\user interface\src\main\java\Authentication\Authenticator.java
 C:\Users\britt\Documents\School\Year3\SWEN3920\salesamigo\user interface\src\main\java\ReportingAndAnalytics\ReportFrame.java
 C:\Users\britt\Documents\School\Year3\SWEN3920\salesamigo\user interface\src\main\java\Authentication\Customer.java
@@ -26,9 +25,9 @@ C:\Users\britt\Documents\School\Year3\SWEN3920\salesamigo\user interface\src\mai
 C:\Users\britt\Documents\School\Year3\SWEN3920\salesamigo\user interface\src\main\java\Inventory\InventoryFrame.java
 C:\Users\britt\Documents\School\Year3\SWEN3920\salesamigo\user interface\src\main\java\Authentication\LoginFrame.java
 C:\Users\britt\Documents\School\Year3\SWEN3920\salesamigo\user interface\src\main\java\ReportingAndAnalytics\ReportFilter.java
+C:\Users\britt\Documents\School\Year3\SWEN3920\salesamigo\user interface\src\main\java\API\APIManager.java
 C:\Users\britt\Documents\School\Year3\SWEN3920\salesamigo\user interface\src\main\java\ReportingAndAnalytics\ProductRecommendationEngine.java
 C:\Users\britt\Documents\School\Year3\SWEN3920\salesamigo\user interface\src\main\java\PointOfSale\ReceiptPrinter.java
-C:\Users\britt\Documents\School\Year3\SWEN3920\salesamigo\user interface\src\main\java\Database\APIManager.java
 C:\Users\britt\Documents\School\Year3\SWEN3920\salesamigo\user interface\src\main\java\PointOfSale\SalesHistoryFrame.java
 C:\Users\britt\Documents\School\Year3\SWEN3920\salesamigo\user interface\src\main\java\Inventory\Category.java
 C:\Users\britt\Documents\School\Year3\SWEN3920\salesamigo\user interface\src\main\java\PromotionAndMarketing\MarketingFrame.java

@@ -6,7 +6,7 @@ package PointOfSale;
 
 import Authentication.AdminFrame;
 import Authentication.LoginFrame;
-import Authentication.User;
+import Authentication.Employee;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -21,8 +21,8 @@ public class PaymentTypeFrame extends javax.swing.JFrame {
      * Creates new form PaymentTypeFrame
      */
     POS pos;
-    User employee;
-    public PaymentTypeFrame(User user) {
+    Employee employee;
+    public PaymentTypeFrame(Employee user) {
         initComponents();
         this.employee = user;
         pos = new POS(user);

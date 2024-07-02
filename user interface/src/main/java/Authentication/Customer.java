@@ -8,7 +8,6 @@ package Authentication;
  *
  * @author britt
  */
-import java.util.Date;
 
 public class Customer {
     private int customerId;
@@ -16,12 +15,9 @@ public class Customer {
     private String lastname;
     private String email;
     private String contactNumber;
-    private String password;
     private String address;
     private int pointsBalance;
-    private Date dateJoined;
 
-    // Constructor
     public Customer(int customerId, String firstname, String lastname, String email, String contactNumber,
                     String address, int pointsBalance) {
         this.customerId = customerId;
@@ -33,7 +29,6 @@ public class Customer {
         this.pointsBalance = pointsBalance;
     }
 
-    // Getters and Setters
     public int getId() {
         return customerId;
     }
@@ -74,14 +69,6 @@ public class Customer {
         this.contactNumber = contactNumber;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getAddress() {
         return address;
     }
@@ -96,29 +83,5 @@ public class Customer {
 
     public void setPointsBalance(int pointsBalance) {
         this.pointsBalance = pointsBalance;
-    }
-
-    public Date getDateJoined() {
-        return dateJoined;
-    }
-
-    public void setDateJoined(Date dateJoined) {
-        this.dateJoined = dateJoined;
-    }
-
-    // toString method for debugging or logging
-    @Override
-    public String toString() {
-        return "Customer{" +
-                "customerId=" + customerId +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", email='" + email + '\'' +
-                ", contactNumber='" + contactNumber + '\'' +
-                ", password='" + password + '\'' +
-                ", address='" + address + '\'' +
-                ", pointsBalance=" + pointsBalance +
-                ", dateJoined=" + dateJoined +
-                '}';
     }
 }

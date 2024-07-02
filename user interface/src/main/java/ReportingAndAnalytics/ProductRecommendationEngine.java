@@ -4,7 +4,7 @@
  */
 package ReportingAndAnalytics;
 
-import Database.APIManager;
+import API.APIManager;
 import PromotionAndMarketing.Email;
 import PromotionAndMarketing.MarketingManager;
 import java.util.ArrayList;

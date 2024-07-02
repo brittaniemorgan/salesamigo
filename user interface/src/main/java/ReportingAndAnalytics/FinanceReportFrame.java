@@ -5,7 +5,7 @@
 package ReportingAndAnalytics;
 
 import Authentication.LoginFrame;
-import Authentication.User;
+import Authentication.Employee;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.print.PrinterException;
@@ -41,8 +41,8 @@ public class FinanceReportFrame extends javax.swing.JFrame {
      */
     Calendar cal = Calendar.getInstance();
     ReportGenerator reportGenerator;
-    private User employee;
-    public FinanceReportFrame(User user) {
+    private Employee employee;
+    public FinanceReportFrame(Employee user) {
         initComponents();
         
         this.employee = user;
@@ -670,7 +670,7 @@ public class FinanceReportFrame extends javax.swing.JFrame {
         float salary = 50000.0f; // Assuming salary is in dollars
         String password = "password123";
 
-        User dummyUser = new User(id, firstname, lastname, email, contactNumber, address,
+        Employee dummyUser = new Employee(id, firstname, lastname, email, contactNumber, address,
                 joinDate, role, department, salary, password);
                 new FinanceReportFrame(dummyUser).setVisible(true);
             }

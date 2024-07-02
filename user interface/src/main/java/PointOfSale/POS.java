@@ -8,14 +8,14 @@ import PromotionAndMarketing.Discount;
 import PromotionAndMarketing.BrandDiscount;
 import PromotionAndMarketing.CategoryDiscount;
 import Authentication.Customer;
-import Authentication.User;
+import Authentication.Employee;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 /**
  *
  * @author britt
  */
-import Database.APIManager;
+import API.APIManager;
 import Inventory.Inventory;
 import Inventory.Product;
 import org.json.JSONArray;
@@ -31,11 +31,11 @@ public class POS {
     private ArrayList<Discount> discounts;
     private ArrayList<PaymentType> paymentTypes;
     private Customer currentCustomer;
-    private User employee;
+    private Employee employee;
     ReceiptPrinter printer;
 //update
 
-    public POS(User user) {
+    public POS(Employee user) {
         try {
             api = APIManager.getAPIManager();
             this.employee = user;
@@ -43,11 +43,8 @@ public class POS {
             pendingTransactions = new ArrayList<>();
             discounts = new ArrayList<>();
             paymentTypes = new ArrayList<>();
-            //Updated
             setCustomer(1);
             setPaymentTypes();
-
-            // Load discounts from API
             loadDiscounts();
             printer = new ReceiptPrinter();
         } catch (Exception e) {
@@ -55,7 +52,6 @@ public class POS {
         }
     }
 
-    // Method to set the current customer
     public void setCustomer(int customerId) {
         try {
             JSONObject response = api.getCustomerByID(customerId);
@@ -76,7 +72,6 @@ public class POS {
         }
     }
 
-    // Getters for customer and other attributes
     public Customer getCurrentCustomer() {
         return currentCustomer;
     }
@@ -84,7 +79,6 @@ public class POS {
     private void loadDiscounts() {
         try {
             discounts = new ArrayList<>();
-            // Get all discounts from the API
             JSONObject response = api.getDiscounts();
             JSONArray generalArray = response.getJSONArray("general discounts");
             JSONArray productArray = response.getJSONArray("product discounts");
@@ -289,8 +283,7 @@ public class POS {
 
         return feedback;
     }
-
-    //Update
+    
     public ArrayList<String> applyAllDiscount(Transaction order, ArrayList<String> discountCodes) {
         ArrayList<String> validCodes = new ArrayList<>();
         for (String discountCode : discountCodes) {
@@ -301,18 +294,7 @@ public class POS {
         }
         return validCodes;
     }
-
-    /* Apply sale when item is added
-    if (discount.getCode().equals("") && discount.getAmount() > highestDiscount) {
-                    highestDiscount = discount.getAmount();
-                    discountedPrice = calculateDiscountedPrice(inventory.findVarantByID(item.getProductId()).getPrice(), discount.getAmount());
-                    // Update the item's price with the discounted price
-                    item.setDiscount(discount);
-                    order.calculateTotal(); 
-                    feedback += "Sale Discounts Applied";
-                }
-     */
-//Updated
+    
     public String performSaleTransaction(int orderId, String paymentMethod) {
         String feedback = "";
         try {
@@ -331,7 +313,7 @@ public class POS {
                 JSONObject itemObj = new JSONObject();
                 itemObj.put("product_id", item.getProductId());
                 itemObj.put("quantity", item.getQuantity());
-                itemObj.put("price", item.getPrice()); //update
+                itemObj.put("price", item.getPrice());
                 if (item.getDiscount() != null) {
                     itemObj.put("discount_id", item.getDiscount().getId());
                 }
@@ -368,7 +350,6 @@ public class POS {
                 double total = transactionObj.getDouble("total");
                 String paymentMethod = transactionObj.getString("payment_method");
 
-                // Fetch items for the transaction
                 JSONArray itemsArray = transactionObj.getJSONArray("items");
                 ArrayList<TransactionItem> items = new ArrayList<>();
                 for (int j = 0; j < itemsArray.length(); j++) {
@@ -381,7 +362,6 @@ public class POS {
                     items.add(new TransactionItem(transactionItemId, productId, quantity, price));
                 }
 
-                // Fetch refund items for the transaction
                 JSONArray refundItemsArray = transactionObj.getJSONArray("refund_items");
                 ArrayList<RefundItem> refundItems = new ArrayList<>();
                 for (int k = 0; k < refundItemsArray.length(); k++) {
@@ -434,28 +414,16 @@ public class POS {
 
     public String redeemPoints(int orderId, int pointsToRedeem) {
         try {
-            // Check if current customer is set
             if (currentCustomer == null) {
                 return "No customer selected.";
             }
 
-            // Check if customer has enough points to redeem
             if (currentCustomer.getPointsBalance() >= pointsToRedeem) {
-                // Calculate new points balance after redemption
                 int newPointsBalance = currentCustomer.getPointsBalance() - pointsToRedeem;
                 currentCustomer.setPointsBalance(newPointsBalance);
                 Transaction transaction = getPendingTransactionByID(orderId);
                 transaction.setPointsApplied(pointsToRedeem);
                 return "Points redeemed successfully. New points balance: " + newPointsBalance;
-
-                // Update the customer's points balance
-                //JSONObject response = api.updateCustomerPoints(currentCustomer.getId(), newPointsBalance);
-                /* if (response != null && response.has("success")) {
-                    currentCustomer.setPointsBalance(newPointsBalance);
-                    return "Points redeemed successfully. New points balance: " + newPointsBalance;
-                } else {
-                    return "Failed to update points balance.";
-                }*/
             } else {
                 return "Insufficient points to redeem.";
             }
@@ -465,7 +433,6 @@ public class POS {
         }
     }
 
-    //update
     public ArrayList<PaymentType> getPaymentTypes() {
         return paymentTypes;
     }
@@ -561,7 +528,6 @@ public class POS {
     public String processRefund(int transactionId, ArrayList<RefundItem> items, int employeeId) {
         String feedback = "";
         try {
-            // Construct the refund request JSON object
             JSONObject refundInfo = new JSONObject();
             JSONArray itemsArray = new JSONArray();
             double amount = 0;
@@ -579,7 +545,6 @@ public class POS {
             refundInfo.put("employee_id", employeeId);
 
             amount = Math.round(amount * 100.0) / 100.0;
-            // Send the refund request to the API
             JSONObject response = api.processRefund(transactionId, itemsArray, employeeId, amount);
 
             if (response.has("error")) {
@@ -608,29 +573,6 @@ public class POS {
             } else {
                 int id = response.getInt("id");
                 loadDiscounts();
-                /*
-                switch (discountType.toUpperCase()) {
-                    case "GENERAL":
-                        discounts.add(new Discount(id, discountCode, discountName, discountPercent, startDate, endDate));
-                        break;
-                    case "PRODUCT":
-                        for (int i : applicable_ids) {
-                            discounts.add(new ProductDiscount(id, discountCode, discountName, discountPercent, startDate, endDate, i));
-                        }
-                        break;
-                    case "BRAND":
-                        for (int i : applicable_ids) {
-                            discounts.add(new BrandDiscount(id, discountCode, discountName, discountPercent, startDate, endDate, i));
-                        }
-                        break;
-                    case "CATEGORY":
-                        for (int i : applicable_ids) {
-                            discounts.add(new CategoryDiscount(id, discountCode, discountName, discountPercent, startDate, endDate, i));
-                        }
-                        break;
-                    default:
-                        break;
-                }*/
 
                 feedback = "Discount added successfully!";
             }
@@ -663,7 +605,7 @@ public class POS {
                 feedback = "Error updating discount: " + response.getString("error");
             } else {
                 feedback = "Discount updated successfully!";
-                loadDiscounts(); //check
+                loadDiscounts(); 
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -680,7 +622,7 @@ public class POS {
                 feedback = "Error deleting discount: " + response.getString("error");
             } else {
                 feedback = "Discount updated successfully!";
-                loadDiscounts(); //check
+                loadDiscounts();
             }
             System.out.println("Response from server: " + response.toString());
         } catch (Exception e) {

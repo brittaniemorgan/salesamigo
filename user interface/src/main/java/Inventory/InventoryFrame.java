@@ -6,7 +6,7 @@ package Inventory;
 
 import Authentication.AdminFrame;
 import Authentication.LoginFrame;
-import Authentication.User;
+import Authentication.Employee;
 import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -20,12 +20,12 @@ public class InventoryFrame extends javax.swing.JFrame {
 
     Inventory inventory;
     Color DefaultColor,ClickedColor;
-    private User employee;
+    private Employee employee;
 
     /**
      * Creates new form InventoryFrame
      */
-    public InventoryFrame(User user) {
+    public InventoryFrame(Employee user) {
         inventory = new Inventory();
         initComponents();
         updateProductsTable(inventory.getProducts());
