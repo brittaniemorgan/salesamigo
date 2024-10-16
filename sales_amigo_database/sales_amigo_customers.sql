@@ -42,7 +42,7 @@ CREATE TABLE `customers` (
 
 LOCK TABLES `customers` WRITE;
 /*!40000 ALTER TABLE `customers` DISABLE KEYS */;
-INSERT INTO `customers` VALUES (1,'Guest','Customer','guestcustomer@example.com','123-456-7890',NULL,'Fake Land',8,'2024-05-27'),(2,'John','Doe','john.doe@example.com','+1234567890','password123','123 Main St, Anytown, USA',25,'2023-01-01'),(3,'Jane','Smith','jane.smith@example.com','+1987654321','password456','456 Elm St, Othertown, USA',50,'2023-01-02'),(4,'Mike','Johnson','mike.johnson@example.com','+1122334455','password789','789 Oak St, Anycity, USA',-96,'2023-01-03');
+INSERT INTO `customers` VALUES (1,'Guest','Customer','guestcustomer@example.com','123-456-7890',NULL,'Fake Land',8,'2024-05-27'),(2,'John','Doe','john.doe@example.com','+1234567890','password123','123 Main St, Anytown, USA',72,'2023-01-01'),(3,'Jane','Smith','jane.smith@example.com','+1987654321','password456','456 Elm St, Othertown, USA',15,'2023-01-02'),(4,'Mike','Johnson','mike.johnson@example.com','+1122334455','password789','789 Oak St, Anycity, USA',-96,'2023-01-03');
 /*!40000 ALTER TABLE `customers` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -55,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-18 21:43:21
+-- Dump completed on 2024-10-15 23:32:13

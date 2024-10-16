@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `employees`;
 CREATE TABLE `employees` (
   `employee_id` int NOT NULL AUTO_INCREMENT,
   `firstname` varchar(50) DEFAULT NULL,
-  `lastame` varchar(50) DEFAULT NULL,
+  `lastname` varchar(50) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `contact_number` varchar(20) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE `employees` (
   `salary` decimal(10,2) DEFAULT NULL,
   `password` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`employee_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=551 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,7 +44,7 @@ CREATE TABLE `employees` (
 
 LOCK TABLES `employees` WRITE;
 /*!40000 ALTER TABLE `employees` DISABLE KEYS */;
-INSERT INTO `employees` VALUES (1,'John','Doe','john.doe@example.com','1234567890','123 Main St, Cityville','2020-01-15','Manager','Sales',75000.00,'password123'),(2,'Jane','Smith','jane.smith@example.com','0987654321','456 Elm St, Townsville','2019-06-01','Cashier','Finance',40000.00,'password123'),(3,'Alice','Johnson','alice.johnson@example.com','5551234567','789 Oak St, Villageville','2021-03-10','Inventory Clerk','Logistics',35000.00,'password123'),(4,'Bob','Williams','bob.williams@example.com','4449876543','101 Pine St, Hamletville','2018-11-20','Manager','Operations',80000.00,'password123'),(5,'Charlie','Brown','charlie.brown@example.com','3335556789','202 Birch St, Boroughville','2022-05-05','Cashier','Customer Service',32000.00,'password123');
+INSERT INTO `employees` VALUES (1,'John','Doe','john.doe@example.com','1234567890','123 Main St, Cityville','2020-01-15','Manager','Sales',75000.00,'75K3eLr+dx6JJFuJ7LwIpEpOFmwGZZkRiB84PURz6U8='),(2,'Jane','Smith','jane.smith@example.com','0987654321','456 Elm St, Townsville','2019-06-01','Cashier','Finance',40000.00,'75K3eLr+dx6JJFuJ7LwIpEpOFmwGZZkRiB84PURz6U8='),(3,'Alice','Johnson','alice.johnson@example.com','5551234567','789 Oak St, Villageville','2021-03-10','Inventory Clerk','Logistics',35000.00,'75K3eLr+dx6JJFuJ7LwIpEpOFmwGZZkRiB84PURz6U8='),(4,'Bob','Williams','bob.williams@example.com','4449876543','101 Pine St, Hamletville','2018-11-20','Manager','Operations',80000.00,'75K3eLr+dx6JJFuJ7LwIpEpOFmwGZZkRiB84PURz6U8='),(5,'Charlie','Brown','charlie.brown@example.com','3335556789','202 Birch St, Boroughville','2022-05-05','Cashier','Customer Service',32000.00,'75K3eLr+dx6JJFuJ7LwIpEpOFmwGZZkRiB84PURz6U8='),(6,'jTextField2','fnameTxt','jTextField2','jTextField2','jTextField2',NULL,'jTextField2',NULL,NULL,'password123'),(7,'jTextField2','fnameTxt','jTextField2','jTextField2','jTextField2',NULL,'jTextField2',NULL,NULL,'75K3eLr+dx6JJFuJ7LwIpEpOFmwGZZkRiB84PURz6U8='),(8,'vbn','ghjk','vbhj','vbnm','vbnm',NULL,'bnm',NULL,NULL,'0PO4ViWLQIZuF1fqOGvVQ5Ymcd5Gqu/IIXe4vvPaiLM='),(550,'Online','Sale',NULL,NULL,NULL,NULL,'Online','Online',NULL,NULL);
 /*!40000 ALTER TABLE `employees` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -57,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-18 21:43:22
+-- Dump completed on 2024-10-15 23:32:13

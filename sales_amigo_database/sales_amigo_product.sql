@@ -38,7 +38,7 @@ CREATE TABLE `product` (
   CONSTRAINT `product_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`),
   CONSTRAINT `product_ibfk_2` FOREIGN KEY (`brand_id`) REFERENCES `brand` (`brand_id`),
   CONSTRAINT `product_chk_1` CHECK ((`price` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,7 +47,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (1,'Basic T-Shirt',1,1,19.99,'Comfortable basic T-Shirt','Unisex','2024-05-26'),(2,'Skinny Jeans',2,2,49.99,'Slim-fit jeans','Female','2024-05-26'),(3,'Evening Dress',3,1,149.99,'Elegant evening dress','Female','2024-05-26'),(4,'Running Shoes',4,3,89.99,'Lightweight running shoes','Unisex','2024-05-26'),(5,'Leather Jacket',5,3,199.99,'Classic leather jacket','Male','2024-05-26'),(6,'Crossbody Bag',6,1,129.99,'Stylish crossbody bag','Female','2024-05-26'),(7,'Knit Sweater',7,2,79.99,'Warm knit sweater','Unisex','2024-05-26'),(8,'Pleated Skirt',8,1,59.99,'Flowy pleated skirt','Female','2024-05-26');
+INSERT INTO `product` VALUES (1,'Basic T-Shirt',1,1,19.99,'Comfortable basic T-Shirt','Unisex','2024-05-26'),(2,'Skinny Jeans',2,2,49.99,'Slim-fit jeans','Female','2024-05-26'),(3,'Evening Dress',3,1,149.99,'Elegant evening dress','Female','2024-05-26'),(4,'Running Shoes',4,3,89.99,'Lightweight running shoes','Unisex','2024-05-26'),(5,'Leather Jacket',5,3,199.99,'Classic leather jacket','Male','2024-05-26'),(6,'Crossbody Bag',6,1,129.99,'Stylish crossbody bag','Female','2024-05-26'),(7,'Knit Sweater',7,2,79.99,'Warm knit sweater','Unisex','2024-05-26'),(8,'Pleated Skirt',8,1,59.99,'Flowy pleated skirt','Female','2024-05-26'),(14,'fghj',3,2,800.00,'fghjkl','Male','2024-06-24'),(15,'Cute Dress',3,3,50.00,'It is very cute.','Female','2024-06-25'),(16,'6928',1,2,10.00,'Sweatshirt in soft organic cotton with a  press-stud on one shoulder (sizes 12-18 months and 18-24 months without a press-stud). Brushed inside.','Female','2021-01-01'),(17,'6936',4,2,10.00,'40','Female','2021-01-01'),(19,'6954',9,2,16.00,'20','Male','2021-01-01');
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -60,4 +60,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-18 21:43:23
+-- Dump completed on 2024-10-15 23:32:12

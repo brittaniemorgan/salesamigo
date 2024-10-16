@@ -38,7 +38,7 @@ CREATE TABLE `productvariant` (
   CONSTRAINT `productvariant_ibfk_2` FOREIGN KEY (`size_id`) REFERENCES `size` (`size_id`),
   CONSTRAINT `productvariant_chk_1` CHECK ((`quantity` >= 0)),
   CONSTRAINT `productvariant_chk_2` CHECK ((`price` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,7 +47,7 @@ CREATE TABLE `productvariant` (
 
 LOCK TABLES `productvariant` WRITE;
 /*!40000 ALTER TABLE `productvariant` DISABLE KEYS */;
-INSERT INTO `productvariant` VALUES (1,1,1,'White',22,19.99,5,'2024-05-26'),(2,1,2,'Black',22,19.99,5,'2024-05-26'),(3,2,2,'Blue',34,49.99,3,'2024-05-26'),(4,2,3,'Black',34,49.99,3,'2024-05-26'),(5,3,3,'Red',40,149.99,2,'2024-05-26'),(6,3,1,'Black',40,149.99,2,'2024-05-26'),(7,4,1,'Gray',44,89.99,2,'2024-05-26'),(8,4,2,'White',44,89.99,2,'2024-05-26'),(9,5,1,'Black',45,199.99,1,'2024-05-26'),(10,5,2,'Brown',45,199.99,5,'2024-05-26'),(11,6,2,'Red',47,129.99,4,'2024-05-26'),(12,6,3,'Black',47,129.99,4,'2024-05-26'),(13,7,3,'Gray',48,79.99,5,'2024-05-26'),(14,7,1,'Blue',48,79.99,5,'2024-05-26'),(15,8,1,'Black',49,59.99,2,'2024-05-26'),(16,8,2,'White',49,59.99,2,'2024-05-26'),(22,7,2,'Blue',48,90.99,5,'2024-06-05');
+INSERT INTO `productvariant` VALUES (1,1,1,'White',20,19.99,10,'2024-05-26'),(2,1,2,'Black',23,19.99,5,'2024-05-26'),(3,2,2,'Blue',34,49.99,3,'2024-05-26'),(4,2,3,'Black',34,49.99,3,'2024-05-26'),(5,3,3,'Red',35,149.99,2,'2024-05-26'),(6,3,1,'Black',40,149.99,2,'2024-05-26'),(7,4,1,'Gray',44,89.99,2,'2024-05-26'),(8,4,2,'White',44,89.99,2,'2024-05-26'),(9,5,1,'Black',45,199.99,1,'2024-05-26'),(10,5,2,'Brown',45,199.99,5,'2024-05-26'),(11,6,2,'Red',47,129.99,4,'2024-05-26'),(12,6,3,'Black',47,129.99,4,'2024-05-26'),(13,7,3,'Gray',48,79.99,5,'2024-05-26'),(14,7,1,'Blue',48,79.99,5,'2024-05-26'),(15,8,1,'Black',49,59.99,2,'2024-05-26'),(16,8,2,'White',49,59.99,2,'2024-05-26'),(22,7,2,'Blue',48,90.99,5,'2024-06-05'),(24,6,2,'pink',47,129.99,4,'2024-06-24');
 /*!40000 ALTER TABLE `productvariant` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -60,4 +60,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-18 21:43:23
+-- Dump completed on 2024-10-15 23:32:14

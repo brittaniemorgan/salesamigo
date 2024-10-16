@@ -27,7 +27,7 @@ CREATE TABLE `brand` (
   `brand` varchar(50) NOT NULL,
   PRIMARY KEY (`brand_id`),
   UNIQUE KEY `brand` (`brand`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -36,7 +36,7 @@ CREATE TABLE `brand` (
 
 LOCK TABLES `brand` WRITE;
 /*!40000 ALTER TABLE `brand` DISABLE KEYS */;
-INSERT INTO `brand` VALUES (5,''),(2,'H&M'),(3,'Nike'),(1,'Zara');
+INSERT INTO `brand` VALUES (5,''),(7,'Adidas'),(2,'H&M'),(3,'Nike'),(8,'Puma'),(1,'Zara');
 /*!40000 ALTER TABLE `brand` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -49,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-18 21:43:22
+-- Dump completed on 2024-10-15 23:32:11

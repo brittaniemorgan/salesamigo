@@ -27,7 +27,7 @@ CREATE TABLE `payment_type` (
   `payment` varchar(100) NOT NULL,
   PRIMARY KEY (`payment_id`),
   UNIQUE KEY `payment_UNIQUE` (`payment`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -36,7 +36,7 @@ CREATE TABLE `payment_type` (
 
 LOCK TABLES `payment_type` WRITE;
 /*!40000 ALTER TABLE `payment_type` DISABLE KEYS */;
-INSERT INTO `payment_type` VALUES (4,'Bank Transfer'),(1,'Cash'),(2,'Credit Card'),(3,'Debit Card');
+INSERT INTO `payment_type` VALUES (4,'Bank Transfer'),(1,'Cash'),(2,'Credit Card'),(3,'Debit Card'),(7,'Paypal');
 /*!40000 ALTER TABLE `payment_type` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -49,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-18 21:43:22
+-- Dump completed on 2024-10-15 23:32:12

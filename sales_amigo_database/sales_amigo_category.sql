@@ -36,7 +36,7 @@ CREATE TABLE `category` (
 
 LOCK TABLES `category` WRITE;
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
-INSERT INTO `category` VALUES (3,'Dress'),(6,'Handbag'),(5,'Jacket'),(2,'Jeans'),(4,'Shoes'),(8,'Skirt'),(7,'Sweater'),(1,'T-Shirt');
+INSERT INTO `category` VALUES (10,'Blouse'),(3,'Dress'),(6,'Handbag'),(5,'Jacket'),(2,'Jeans'),(9,'Sandals'),(4,'Shoes'),(8,'Skirt'),(11,'Sneakers'),(7,'Sweater'),(1,'T-Shirt');
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -49,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-18 21:43:21
+-- Dump completed on 2024-10-15 23:32:13

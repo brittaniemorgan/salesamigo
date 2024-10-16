@@ -38,7 +38,7 @@ CREATE TABLE `refunds` (
   CONSTRAINT `refunds_ibfk_1` FOREIGN KEY (`transaction_id`) REFERENCES `sales_transactions` (`transaction_id`),
   CONSTRAINT `refunds_ibfk_2` FOREIGN KEY (`transaction_item_id`) REFERENCES `transaction_items` (`transaction_item_id`),
   CONSTRAINT `refunds_ibfk_3` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,7 +47,7 @@ CREATE TABLE `refunds` (
 
 LOCK TABLES `refunds` WRITE;
 /*!40000 ALTER TABLE `refunds` DISABLE KEYS */;
-INSERT INTO `refunds` VALUES (2,57,53,1,1,'2024-06-05 02:19:21',1,0.00),(4,57,53,1,1,'2024-06-05 02:26:40',1,0.00),(5,1,1,1,1,'2024-06-05 06:09:28',0,50.00),(6,1,1,1,1,'2024-06-05 06:10:33',0,50.00),(7,1,2,1,1,'2024-06-05 06:11:56',0,50.00),(8,5,5,1,1,'2024-06-05 06:20:36',0,50.00),(9,8,11,1,1,'2024-06-05 06:21:57',0,19.99),(10,5,5,1,1,'2024-06-05 06:24:13',1,50.00);
+INSERT INTO `refunds` VALUES (2,57,53,1,1,'2024-06-05 02:19:21',1,0.00),(4,57,53,1,1,'2024-06-05 02:26:40',1,0.00),(5,1,1,1,1,'2024-06-05 06:09:28',0,50.00),(6,1,1,1,1,'2024-06-05 06:10:33',0,50.00),(7,1,2,1,1,'2024-06-05 06:11:56',0,50.00),(8,5,5,1,1,'2024-06-05 06:20:36',0,50.00),(9,8,11,1,1,'2024-06-05 06:21:57',0,19.99),(10,5,5,1,1,'2024-06-05 06:24:13',1,50.00),(11,5,6,1,1,'2024-06-27 09:50:10',1,50.00);
 /*!40000 ALTER TABLE `refunds` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -60,4 +60,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-18 21:43:21
+-- Dump completed on 2024-10-15 23:32:13
