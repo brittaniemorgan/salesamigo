@@ -1505,151 +1505,6 @@ def sales_report():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-#delete
-@app.route('/inventory_report', methods=['GET'])
-def inventory_report():
-    try:
-        # Get the filter parameters from query parameters
-        start_date = request.args.get('start_date')
-        end_date = request.args.get('end_date')
-        
-        # Validate date format
-        date_format = "%Y-%m-%d"
-        try:
-            start_date_obj = datetime.strptime(start_date, date_format)
-            end_date_obj = datetime.strptime(end_date, date_format)
-        except ValueError:
-            return jsonify({"error": "Invalid date format. Use YYYY-MM-DD."}), 400
-
-        connection = get_db_connection()
-        cursor = connection.cursor(dictionary=True)
-
-        # Daily sales report
-        daily_sales_query = """
-            SELECT 
-                DATE(st.transaction_date) AS sale_date,
-                p.product_id,
-                p.name AS product_name,
-                pv.variant_id,
-                s.size,
-                pv.color,
-                SUM(ti.quantity) AS total_quantity_sold,
-                SUM(ti.quantity * ti.price) AS total_sales
-            FROM sales_transactions st
-            JOIN transaction_items ti ON st.transaction_id = ti.transaction_id
-            JOIN productvariant pv ON ti.product_id = pv.variant_id
-            JOIN product p ON pv.product_id = p.product_id
-            JOIN size s ON s.size_id = pv.size_id
-            WHERE st.transaction_date BETWEEN %s AND %s
-            GROUP BY sale_date, p.product_id, pv.variant_id, pv.size_id, pv.color
-            ORDER BY sale_date;
-        """
-
-        cursor.execute(daily_sales_query, (start_date, end_date))
-        daily_sales = cursor.fetchall()
-
-        # Weekly sales report
-        weekly_sales_query = """
-            SELECT 
-                YEAR(st.transaction_date) AS sale_year,
-                WEEK(st.transaction_date) AS sale_week,
-                p.product_id,
-                p.name AS product_name,
-                pv.variant_id,
-                s.size,
-                pv.color,
-                SUM(ti.quantity) AS total_quantity_sold,
-                SUM(ti.quantity * ti.price) AS total_sales
-            FROM sales_transactions st
-            JOIN transaction_items ti ON st.transaction_id = ti.transaction_id
-            JOIN productvariant pv ON ti.product_id = pv.variant_id
-            JOIN product p ON pv.product_id = p.product_id
-            JOIN size s ON s.size_id = pv.size_id
-            WHERE st.transaction_date BETWEEN %s AND %s
-            GROUP BY sale_year, sale_week, p.product_id, pv.variant_id, pv.size_id, pv.color
-            ORDER BY sale_year, sale_week;
-        """
-
-        cursor.execute(weekly_sales_query, (start_date, end_date))
-        weekly_sales = cursor.fetchall()
-
-        # Monthly sales report
-        monthly_sales_query = """
-            SELECT 
-                DATE_FORMAT(st.transaction_date, '%Y-%m') AS sale_month,
-                p.product_id,
-                p.name AS product_name,
-                pv.variant_id,
-                s.size,
-                pv.color,
-                SUM(ti.quantity) AS total_quantity_sold,
-                SUM(ti.quantity * ti.price) AS total_sales
-            FROM sales_transactions st
-            JOIN transaction_items ti ON st.transaction_id = ti.transaction_id
-            JOIN productvariant pv ON ti.product_id = pv.variant_id
-            JOIN product p ON pv.product_id = p.product_id
-            JOIN size s ON s.size_id = pv.size_id
-            WHERE st.transaction_date BETWEEN %s AND %s
-            GROUP BY sale_year, sale_month, p.product_id, pv.variant_id, pv.size_id, pv.color
-            ORDER BY sale_year, sale_month;
-        """
-
-        cursor.execute(monthly_sales_query, (start_date, end_date))
-        monthly_sales = cursor.fetchall()
-
-        # Yearly sales report
-        yearly_sales_query = """
-            SELECT 
-                YEAR(st.transaction_date) AS sale_year,
-                p.product_id,
-                p.name AS product_name,
-                pv.variant_id,
-                s.size,
-                pv.color,
-                SUM(ti.quantity) AS total_quantity_sold,
-                SUM(ti.quantity * ti.price) AS total_sales
-            FROM sales_transactions st
-            JOIN transaction_items ti ON st.transaction_id = ti.transaction_id
-            JOIN productvariant pv ON ti.product_id = pv.variant_id
-            JOIN product p ON pv.product_id = p.product_id
-            JOIN size s ON s.size_id = pv.size_id
-            WHERE st.transaction_date BETWEEN %s AND %s
-            GROUP BY sale_year, p.product_id, pv.variant_id, pv.size_id, pv.color
-            ORDER BY sale_year;
-        """
-
-        cursor.execute(yearly_sales_query, (start_date, end_date))
-        yearly_sales = cursor.fetchall()
-
-        # Inventory Metrics
-        inventory_metrics_query = """
-            SELECT 
-                COUNT(DISTINCT p.product_id) AS total_products,
-                COUNT(DISTINCT p.category_id) AS total_categories,
-                SUM(pv.quantity * pv.price) AS total_stock_value,
-                COUNT(*) AS reorder_level_alert
-            FROM productvariant pv
-            JOIN product p ON pv.product_id = p.product_id
-            WHERE pv.quantity <= pv.min_quantity
-        """
-        
-        cursor.execute(inventory_metrics_query)
-        inventory_metrics = cursor.fetchone()
-
-        cursor.close()
-        connection.close()
-
-        return jsonify(
-            daily_sales=daily_sales,
-            weekly_sales=weekly_sales,
-            monthly_sales=monthly_sales,
-            yearly_sales=yearly_sales,
-            inventory_metrics=inventory_metrics
-        ), 200
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
 
 import calendar
 @app.route('/finance_report', methods=['GET'])
@@ -1820,7 +1675,8 @@ def create_inventory_views(start_date, end_date):
                 s.size,
                 pv.color,
                 COALESCE(SUM(ti.quantity),0) AS total_quantity_sold,
-                COALESCE(SUM(ti.quantity * ti.price),0) AS total_sales
+                COALESCE(SUM(ti.quantity * ti.price),0) AS total_sales,
+                pv.quantity AS available_quantity
             FROM sales_transactions st
             JOIN transaction_items ti ON st.transaction_id = ti.transaction_id
             JOIN productvariant pv ON ti.product_id = pv.variant_id
@@ -1844,7 +1700,8 @@ def create_inventory_views(start_date, end_date):
                 s.size,
                 pv.color,
                 COALESCE(SUM(ti.quantity),0) AS total_quantity_sold,
-                COALESCE(SUM(ti.quantity * ti.price),0) AS total_sales
+                COALESCE(SUM(ti.quantity * ti.price),0) AS total_sales,
+                pv.quantity AS available_quantity
             FROM sales_transactions st
             JOIN transaction_items ti ON st.transaction_id = ti.transaction_id
             JOIN productvariant pv ON ti.product_id = pv.variant_id
@@ -1867,7 +1724,8 @@ def create_inventory_views(start_date, end_date):
                 s.size,
                 pv.color,
                 COALESCE(SUM(ti.quantity),0) AS total_quantity_sold,
-                COALESCE(SUM(ti.quantity * ti.price),0) AS total_sales
+                COALESCE(SUM(ti.quantity * ti.price),0) AS total_sales,
+                pv.quantity AS available_quantity
             FROM sales_transactions st
             JOIN transaction_items ti ON st.transaction_id = ti.transaction_id
             JOIN productvariant pv ON ti.product_id = pv.variant_id
@@ -1889,7 +1747,8 @@ def create_inventory_views(start_date, end_date):
                 s.size,
                 pv.color,
                 COALESCE(SUM(ti.quantity),0) AS total_quantity_sold,
-                COALESCE(SUM(ti.quantity * ti.price),0) AS total_sales
+                COALESCE(SUM(ti.quantity * ti.price),0) AS total_sales, 
+                pv.quantity AS available_quantity
             FROM sales_transactions st
             JOIN transaction_items ti ON st.transaction_id = ti.transaction_id
             JOIN productvariant pv ON ti.product_id = pv.variant_id
@@ -1911,8 +1770,8 @@ def create_inventory_views(start_date, end_date):
         cursor.close()
         connection.close()
         
-@app.route('/inventory_report_test', methods=['GET'])
-def inventory_report_test():
+@app.route('/inventory_report', methods=['GET'])
+def inventory_report():
     try:
         # Get the filter parameters from query parameters
         start_date = request.args.get('start_date')
@@ -1940,26 +1799,23 @@ def inventory_report_test():
                 bi.product_name,
                 bi.product_id,
                 bi.variant_id,
+                pv.color,
+                s.size,
                 (bi.beginning_inventory + ei.ending_inventory)/2 AS avg_inventory_level,
                 (COALESCE(SUM(ds.total_quantity_sold),0)/ ((bi.beginning_inventory + ei.ending_inventory)/2)) * 100 AS turnover_rate,
                 (COALESCE(SUM(ds.total_quantity_sold),0) / bi.beginning_inventory) * 100 AS sell_through_rate
             FROM beginning_inventory_view bi
             JOIN ending_inventory_view ei ON bi.variant_id = ei.variant_id
             LEFT JOIN daily_sales_view ds ON bi.variant_id = ds.variant_id
+            JOIN productvariant pv ON bi.variant_id = pv.variant_id
+            JOIN size s ON s.size_id = pv.size_id
             GROUP BY bi.product_id, bi.variant_id;
         """
         cursor.execute(inventory_metrics_query)
 
         # Fetch the results from inventory_metrics_view
         inventory_metrics_query = """
-            SELECT
-                product_name,
-                product_id,
-                variant_id,
-                avg_inventory_level,
-                turnover_rate,
-                sell_through_rate
-            FROM inventory_metrics_view;
+            SELECT * FROM inventory_metrics_view;
         """
         cursor.execute(inventory_metrics_query)
         inventory_metrics = cursor.fetchall()
@@ -1989,6 +1845,7 @@ def inventory_report_test():
                 'month': int(month['sale_month'].split('-')[1]),
                 'total_sales': month_total_sales,
                 'total_quantity_sold': month_total_quantity,
+                'available_quantity' : month['available_quantity'],
                 'size':month['size'],
                 'color': month['color'],
                 'product_name' : month['product_name'],
@@ -2101,8 +1958,8 @@ def get_recommendations(customer_id):
 
 
 
-@app.route('/inventor2y_report', methods=['GET'])
-def inventory_repor():
+@app.route('/inventory_report2', methods=['GET'])
+def inventory_report2():
     try:
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
@@ -2236,46 +2093,6 @@ def get_stock_levels(cursor):
     cursor.execute(stock_levels_query)
     stock_levels = cursor.fetchall()
     return stock_levels
-
-
-@app.route('/inventor2y_report', methods=['GET'])
-def inventory_rep2ort():
-    try:
-        connection = get_db_connection()
-        cursor = connection.cursor(dictionary=True)
-
-        # Query to get inventory details
-        inventory_query = """
-            SELECT 
-                p.product_id,
-                p.name AS product_name,
-                p.category_id,
-                p.brand_id,
-                pv.variant_id,
-                pv.color,
-                pv.size_id,
-                pv.quantity AS available_quantity,
-                pv.price AS variant_price,
-                p.price AS base_price,
-                p.gender,
-                p.date_added AS product_added_date,
-                pv.date_added AS variant_added_date
-            FROM product p
-            JOIN productvariant pv ON p.product_id = pv.product_id
-        """
-        cursor.execute(inventory_query)
-        inventory_data = cursor.fetchall()
-
-        cursor.close()
-        connection.close()
-
-        return jsonify(inventory_report=inventory_data), 200
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-
 
 
 @app.route('/sales3_report', methods=['GET'])
